@@ -31,8 +31,9 @@ public class SimpleTest {
             IOUtils.copy(TypeChecker.class.getResourceAsStream("FMI2.mabl"), writer, StandardCharsets.UTF_8);
         }
 
-        org.intocps.maestro.Main
-                .main(new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+        //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
+        org.intocps.maestro.Main.argumentHandler(
+                new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
 }
