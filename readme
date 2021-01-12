@@ -1,0 +1,8 @@
+#### Development Environment
+You need Java 11 and maven 3.6 to build the project (??).
+The project can be built from CLI using the maven commands.
+```
+mvn clean
+mvn compile
+mvn test
+```

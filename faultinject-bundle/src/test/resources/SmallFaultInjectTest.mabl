@@ -2,7 +2,7 @@ simulation
 import FaultInject;
 {
  	real START_TIME = 0.0;
-	real END_TIME = 10.0;
+	real END_TIME = 0.3;
 	real STEP_SIZE = 0.1;
 
 	FMI2 tankcontroller = load("FMI2", "{8c4e810f-3df3-4a00-8276-176fa3c9f000}", "src/test/resources/watertankcontroller-c.fmu");
@@ -12,5 +12,54 @@ import FaultInject;
 	FaultInject fi = load("FaultInject","path to some file");
 
 	wtInstance = fi.faultInject(tankcontroller, wtInstance, "jjj");
+
+	wtInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
+
+	wtInstance.enterInitializationMode();
+
+	int wtValveStateValRef[1] = { 3 };
+    real wtValveStateInputs[1];
+	wtValveStateInputs[0] = 0.0;
+    wtInstance.setReal(wtValveStateValRef, 1, wtValveStateInputs);
+
+	int wtLevelValRef[1] = { 4 };
+    real wtLevelOutputValue[1];
+
+	real time = START_TIME;
+    // #############################
+    // Simulation Loop until END_TIME
+    // #############################
+    while(time + STEP_SIZE <= END_TIME)
+    {
+        // #############################
+        // Set the valve state on the tank
+        // #############################
+		if(  wtValveStateInputs[0] == 1.0 )
+		{
+			wtValveStateInputs[0] = 0.0;
+		}
+		else
+		{
+			wtValveStateInputs[0] = 1.0;
+		}
+
+        wtInstance.setReal(wtValveStateValRef, 1, wtValveStateInputs);
+
+        // #############################
+        // Step the tank
+        // #############################
+        wtInstance.doStep(time, STEP_SIZE, true);
+
+        // #############################
+        // Get the level from the tank
+        // #############################
+        wtInstance.getReal(wtLevelValRef, 1, wtLevelOutputValue);
+
+        // #############################
+        // Increase the time with STEP_SIZE
+        // #############################
+        time = time + STEP_SIZE;
+
+    }
 
 }
