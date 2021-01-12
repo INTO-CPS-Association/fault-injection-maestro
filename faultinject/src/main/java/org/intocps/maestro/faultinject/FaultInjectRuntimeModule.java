@@ -52,7 +52,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
             public WrapperFmuComponentValue(FmuComponentValue component, Map<String, Value> wrapperMembers, String wrapperID) {
                 super(wrapperMembers, component.getModule());
                 this.wrapperID = wrapperID;
-                this.eventsSpecificationFile = eventsSpecificationFile;
             }
             public static boolean getBool(Value value) {
 
@@ -121,7 +120,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return values;
             }
 
-            private static WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID, String eventsSpecificationFile) {
+            private static WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID) {
                 logger.warn("creating members");
                 Map<String, Value> wrapperMembers = new HashMap<>();
 
