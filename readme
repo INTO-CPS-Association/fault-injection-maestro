@@ -6,3 +6,9 @@ mvn clean
 mvn compile
 mvn test
 ```
+
+To run specific test:
+
+```
+mvn test -DTest=${testName}
+```

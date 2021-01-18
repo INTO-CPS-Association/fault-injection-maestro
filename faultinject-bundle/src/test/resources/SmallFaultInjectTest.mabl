@@ -15,15 +15,27 @@ import FaultInject;
 
 	wtInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
 
+    real wtParameters[2] = { 2.0 , 1.0 };
+    int wtParameterValRefs[2] = { 0 , 1 };
+    wtInstance.setReal(wtParameterValRefs, 2, wtParameters);
+
 	wtInstance.enterInitializationMode();
 
-	int wtValveStateValRef[1] = { 3 };
-    real wtValveStateInputs[1];
-	wtValveStateInputs[0] = 0.0;
-    wtInstance.setReal(wtValveStateValRef, 1, wtValveStateInputs);
+	int wtValveStateValRef[1] = { 4 };
+    bool wtValveStateOutput[1];
 
-	int wtLevelValRef[1] = { 4 };
-    real wtLevelOutputValue[1];
+    int wtLevelInputValRef[1] = { 3 };
+    real wtLevelInputValue[1];
+
+    wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
+
+    wtLevelInputValue[0] = 0.0;
+    wtInstance.setReal(wtLevelInputValRef, 1, wtLevelInputValue);
+
+	wtInstance.exitInitializationMode();
+
+
+    //wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
 
 	real time = START_TIME;
     // #############################
@@ -34,16 +46,16 @@ import FaultInject;
         // #############################
         // Set the valve state on the tank
         // #############################
-		if(  wtValveStateInputs[0] == 1.0 )
+		if(  wtLevelInputValue[0] == 1.0 )
 		{
-			wtValveStateInputs[0] = 0.0;
+			wtLevelInputValue[0] = 0.0;
 		}
 		else
 		{
-			wtValveStateInputs[0] = 1.0;
+			wtLevelInputValue[0] = 1.0;
 		}
 
-        wtInstance.setReal(wtValveStateValRef, 1, wtValveStateInputs);
+        wtInstance.setReal(wtLevelInputValRef, 1, wtLevelInputValue);
 
         // #############################
         // Step the tank
@@ -53,7 +65,7 @@ import FaultInject;
         // #############################
         // Get the level from the tank
         // #############################
-        wtInstance.getReal(wtLevelValRef, 1, wtLevelOutputValue);
+        wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
 
         // #############################
         // Increase the time with STEP_SIZE

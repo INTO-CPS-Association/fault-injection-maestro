@@ -127,7 +127,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("setReal", new FunctionValue.ExternalFunctionValue(fcargs -> {
 
                     checkArgLength(fcargs, 3);
-                    logger.warn("hello in setReal");
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     double[] values = getArrayValue(fcargs.get(2), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
                     logger.warn(String.format("The values to set %s", Arrays.toString(values)));
@@ -137,6 +136,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                     try {
                         Fmi2Status res = component.getModule().setReals(scalarValueIndices, values);
+                        logger.warn(String.format("setupReal outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (InvalidParameterException | FmiInvalidNativeStateException e) {
                         throw new InterpreterException(e);
@@ -166,7 +166,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("getReal", new FunctionValue.ExternalFunctionValue(fcargs -> {
 
                     checkArgLength(fcargs, 3);
-                    logger.warn("hello in getReal");
         
                     if (!(fcargs.get(2) instanceof UpdatableValue)) {
                         throw new InterpreterException("value not a reference value");
@@ -180,7 +179,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                         if (res.status == Fmi2Status.OK) {
                             UpdatableValue ref = (UpdatableValue) fcargs.get(2);
-                            logger.warn("getting output: %f", res.result);
+                            logger.warn(String.format("getReal outcome %d", res.status.value));
         
                             List<RealValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(d -> new RealValue(d)).collect(Collectors.toList());
         
@@ -196,7 +195,38 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
         
                 }));
+                wrapperMembers.put("getBoolean", new FunctionValue.ExternalFunctionValue(fcargs -> {
+
+                    checkArgLength(fcargs, 3);
+        
+                    if (!(fcargs.get(2) instanceof UpdatableValue)) {
+                        throw new InterpreterException("value not a reference value");
+                    }
+        
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+        
+        
+                    try {
+                        FmuResult<boolean[]> res = component.getModule().getBooleans(scalarValueIndices);
+                        logger.warn(String.format("getBoolean outcome %d", res.status.value));
+                        if (res.status == Fmi2Status.OK) {
+                            UpdatableValue ref = (UpdatableValue) fcargs.get(2);
+        
+                            List<BooleanValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(BooleanValue::new).collect(Collectors.toList());
+        
+                            ref.setValue(new ArrayValue<>(values));
+                        }
+        
+        
+                        return new IntegerValue(res.status.value);
+        
+                    } catch (FmuInvocationException e) {
+                        throw new InterpreterException(e);
+                    }
+        
+                }));
                 wrapperMembers.put("setupExperiment", new FunctionValue.ExternalFunctionValue(fcargs -> {
+                    logger.warn("setupExperiment");
 
                     checkArgLength(fcargs, 5);
         
@@ -207,21 +237,34 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     double stopTime = getDouble(fcargs.get(4));
                     try {
                         Fmi2Status res = component.getModule().setupExperiment(toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
+                        logger.warn(String.format("setupExperiment outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (FmuInvocationException e) {
                         throw new InterpreterException(e);
                     }
                 }));
                 wrapperMembers.put("enterInitializationMode", new FunctionValue.ExternalFunctionValue(fcargs -> {
-
+                    logger.warn("EnterInitializationMode");
                     checkArgLength(fcargs, 0);
                     try {
                         Fmi2Status res = component.getModule().enterInitializationMode();
+                        logger.warn(String.format("EnterInitializationMode outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (FmuInvocationException e) {
                         throw new InterpreterException(e);
                     }
         
+                }));
+                wrapperMembers.put("exitInitializationMode", new FunctionValue.ExternalFunctionValue(fcargs -> {
+                    logger.warn("ExitInitializationMode");
+                    checkArgLength(fcargs, 0);
+                    try {
+                        Fmi2Status res = component.getModule().exitInitializationMode();
+                        logger.warn(String.format("ExitInitializationMode outcome %d", res.value));
+                        return new IntegerValue(res.value);
+                    } catch (FmuInvocationException e) {
+                        throw new InterpreterException(e);
+                    }
                 }));
                 
                 return new WrapperFmuComponentValue(component, wrapperMembers, wrapperID);
