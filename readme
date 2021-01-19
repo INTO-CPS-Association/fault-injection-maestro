@@ -12,3 +12,7 @@ To run specific test:
 ```
 mvn test -DTest=${testName}
 ```
+
+.mabl file for simulation test
+
+SmallFaultInjectTest.mabl
