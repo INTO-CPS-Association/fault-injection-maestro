@@ -27,10 +27,10 @@ import org.intocps.fmi.IFmiComponentState;
 import org.intocps.fmi.InvalidParameterException;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,10 +39,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
 
 @IValueLifecycleHandler.ValueLifecycle(name = "FaultInject")
 public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
@@ -52,26 +55,37 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
     public static class FaultInjectModule extends ExternalModuleValue<String> {
 
-        public static class WrapperFmuComponentValue extends ExternalModuleValue<IFmiComponent>{
+        public static class WrapperFmuComponentValue extends ExternalModuleValue<IFmiComponent> {
             FmuComponentValue wrappedComponent;
             String wrapperID;
             FmuValue fmu;
             String eventsSpecificationFile;
             private static double currentStep = 0.0;
-            // TODO The spec below is to be removed. The specification will come in through a file.
-            private static double stepForEvent = 0.2;
-            private static long[] refsForVarsToChange = {3};
-            private static double[] valueToChange = {3.45};
-            private static int[] valueToChangeInt = {3};
-            private static boolean[] valueToChangeBool= {true};
-            private static String[] valueToChangeString= {"blueMonday"};
-            //////////////////////////
+            private static double stepSize = 0.1;
 
-            public WrapperFmuComponentValue(FmuComponentValue component, Map<String, Value> wrapperMembers, String wrapperID, FmuValue fmu) {
+            private static Event[] simulationEvents;
+
+            public WrapperFmuComponentValue(FmuComponentValue component, Map<String, Value> wrapperMembers,
+                    String wrapperID, FmuValue fmu) {
                 super(wrapperMembers, component.getModule());
                 this.wrappedComponent = component;
                 this.wrapperID = wrapperID;
                 this.fmu = fmu;
+            }
+
+            public static Event[] createEvents(String faultSpecFile){
+                Event[] simuEvents = {};
+                try {
+                    boolean verbose = true;
+                    simuEvents = Event.getEvents(faultSpecFile, verbose);
+                    Event.printEvent(simuEvents);
+                    return simuEvents;
+                } catch (NumberFormatException | NullPointerException | SAXException | IOException
+                        | ParserConfigurationException e) {
+                    logger.error("Something went terribly wrong when creating the events");
+                    e.printStackTrace();
+                    return simuEvents;
+                }
             }
             
             public static boolean getBool(Value value) {
@@ -127,6 +141,54 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
             }
 
+            public static Pair<double[], long[]> getDoublesFromEvent(){
+                //Check the first event in simulationEvents
+                double[] dv = {};
+                long[] dvr = {};
+                Pair<double[], long[]> result = Pair.of(dv,dvr);
+                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Supposedly injecting");
+                    result = Pair.of(simulationEvents[0].doubleValues, simulationEvents[0].doubleValuesRefs);
+                }
+                return result;
+            }
+
+            public static Pair<int[], long[]> getIntsFromEvent(){
+                //Check the first event in simulationEvents
+                int[] dv = {};
+                long[] dvr = {};
+                Pair<int[], long[]> result = Pair.of(dv,dvr);
+                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Supposedly injecting");
+                    result = Pair.of(simulationEvents[0].intValues, simulationEvents[0].intValuesRefs);
+                }
+                return result;
+            }
+
+            public static Pair<boolean[], long[]> getBooleansFromEvent(){
+                //Check the first event in simulationEvents
+                boolean[] dv = {};
+                long[] dvr = {};
+                Pair<boolean[], long[]> result = Pair.of(dv,dvr);
+                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Supposedly injecting");
+                    result = Pair.of(simulationEvents[0].boolValues, simulationEvents[0].boolValuesRefs);
+                }
+                return result;
+            }
+
+            public static Pair<String[], long[]> getStringsFromEvent(){
+                //Check the first event in simulationEvents
+                String[] dv = {};
+                long[] dvr = {};
+                Pair<String[], long[]> result = Pair.of(dv,dvr);
+                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Supposedly injecting");
+                    result = Pair.of(simulationEvents[0].stringValues, simulationEvents[0].stringValuesRefs);
+                }
+                return result;
+            }
+
             public static <T> T[] inject(T[]  values, long[] valueRefs, T[] newValues, long[] newValuesRefs){
                 //Check that values and valuesRefs have the same length
                 if(values.length != valueRefs.length){
@@ -152,7 +214,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return values;
             }
 
-            private static WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID, FmuValue fmu) {
+            private static WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID, FmuValue fmu, String faultSpecFile) {
                 logger.warn("creating members");
                 Map<String, Value> wrapperMembers = new HashMap<>();
 
@@ -183,6 +245,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     logger.warn(String.format("doStep at time %f", currentCommunicationPoint));
                     // Keep track of the current timestep in which the fmu is. Needed by the inject functions. 
                     currentStep = currentCommunicationPoint;
+                    // Cleanup the events array
+                    simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep);
         
                     try {
                         Fmi2Status res = component.getModule().doStep(currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint);
@@ -197,29 +261,29 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     checkArgLength(fcargs, 3);
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     double[] values = getArrayValue(fcargs.get(2), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
-                    logger.warn(String.format("The values to set %s", Arrays.toString(values)));
+                    logger.warn(String.format("The values to set %s for time %f", Arrays.toString(values), currentStep+stepSize));
 
                     logger.warn(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
                     
-                    // Get event if any at this timestep
-                    // TODO create function that updates the newValues and newValuesRefs based on the info on events
-                    if(currentStep == stepForEvent){
-                        Double[] newValues = DoubleStream.of(WrapperFmuComponentValue.valueToChange).boxed().collect(Collectors.toList()).toArray(Double[]::new);
-                        long[] newValuesRefs = WrapperFmuComponentValue.refsForVarsToChange;
+                    if(simulationEvents.length != 0){
+                        //Get data from the next event if any
+                        double[] result;
+                        long[] newValuesRefs;
+
+                        Pair<double[], long[]> out = getDoublesFromEvent();
+                        result = out.getLeft();
+                        newValuesRefs = out.getRight();
+                        
+                        //Turn arrays of primitives to arrays of Double
+                        Double[] newValues = DoubleStream.of(result).boxed().collect(Collectors.toList()).toArray(Double[]::new);
                         Double[] oldValues = DoubleStream.of(values).boxed().collect(Collectors.toList()).toArray(Double[]::new);
 
                         // Inject -- if so defined in the specification -- the values before setting them
                         Double[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
                         values = ArrayUtils.toPrimitive(injected);
-                        logger.warn(String.format("The injected values %s", Arrays.toString(values)));
                     }
-                    /*
-                    // Get event if any at this timestep
-                    double[] newValues = WrapperFmuComponentValue.valueToChange;
-                    long[] newValuesRefs = WrapperFmuComponentValue.refsForVarsToChange;                  
-                    // Inject -- if so defined in the specification -- the values before setting them
-                    values = inject(values, scalarValueIndices, newValues, newValuesRefs);
-                    */
+                    
+                    logger.warn(String.format("The values %s", Arrays.toString(values)));
 
                     try {
                         Fmi2Status res = component.getModule().setReals(scalarValueIndices, values);
@@ -270,24 +334,28 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     boolean[] values = ArrayUtils.toPrimitive(
                             getArrayValue(fcargs.get(2), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
                                     .toArray(new Boolean[]{}));
-                    /*
-                    // Get event if any at this timestep
-                    boolean[] newValues;
-                    long[] newValuesRefs;                  
-                    // Inject -- if so defined in the specification -- the values before setting them
-                    values = inject(values, scalarValueIndices, newValues, newValuesRefs);
-                    */
-                    if(currentStep == stepForEvent){
-                        // Get event if any at this timestep
-                        Boolean[] newValues = Arrays.stream(ArrayUtils.toObject(WrapperFmuComponentValue.valueToChangeBool)).map(BooleanValue::new).collect(Collectors.toList()).toArray(Boolean[]::new);
-                        long[] newValuesRefs = WrapperFmuComponentValue.refsForVarsToChange;
+                    
+                    if(simulationEvents.length != 0){
+                        //Get data from the next event if any
+                        boolean[] result;
+                        long[] newValuesRefs;
+
+                        Pair<boolean[], long[]> out = getBooleansFromEvent();
+                        result = out.getLeft();
+                        newValuesRefs = out.getRight();
+                        
+                        //Turn arrays of primitives to arrays of Boolean
+                        Boolean[] newValues = Arrays.stream(ArrayUtils.toObject(result)).map(BooleanValue::new).collect(Collectors.toList()).toArray(Boolean[]::new);
+
                         Boolean[] oldValues = Arrays.stream(ArrayUtils.toObject(values)).map(BooleanValue::new).collect(Collectors.toList()).toArray(Boolean[]::new);
 
                         // Inject -- if so defined in the specification -- the values before setting them
                         Boolean[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
-                        values = ArrayUtils.toPrimitive(injected);   
-                    } 
-        
+                        values = ArrayUtils.toPrimitive(injected); 
+                    }
+                    
+                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+                    
                     try {
                         Fmi2Status res = component.getModule().setBooleans(scalarValueIndices, values);
                         return new IntegerValue(res.value);
@@ -329,20 +397,31 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     checkArgLength(fcargs, 3);
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     int[] values = getArrayValue(fcargs.get(2), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
+                    
+                    if(simulationEvents.length != 0){
+                        //Get data from the next event if any data
+                        int[] result;
+                        long[] newValuesRefs;
 
-                    if(currentStep == stepForEvent){
-                        // Get event if any at this timestep
-                        Integer[] newValues = IntStream.of(WrapperFmuComponentValue.valueToChangeInt).boxed().collect(Collectors.toList()).toArray(Integer[]::new);
-                        long[] newValuesRefs = WrapperFmuComponentValue.refsForVarsToChange;
+                        Pair<int[], long[]> out = getIntsFromEvent();
+                        result = out.getLeft();
+                        newValuesRefs = out.getRight();
+                        
+                        //Turn arrays of primitives to arrays of Boolean
+                        Integer[] newValues = IntStream.of(result).boxed().collect(Collectors.toList()).toArray(Integer[]::new);
+
                         Integer[] oldValues = IntStream.of(values).boxed().collect(Collectors.toList()).toArray(Integer[]::new);
 
                         // Inject -- if so defined in the specification -- the values before setting them
                         Integer[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
-                        values = ArrayUtils.toPrimitive(injected);    
+                        values = ArrayUtils.toPrimitive(injected); 
                     }
-        
+
+                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+
                     try {
                         Fmi2Status res = component.getModule().setIntegers(scalarValueIndices, values);
+                        logger.warn(String.format("setupInteger outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (InvalidParameterException | FmiInvalidNativeStateException e) {
                         throw new InterpreterException(e);
@@ -387,14 +466,21 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     String[] values = getArrayValue(fcargs.get(2), StringValue.class).stream().map(StringValue::getValue).collect(Collectors.toList())
                             .toArray(new String[]{});
 
-                    if(currentStep == stepForEvent){
-                        // Get event if any at this timestep
-                        String[] newValues = WrapperFmuComponentValue.valueToChangeString;
-                        long[] newValuesRefs = WrapperFmuComponentValue.refsForVarsToChange;                  
+                    if(simulationEvents.length != 0){
+                        //Get data from the next event if any data
+                        String[] newValues;
+                        long[] newValuesRefs;
+
+                        Pair<String[], long[]> out = getStringsFromEvent();
+                        newValues = out.getLeft();
+                        newValuesRefs = out.getRight();
+                                       
                         // Inject -- if so defined in the specification -- the values before setting them
                         values = inject(values, scalarValueIndices, newValues, newValuesRefs);
                     }
-        
+
+                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+
                     try {
                         Fmi2Status res = component.getModule().setStrings(scalarValueIndices, values);
                         return new IntegerValue(res.value);
@@ -436,7 +522,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }));
                 
                 wrapperMembers.put("setupExperiment", new FunctionValue.ExternalFunctionValue(fcargs -> {
-                    logger.warn("setupExperiment");
+                    logger.warn("SETUPEXPERIMETN");
 
                     checkArgLength(fcargs, 5);
         
@@ -454,7 +540,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     }
                 }));
                 wrapperMembers.put("enterInitializationMode", new FunctionValue.ExternalFunctionValue(fcargs -> {
-                    logger.warn("EnterInitializationMode");
+                    logger.warn("ENTERINITIALIZATIONMODE");
                     checkArgLength(fcargs, 0);
                     try {
                         Fmi2Status res = component.getModule().enterInitializationMode();
@@ -466,7 +552,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                 }));
                 wrapperMembers.put("exitInitializationMode", new FunctionValue.ExternalFunctionValue(fcargs -> {
-                    logger.warn("ExitInitializationMode");
+                    logger.warn("EXITINITIALIZATIONMODE");
                     checkArgLength(fcargs, 0);
                     try {
                         Fmi2Status res = component.getModule().exitInitializationMode();
@@ -619,7 +705,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         throw new InterpreterException(e);
                     }
         
-        
                 }));
                 wrapperMembers.put("setRealInputDerivatives", new FunctionValue.ExternalFunctionValue(fcargs -> {
                     // int setRealInputDerivatives(UInt[] scalarValueIndices, UInt nvr, int[] order, ref real[] derivatives);
@@ -639,12 +724,13 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                 }));
                 
+                simulationEvents = createEvents(faultSpecFile);
                 return new WrapperFmuComponentValue(component, wrapperMembers, wrapperID, fmu);
             }
         }
 
         public FaultInjectModule(String path) {
-            super(createMembers(), path);
+            super(createMembers(path), path);
         }
 
         /*
@@ -654,9 +740,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
          * alternative behavior based on the cache and rule set
          */
 
-        private static Map<String, Value> createMembers() {
+        private static Map<String, Value> createMembers(String faultSpecFile) {
             Map<String, Value> members = new HashMap<>();
-
             members.put("faultInject", new FunctionValue.ExternalFunctionValue(fargs -> {
 
                 List<Value> args = fargs.stream().map(Value::deref).collect(Collectors.toList());
@@ -679,7 +764,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                 //To make the wrapper look at FmiInterpreter
                 // Create and return wrapper 
-                return WrapperFmuComponentValue.getWrapperComponent(comp, id, fmu);
+                return WrapperFmuComponentValue.getWrapperComponent(comp, id, fmu, faultSpecFile);
           
             }));
 
