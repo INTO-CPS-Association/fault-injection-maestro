@@ -12,6 +12,7 @@ import org.intocps.maestro.interpreter.values.IntegerValue;
 import org.intocps.maestro.interpreter.values.NumericValue;
 import org.intocps.maestro.interpreter.values.RealValue;
 import org.intocps.maestro.interpreter.values.StringValue;
+import org.intocps.maestro.interpreter.values.UnsignedIntegerValue;
 import org.intocps.maestro.interpreter.values.UpdatableValue;
 import org.intocps.maestro.interpreter.values.Value;
 import org.intocps.maestro.interpreter.values.fmi.FmuComponentStateValue;
@@ -31,11 +32,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.StackWalker.Option;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -118,8 +121,25 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 throw new InterpreterException("Value is not string");
             }
         
-            static <T extends Value> List<T> getArrayValue(Value value, Class<T> clz) {
+            public static long getUint(Value value) {
 
+                value = value.deref();
+        
+                if (value instanceof UnsignedIntegerValue) {
+                    return ((UnsignedIntegerValue) value).getValue();
+                }
+                if (value instanceof IntegerValue) {
+                    return ((IntegerValue) value).getValue();
+                }
+                throw new InterpreterException("Value is not unsigned integer");
+            }
+
+            static <T extends Value> List<T> getArrayValue(Value value, Class<T> clz) {
+                return getArrayValue(value, Optional.empty(), clz);
+            }
+        
+            static <T extends Value> List<T> getArrayValue(Value value, Optional<Long> limit, Class<T> clz) {
+        
                 value = value.deref();
         
                 if (value instanceof ArrayValue) {
@@ -133,12 +153,13 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         throw new InterpreterException("Array not containing the right type. Expected: " + clz.getSimpleName() + " Actual: " +
                                 array.getValues().get(0).getClass().getSimpleName());
                     }
-        
-                    return array.getValues().stream().map(Value::deref).map(clz::cast).collect(Collectors.toList());
+                    if (limit.isPresent()) {
+                        return array.getValues().stream().limit(limit.get()).map(Value::deref).map(clz::cast).collect(Collectors.toList());
+                    } else {
+                        return array.getValues().stream().map(Value::deref).map(clz::cast).collect(Collectors.toList());
+                    }
                 }
                 throw new InterpreterException("Value is not an array");
-        
-        
             }
 
             public static Pair<double[], long[]> getDoublesFromEvent(){
@@ -259,8 +280,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("setReal", new FunctionValue.ExternalFunctionValue(fcargs -> {
 
                     checkArgLength(fcargs, 3);
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
-                    double[] values = getArrayValue(fcargs.get(2), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
+                    long elementsToUse = getUint(fcargs.get(1));
+
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    double[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
+                    
                     logger.warn(String.format("The values to set %s for time %f", Arrays.toString(values), currentStep+stepSize));
 
                     logger.warn(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
@@ -301,8 +325,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if (!(fcargs.get(2) instanceof UpdatableValue)) {
                         throw new InterpreterException(FaultInjectRuntimeModule.errorMsg);
                     }
-        
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    
+                    long elementsToUse = getUint(fcargs.get(1));
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
         
                     try {
                         FmuResult<double[]> res = component.getModule().getReal(scalarValueIndices);
@@ -329,10 +354,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("setBoolean", new FunctionValue.ExternalFunctionValue(fcargs -> {
 
                     checkArgLength(fcargs, 3);
+                    long elementsToUse = getUint(fcargs.get(1));
         
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     boolean[] values = ArrayUtils.toPrimitive(
-                            getArrayValue(fcargs.get(2), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
+                            getArrayValue(fcargs.get(2), Optional.of(elementsToUse), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
                                     .toArray(new Boolean[]{}));
                     
                     if(simulationEvents.length != 0){
@@ -370,8 +396,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if (!(fcargs.get(2) instanceof UpdatableValue)) {
                         throw new InterpreterException(FaultInjectRuntimeModule.errorMsg);
                     }
-        
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    long elementsToUse = getUint(fcargs.get(1));
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
         
         
                     try {
@@ -395,8 +421,10 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }));
                 wrapperMembers.put("setInteger", new FunctionValue.ExternalFunctionValue(fcargs -> {
                     checkArgLength(fcargs, 3);
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
-                    int[] values = getArrayValue(fcargs.get(2), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
+                    long elementsToUse = getUint(fcargs.get(1));
+
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    int[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
                     
                     if(simulationEvents.length != 0){
                         //Get data from the next event if any data
@@ -434,8 +462,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if (!(fcargs.get(2) instanceof UpdatableValue)) {
                         throw new InterpreterException(FaultInjectRuntimeModule.errorMsg);
                     }
+                    long elementsToUse = getUint(fcargs.get(1));
         
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
         
         
                     try {
@@ -462,8 +491,10 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("setString", new FunctionValue.ExternalFunctionValue(fcargs -> {
 
                     checkArgLength(fcargs, 3);
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
-                    String[] values = getArrayValue(fcargs.get(2), StringValue.class).stream().map(StringValue::getValue).collect(Collectors.toList())
+                    long elementsToUse = getUint(fcargs.get(1));
+
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    String[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), StringValue.class).stream().map(StringValue::getValue).collect(Collectors.toList())
                             .toArray(new String[]{});
 
                     if(simulationEvents.length != 0){
@@ -496,8 +527,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if (!(fcargs.get(2) instanceof UpdatableValue)) {
                         throw new InterpreterException(FaultInjectRuntimeModule.errorMsg);
                     }
+                    long elementsToUse = getUint(fcargs.get(1));
         
-                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
+                    long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
         
         
                     try {
