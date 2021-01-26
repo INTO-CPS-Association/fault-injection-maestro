@@ -2,15 +2,89 @@ simulation
 import FaultInject;
 {
  	real START_TIME = 0.0;
-	real END_TIME = 10.0;
+	real END_TIME = 0.7;
 	real STEP_SIZE = 0.1;
 
 	FMI2 tankcontroller = load("FMI2", "{8c4e810f-3df3-4a00-8276-176fa3c9f000}", "src/test/resources/watertankcontroller-c.fmu");
 
 	FMI2Component wtInstance = tankcontroller.instantiate("wtInstance", false, false);
 
-	FaultInject fi = load("FaultInject","path to some file");
+	FaultInject fi = load("FaultInject","src/test/resources/faultInjectSpecification.xml");
 
 	wtInstance = fi.faultInject(tankcontroller, wtInstance, "jjj");
+
+	wtInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
+
+    real wtParameters[2] = { 2.0 , 1.0 };
+    uint wtParameterValRefs[2] = { 0 , 1 };
+    wtInstance.setReal(wtParameterValRefs, 2, wtParameters);
+
+	wtInstance.enterInitializationMode();
+
+	uint wtValveStateValRef[1] = { 4 };
+    bool wtValveStateOutput[1];
+
+    uint wtLevelInputValRef[1] = { 3};
+    real wtLevelInputValue[1] = {0.0};
+
+    //uint wtTest2InputValRef[1] = { 6 };
+    //int wtTest2InputValue[1] = {102};
+
+    wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
+
+    wtInstance.setReal(wtLevelInputValRef, 1, wtLevelInputValue);
+    
+    //wtInstance.setInteger(wtTest2InputValRef, 1, wtTest2InputValue);
+
+	wtInstance.exitInitializationMode();
+
+
+    //wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
+
+	real time = START_TIME;
+    // #############################
+    // Simulation Loop until END_TIME
+    // #############################
+    while(time + STEP_SIZE <= END_TIME)
+    {
+        // #############################
+        // Set the valve state on the tank
+        // #############################
+		if(  wtLevelInputValue[0] == 1.0 )
+		{
+			wtLevelInputValue[0] = 0.0;
+		}
+		else
+		{
+			wtLevelInputValue[0] = 1.0;
+		}
+
+        wtInstance.setReal(wtLevelInputValRef, 1, wtLevelInputValue);
+        //wtInstance.setInteger(wtTest2InputValRef, 1, wtTest2InputValue);
+
+        // #############################
+        // Step the tank
+        // #############################
+        wtInstance.doStep(time, STEP_SIZE, true);
+
+        // #############################
+        // Get the level from the tank
+        // #############################
+        wtInstance.getBoolean(wtValveStateValRef, 1, wtValveStateOutput);
+
+        // #############################
+        // Increase the time with STEP_SIZE
+        // #############################
+        time = time + STEP_SIZE;
+
+    }
+
+    wtInstance.terminate();
+
+    wtInstance = fi.returnFmuComponentValue(wtInstance);
+
+    tankcontroller.freeInstance(wtInstance);
+    unload(tankcontroller);
+
 
 }

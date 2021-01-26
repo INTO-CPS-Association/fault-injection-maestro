@@ -1,0 +1,20 @@
+<events>
+    <event id="1" timeStep="0.3">
+        <variable valRef="3" type="real" newVal="3.4242">
+        </variable>
+        <variable valRef="8" type="bool" newVal="false">
+        </variable>
+    </event>
+
+    <event id="2" timeStep="0.4">
+        <variable valRef="6" type="int" newVal="305">
+        </variable>
+        <variable valRef="7" type="string" newVal="abbeyRoad">
+        </variable>
+    </event>
+
+    <event id="3" timeStep="0.5">
+        <variable valRef="5" type="real" newVal="3.45">
+        </variable>
+    </event>
+</events>
