@@ -16,3 +16,8 @@ mvn test -DTest=${testName}
 .mabl file for simulation test
 
 SmallFaultInjectTest.mabl
+
+For simulating the watertank + controller:
+
+Run WaterTankTest 
+Events can be changed at faultInjectSpecificationWaterTank.xml

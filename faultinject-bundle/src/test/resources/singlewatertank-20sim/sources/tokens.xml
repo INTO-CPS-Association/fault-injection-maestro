@@ -1,0 +1,1881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tokens>
+	<token name="MODEL_NAME"><![CDATA[Watertank]]></token>
+	<token name="20SIM_DIR"><![CDATA[C:\Program Files (x86)\20-sim 4.5]]></token>
+	<token name="SUBMODEL_NAME"><![CDATA[SingleWatertank]]></token>
+	<token name="ALGLOOP_NAMES"><![CDATA[	NULL]]></token>
+	<token name="ALGLOOP_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="ALGLOOP_NAMES3"><![CDATA[]]></token>
+	<token name="ALGLOOP_UNITS"><![CDATA[]]></token>
+	<token name="ALIAS_EQUATIONS"><![CDATA[	/* tank\Node1\p1.p = tank\Tank\p.e; */
+	xx_V[13] = xx_V[3];
+
+	/* tank\level = tank\Tank\level; */
+	xx_V[23] = xx_V[4];
+
+	/* tank\p.phi = FlowSource\p.phi; */
+	xx_V[20] = xx_V[1];
+
+	/* tank\Node1\p2.p = tank\Tank\p.e; */
+	xx_V[14] = xx_V[3];
+
+	/* tank\Node1\p3.p = tank\Tank\p.e; */
+	xx_V[15] = xx_V[3];
+
+	/* tank\p.p = tank\Tank\p.e; */
+	xx_V[19] = xx_V[3];
+
+	/* tank\Node1\p2.phi = FlowSource\p.phi; */
+	xx_V[17] = xx_V[1];
+
+	/* tank\p1.p = tank\Tank\p.e; */
+	xx_V[21] = xx_V[3];
+
+	/* FlowSource\p.p = tank\Tank\p.e; */
+	xx_V[12] = xx_V[3];
+
+	/* Valve\powerIn.p = tank\Tank\p.e; */
+	xx_V[24] = xx_V[3];
+
+	/* Drain\p.e = Valve\powerOut.e; */
+	xx_V[11] = xx_V[7];
+
+	/* Valve\powerOut.f = Drain\p.f; */
+	xx_V[25] = xx_V[0];
+
+	/* tank\p1.phi = Valve\powerIn.phi; */
+	xx_V[22] = xx_V[6];
+
+	/* tank\Node1\p3.phi = Valve\powerIn.phi; */
+	xx_V[18] = xx_V[6];
+
+	/* tank\Node1\p1.phi = tank\Tank\p.f; */
+	xx_V[16] = xx_R[0];
+]]></token>
+	<token name="ALIAS_MATRIX_NAMES"><![CDATA[	NULL
+]]></token>
+	<token name="ALIAS_MATRIX_NAMES2"><![CDATA[	NULL
+]]></token>
+	<token name="ALIAS_MATRIX_NAMES3"><![CDATA[
+]]></token>
+	<token name="ALIAS_MATRIX_UNITS"><![CDATA[]]></token>
+	<token name="ALIAS_VARIABLE_INDICES"><![CDATA[	0,	0,	1,	1,	3,	3,	3,	3,	3,	3,	3,
+	4,	6,	6,	7
+]]></token>
+	<token name="ALIAS_VARIABLE_NAMES"><![CDATA[	"Valve\\powerOut.f",
+	"tank\\Node1\\p1.phi",
+	"tank\\p.phi",
+	"tank\\Node1\\p2.phi",
+	"FlowSource\\p.p",
+	"tank\\Node1\\p1.p",
+	"tank\\Node1\\p2.p",
+	"tank\\Node1\\p3.p",
+	"tank\\p.p",
+	"tank\\p1.p",
+	"Valve\\powerIn.p",
+	"tank\\level",
+	"tank\\Node1\\p3.phi",
+	"tank\\p1.phi",
+	"Drain\\p.e"
+]]></token>
+	<token name="ALIAS_VARIABLE_NAMES2"><![CDATA[	"Valve_powerOut.f",
+	"tank_Node1_p1.phi",
+	"tank_p.phi",
+	"tank_Node1_p2.phi",
+	"FlowSource_p.p",
+	"tank_Node1_p1.p",
+	"tank_Node1_p2.p",
+	"tank_Node1_p3.p",
+	"tank_p.p",
+	"tank_p1.p",
+	"Valve_powerIn.p",
+	"tank_level",
+	"tank_Node1_p3.phi",
+	"tank_p1.phi",
+	"Drain_p.e"
+]]></token>
+	<token name="ALIAS_VARIABLE_NAMES3"><![CDATA[Valve\powerOut.f
+tank\Node1\p1.phi
+tank\p.phi
+tank\Node1\p2.phi
+FlowSource\p.p
+tank\Node1\p1.p
+tank\Node1\p2.p
+tank\Node1\p3.p
+tank\p.p
+tank\p1.p
+Valve\powerIn.p
+tank\level
+tank\Node1\p3.phi
+tank\p1.phi
+Drain\p.e
+]]></token>
+	<token name="ALIAS_VARIABLE_UNITS"><![CDATA[]]></token>
+	<token name="COMPANY_NAME"><![CDATA[20-sim 4.5 Professional Single]]></token>
+	<token name="CONSTANT_NAMES"><![CDATA[	NULL]]></token>
+	<token name="CONSTANT_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="CONSTANT_NAMES3"><![CDATA[]]></token>
+	<token name="CONSTANT_UNITS"><![CDATA[]]></token>
+	<token name="CONSTANT_VALUES"><![CDATA[]]></token>
+	<token name="CONSTRAINT_NAMES"><![CDATA[	NULL]]></token>
+	<token name="CONSTRAINT_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="CONSTRAINT_NAMES3"><![CDATA[]]></token>
+	<token name="CONSTRAINT_UNITS"><![CDATA[]]></token>
+	<token name="DEPRATE_NAMES"><![CDATA[	NULL]]></token>
+	<token name="DEPRATE_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="DEPRATE_NAMES3"><![CDATA[]]></token>
+	<token name="DEPRATE_UNITS"><![CDATA[]]></token>
+	<token name="DEPSTATE_NAMES"><![CDATA[	NULL]]></token>
+	<token name="DEPSTATE_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="DEPSTATE_NAMES3"><![CDATA[]]></token>
+	<token name="DEPSTATE_UNITS"><![CDATA[]]></token>
+	<token name="DIRECT_FEEDTHROUGH"><![CDATA[XXFALSE]]></token>
+	<token name="DYNAMIC_EQUATIONS"><![CDATA[	/* tank\Tank\p.e = (tank\Tank\gravity * tank\Tank\volume) * tank\Tank\liquid_density; */
+	xx_V[3] = (xx_P[3] * xx_s[0]) * xx_P[4];
+
+	/* tank\Tank\level = tank\Tank\volume / tank\Tank\area; */
+	xx_V[4] = xx_s[0] / xx_P[2];
+
+	/* Valve\valvecontrol = valvecontrol; */
+	xx_V[5] = xx_V[9];
+
+	/* level = tank\Tank\level; */
+	xx_V[10] = xx_V[4];
+
+	/* Valve\powerOut.e = if (Valve\valvecontrol <> 0.0)... ; */
+	xx_V[7] = (xx_V[5] != 0.0) ? 
+		/* tank\Tank\p.e */
+		xx_V[3]
+	:
+		/* 0 */
+		0.0
+	;
+
+	/* Drain\p.f = Valve\powerOut.e / Drain\r; */
+	xx_V[0] = xx_V[7] / xx_P[0];
+
+	/* Valve\powerIn.phi = if (Valve\valvecontrol <> 0.0)... ; */
+	xx_V[6] = (xx_V[5] != 0.0) ? 
+		/* Drain\p.f */
+		xx_V[0]
+	:
+		/* 0 */
+		0.0
+	;
+
+	/* Valve\outflow = if Drain\p.f < 0... ; */
+	xx_R[1] = (xx_V[0] < 0.0) ? 
+		/* 0 */
+		0.0
+	:
+		/* 0.1 * abs (Drain\p.f) */
+		(0.1 * XXAbsolute (xx_V[0]))
+	;
+
+	/* tank\Tank\p.f = FlowSource\p.phi - Valve\powerIn.phi; */
+	xx_R[0] = xx_V[1] - xx_V[6];
+]]></token>
+	<token name="EXPERIMENT_NAME"><![CDATA[Watertank]]></token>
+	<token name="EXPORT_NAMES"><![CDATA[	NULL]]></token>
+	<token name="EXPORT_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="EXPORT_NAMES3"><![CDATA[]]></token>
+	<token name="EXPORT_UNITS"><![CDATA[]]></token>
+	<token name="FAVORITE_PARAMETER_NAMES"><![CDATA[	NULL]]></token>
+	<token name="FAVORITE_PARAMETER_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="FAVORITE_PARAMETER_NAMES3"><![CDATA[]]></token>
+	<token name="FAVORITE_PARAMETER_UNITS"><![CDATA[]]></token>
+	<token name="FAVORITE_PARS_EQUATIONS"><![CDATA[]]></token>
+	<token name="FAVORITE_VARIABLE_NAMES"><![CDATA[	NULL]]></token>
+	<token name="FAVORITE_VARIABLE_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="FAVORITE_VARIABLE_NAMES3"><![CDATA[]]></token>
+	<token name="FAVORITE_VARIABLE_UNITS"><![CDATA[]]></token>
+	<token name="FAVORITE_VARS_EQUATIONS"><![CDATA[]]></token>
+	<token name="FILE_NAME"><![CDATA[]]></token>
+	<token name="FINAL_EQUATIONS"><![CDATA[]]></token>
+	<token name="FINISH_TIME"><![CDATA[16.0]]></token>
+	<token name="GENERATION_BUILD"><![CDATA[4.5.1.5561]]></token>
+	<token name="GENERATION_DATE"><![CDATA[September 17, 2015]]></token>
+	<token name="GENERATION_DIR"><![CDATA[c:\temp\SingleWatertank]]></token>
+	<token name="GENERATION_TIME"><![CDATA[7:49:50 pm]]></token>
+	<token name="IMPORT_NAMES"><![CDATA[	NULL]]></token>
+	<token name="IMPORT_NAMES2"><![CDATA[	NULL]]></token>
+	<token name="IMPORT_NAMES3"><![CDATA[]]></token>
+	<token name="IMPORT_UNITS"><![CDATA[]]></token>
+	<token name="INITIALIZE_ALIAS_MATRICES"><![CDATA[]]></token>
+	<token name="INITIALIZE_CONSTANTS"><![CDATA[]]></token>
+	<token name="INITIALIZE_FAVORITE_PARS"><![CDATA[]]></token>
+	<token name="INITIALIZE_FAVORITE_VARS"><![CDATA[]]></token>
+	<token name="INITIALIZE_INITIAL_VALUES"><![CDATA[	xx_I[0] = 0.0;		/* tank\Tank\volume_initial */
+	xx_I[1] = 0.0;		/* Valve\outflow_int_initial */
+]]></token>
+	<token name="INITIALIZE_INPUTS"><![CDATA[	u[0] = 0.0;		/* valvecontrol */
+]]></token>
+	<token name="INITIALIZE_MATRICES"><![CDATA[]]></token>
+	<token name="INITIALIZE_OUTPUTS"><![CDATA[	y[0] = 0.0;		/* level */
+]]></token>
+	<token name="INITIALIZE_PARAMETERS"><![CDATA[	xx_P[0] = 9.0;		/* Drain\r */
+	xx_P[1] = 1.0;		/* FlowSource\phi {m3/s} */
+	xx_P[2] = 1.0;		/* tank\Tank\area */
+	xx_P[3] = 9.81;		/* tank\Tank\gravity */
+	xx_P[4] = 1.0;		/* tank\Tank\liquid_density */
+]]></token>
+	<token name="INITIALIZE_STATES"><![CDATA[	xx_s[0] = xx_I[0];		/* tank\Tank\volume */
+	xx_s[1] = xx_I[1];		/* Valve\outflow_int */
+]]></token>
+	<token name="INITIAL_EQUATIONS"><![CDATA[]]></token>
+	<token name="INITIAL_VALUE_NAMES"><![CDATA[	"tank\\Tank\\volume_initial",
+	"Valve\\outflow_int_initial"
+]]></token>
+	<token name="INITIAL_VALUE_NAMES2"><![CDATA[	"tank_Tank_volume_initial",
+	"Valve_outflow_int_initial"
+]]></token>
+	<token name="INITIAL_VALUE_NAMES3"><![CDATA[tank\Tank\volume_initial
+Valve\outflow_int_initial
+]]></token>
+	<token name="INITIAL_VALUE_UNITS"><![CDATA[
+
+]]></token>
+	<token name="INITIAL_VALUE_VALUES"><![CDATA[0.0
+0.0
+]]></token>
+	<token name="INPUT_EQUATIONS"><![CDATA[]]></token>
+	<token name="INPUT_NAMES"><![CDATA[	"valvecontrol"
+]]></token>
+	<token name="INPUT_NAMES2"><![CDATA[	"valvecontrol"
+]]></token>
+	<token name="INPUT_NAMES3"><![CDATA[valvecontrol
+]]></token>
+	<token name="INPUT_TO_VARIABLE_EQUATIONS"><![CDATA[	xx_V[9] = u[0];		/* valvecontrol */
+]]></token>
+	<token name="INPUT_UNITS"><![CDATA[
+]]></token>
+	<token name="INTEGRATION_METHOD_NAME"><![CDATA[RungeKutta4]]></token>
+	<token name="MATRIX_NAMES"><![CDATA[	NULL
+]]></token>
+	<token name="MATRIX_NAMES2"><![CDATA[	NULL
+]]></token>
+	<token name="MATRIX_NAMES3"><![CDATA[
+]]></token>
+	<token name="MATRIX_UNITS"><![CDATA[]]></token>
+	<token name="MODEL_CONFIGURATION"><![CDATA[<modelConfiguration>
+	<schemeVersion>
+		<major>1</major>
+		<minor>0</minor>
+		<revision>0</revision>
+		<patch>0</patch>
+	</schemeVersion>
+	<general>
+		<name>SingleWatertank</name>
+		<description>&lt;Information&gt;&lt;Description&gt;&lt;Version&gt;4.5&lt;/Version&gt;&lt;IsMainModel&gt;1&lt;/IsMainModel&gt;&lt;KeepParameterValues&gt;False&lt;/KeepParameterValues&gt;&lt;AllowLibraryUpdate&gt;True&lt;/AllowLibraryUpdate&gt;&lt;Configuration&gt;&lt;struct&gt;&lt;member&gt;&lt;name&gt;DocumentationMask&lt;/name&gt;&lt;value&gt;&lt;struct&gt;&lt;/struct&gt;&lt;/value&gt;&lt;/member&gt;&lt;/struct&gt;&lt;/Configuration&gt;&lt;/Description&gt;&lt;/Information&gt;</description>
+		<creationDate>2015-09-17T19:49:49.0Z</creationDate>
+		<modelDir></modelDir>
+		<originalModel>C:\data\destecs\destecs_chess_svn\WP3\co-sim_models\destecs_projects\WatertankPeriodic\model_ct\Watertank.emx</originalModel>
+		<additional>INTO-CPS, 20-sim 4.5 Professional Single</additional>
+		<creator>
+			<name>20-sim</name>
+			<version>
+				<major>4</major>
+				<minor>5</minor>
+				<revision>1</revision>
+				<patch>5561</patch>
+			</version>
+		</creator>
+	</general>
+	<run>
+		<startTime>0.0</startTime>
+		<finishTime>16.0</finishTime>
+		<stepSize>0.01</stepSize>
+	</run>
+	<modelVariables count="37">
+		<modelVariable id="1">
+			<name>Drain\p.e</name>
+			<aliasOf>Valve\powerOut.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>7</index>
+			</storage>
+			<iconIndex>2</iconIndex>
+		</modelVariable>
+		<modelVariable id="2">
+			<name>Drain\p.f</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>2</iconIndex>
+		</modelVariable>
+		<modelVariable id="3">
+			<name>Drain\r</name>
+			<kind>parameter</kind>
+			<type>real</type>
+			<value>9.0</value>
+			<description></description>
+			<storage>
+				<name>xx_P</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>2</iconIndex>
+		</modelVariable>
+		<modelVariable id="4">
+			<name>FlowSource\p.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>4</iconIndex>
+		</modelVariable>
+		<modelVariable id="5">
+			<name>FlowSource\p.phi</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>4</iconIndex>
+		</modelVariable>
+		<modelVariable id="6">
+			<name>FlowSource\phi</name>
+			<kind>parameter</kind>
+			<type>real</type>
+			<value>1.0</value>
+			<description>flow rate</description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_P</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>4</iconIndex>
+		</modelVariable>
+		<modelVariable id="7">
+			<name>FlowSource\inflow</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<storage>
+				<name>xx_V</name>
+				<index>2</index>
+			</storage>
+			<iconIndex>4</iconIndex>
+		</modelVariable>
+		<modelVariable id="8">
+			<name>tank\Node1\p1.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="9">
+			<name>tank\Node1\p2.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="10">
+			<name>tank\Node1\p3.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="11">
+			<name>tank\Node1\p1.phi</name>
+			<aliasOf>tank\Tank\p.f</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_R</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="12">
+			<name>tank\Node1\p2.phi</name>
+			<aliasOf>FlowSource\p.phi</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="13">
+			<name>tank\Node1\p3.phi</name>
+			<aliasOf>Valve\powerIn.phi</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>6</index>
+			</storage>
+			<iconIndex>6</iconIndex>
+		</modelVariable>
+		<modelVariable id="14">
+			<name>tank\Tank\p.e</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="15">
+			<name>tank\Tank\level</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>4</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="16">
+			<name>tank\Tank\area</name>
+			<kind>parameter</kind>
+			<type>real</type>
+			<value>1.0</value>
+			<storage>
+				<name>xx_P</name>
+				<index>2</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="17">
+			<name>tank\Tank\gravity</name>
+			<kind>parameter</kind>
+			<type>real</type>
+			<value>9.81</value>
+			<storage>
+				<name>xx_P</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="18">
+			<name>tank\Tank\liquid_density</name>
+			<kind>parameter</kind>
+			<type>real</type>
+			<value>1.0</value>
+			<storage>
+				<name>xx_P</name>
+				<index>4</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="19">
+			<name>tank\p.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>5</iconIndex>
+		</modelVariable>
+		<modelVariable id="20">
+			<name>tank\p.phi</name>
+			<aliasOf>FlowSource\p.phi</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>5</iconIndex>
+		</modelVariable>
+		<modelVariable id="21">
+			<name>tank\p1.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>5</iconIndex>
+		</modelVariable>
+		<modelVariable id="22">
+			<name>tank\p1.phi</name>
+			<aliasOf>Valve\powerIn.phi</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>6</index>
+			</storage>
+			<iconIndex>5</iconIndex>
+		</modelVariable>
+		<modelVariable id="23">
+			<name>tank\level</name>
+			<aliasOf>tank\Tank\level</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>4</index>
+			</storage>
+			<iconIndex>5</iconIndex>
+		</modelVariable>
+		<modelVariable id="24">
+			<name>Valve\valvecontrol</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>5</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="25">
+			<name>Valve\powerIn.p</name>
+			<aliasOf>tank\Tank\p.e</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>Pa</name>
+				</unit>
+				<quantity>pressure</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>3</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="26">
+			<name>Valve\powerIn.phi</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_V</name>
+				<index>6</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="27">
+			<name>Valve\powerOut.e</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>7</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="28">
+			<name>Valve\powerOut.f</name>
+			<aliasOf>Drain\p.f</aliasOf>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="29">
+			<name>Valve\puddle</name>
+			<kind>variable</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<storage>
+				<name>xx_V</name>
+				<index>8</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="30">
+			<name>valvecontrol</name>
+			<kind>input</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>9</index>
+			</storage>
+			<iconIndex>1</iconIndex>
+		</modelVariable>
+		<modelVariable id="31">
+			<name>level</name>
+			<kind>output</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<storage>
+				<name>xx_V</name>
+				<index>10</index>
+			</storage>
+			<iconIndex>1</iconIndex>
+		</modelVariable>
+		<modelVariable id="32">
+			<name>tank\Tank\p.f</name>
+			<kind>rate</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<pair>tank\Tank\volume</pair>
+			<physical>
+				<unit>
+					<name>m3/s</name>
+				</unit>
+				<quantity>volume flow</quantity>
+			</physical>
+			<storage>
+				<name>xx_R</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="33">
+			<name>tank\Tank\volume</name>
+			<kind>state</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<pair>tank\Tank\p.f</pair>
+			<storage>
+				<name>xx_s</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="34">
+			<name>tank\Tank\volume_initial</name>
+			<kind>initial value</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<pair>tank\Tank\volume</pair>
+			<storage>
+				<name>xx_I</name>
+				<index>0</index>
+			</storage>
+			<iconIndex>7</iconIndex>
+		</modelVariable>
+		<modelVariable id="35">
+			<name>Valve\outflow</name>
+			<kind>rate</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<description></description>
+			<pair>Valve\outflow_int</pair>
+			<storage>
+				<name>xx_R</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+		<modelVariable id="36">
+			<name>Valve\outflow_int</name>
+			<kind>state</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<pair>Valve\outflow</pair>
+			<storage>
+				<name>xx_s</name>
+				<index>1</index>
+			</storage>
+		</modelVariable>
+		<modelVariable id="37">
+			<name>Valve\outflow_int_initial</name>
+			<kind>initial value</kind>
+			<type>real</type>
+			<value>0.0</value>
+			<pair>Valve\outflow_int</pair>
+			<storage>
+				<name>xx_I</name>
+				<index>1</index>
+			</storage>
+			<iconIndex>8</iconIndex>
+		</modelVariable>
+	</modelVariables>
+	<storage>
+		<name>ivc_Watertank</name>
+		<size>176</size>
+		<tables>
+			<table>
+				<name>xx_s</name>
+				<size>16</size>
+				<kind>real</kind>
+				<kindSize>8</kindSize>
+				<count>2</count>
+			</table>
+			<table>
+				<name>xx_V</name>
+				<size>88</size>
+				<kind>real</kind>
+				<kindSize>8</kindSize>
+				<count>11</count>
+			</table>
+			<table>
+				<name>xx_R</name>
+				<size>16</size>
+				<kind>real</kind>
+				<kindSize>8</kindSize>
+				<count>2</count>
+			</table>
+			<table>
+				<name>xx_I</name>
+				<size>16</size>
+				<kind>real</kind>
+				<kindSize>8</kindSize>
+				<count>2</count>
+			</table>
+			<table>
+				<name>xx_P</name>
+				<size>40</size>
+				<kind>real</kind>
+				<kindSize>8</kindSize>
+				<count>5</count>
+			</table>
+		</tables>
+	</storage>
+	<icons>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b000000c149444154388ded93314bc4501084bf79e4e24b931f25e2ffafac4450ac12922e3190bc1d1bc9dd411a49276eb7cbceec30c3cab63951e90cf88f105400ebba22e9d760db54e338d2751dcbb2701b484ae98ed43611b1f792c839a3beefdd340dd334ed0b2989799e01b16d1b36d4754dce0f60e39f036ddb5249222288885d81106f2fafbc7f7e202a72254a9d797a7e246205202228a51c2b9044d90acbf2c5e5529324b628e49c01635f156818061f79208994d2ddecd003db3e9382fe7f816f24fe7fc97adb34100000000049454e44ae426082</icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b000000bc49444154388dedd3c109c4201005d03fa2e49a2252585a4a0729c21aac2247c11010e2513dcc1e16dc044421b9ae37e5fb9c01879899f162895ec05afb1cc839635916e49c9f57d0ebb00b08d18e7481ee037fe00e78ef1142685e0821c07b5f07b4d630c63401630cb4d67520c688945213482921c6580788084aa9b29752420801296539534a81887e992bc0cc70ce61df7700df59388e03d6da023be76edf9baee3bc6d1bd675c5300c25709e27c671bcb539cf33a66902007c00e50c57e74e6285ba0000000049454e44ae426082</icon>
+		<icon></icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b0000016f49444154388dad93c18a1a411086bf9e76c689a2202e44e24508ebd1e7cba324ec790f1bc80be4924b2ea2776121088364b2ab8c833abb6ed9d395434896c91a36c1fcc7eafaabf9bfae36aaaa9ca0e014f37f19507baea1280a9c73341a0dc2307c726efec4404448d3942008b0d62222b45a2dbadd6eb5518fa82c4b4d92444b7f5fa9afd76bcdb2ac523b1a21cf735ec411b78b9865066a41f9c659e70004743a9da70ce6f339c618c23064b95c72fe7ac0e74f701741ff155c5e7de4c3fb37bc7b7b81b516e71c711c3f32188fc78c4623eaf53a5996e1cb92c0bfa47506f510aeafbf7073f3957ebfcf6030f801d098470693c94445445555bdf79a24893e4851c9bbd96c34cff32a83c3e140ad56238e63bcf788085114d1ebf548d31411414468369bb4dbed4a7e0066b399eef77b5555dd6eb73a9d4e2b37ec763b5dad56ea9c3bf6606a168b85fecc531405aaca70387c6ebfaa8be4bdc77b8f31066bed5f9b7f0df827c76f3af9337d0788942ce9492a11fe0000000049454e44ae426082</icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b0000013949444154388dad93416ec2301444df0f414048a5348503b0cbae07e0305c89f3c039da13202494260114c03826ee8296928416161de92f3c7f3c1e7ddb62adb5dc4159969c4e27daed76a3e7dcdb0ce0380e699adeeed589c3e1c07abdae70711cb35aad2a9cd61aa5146edd20cb3292242108820b272288484597e739bbddae99a0d3e9e2fbad0ae779965eaf3aaa7e5f705de79c4029c5743a258a2246a3118b85c3f1789dca218e5d8cf9e1361b180e391b880865592222f87e8bc9c49224d7e73d030175cce780ad41a90f3b18bc59b0772ab5b3d9c23666a07581f3d0e582c883efe02ffcbf81b52579debaa5ada18d31b6f9905cd7633c7e27cbf617ce1883d6059ed7bb52ee08c31172fb3329a0b8acb6db98e5724914bd5e6904e837139cd1fdaaef041a63f6c05343f98b411561f882d6c5cdde2763489b8acb70acc60000000049454e44ae426082</icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b0000007f49444154388dedd3310a42410c04d01711fe113cc62ff506b69ecad263d8db585a5a7b026b4f601b1b05597765e17762609a646648061299694acd26a97fc360fe6d18112336b864e6a14acacc2ab043bee18ce183d710af0bf10bdb92dbca60d5db6f19dcbafb8d13065c8bf5ef18bb32789a2cb0c709472c6bbcf8ff82070385936d01c6e8540000000049454e44ae426082</icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b0000009649444154388dd553c10d833010f3b1093f4639f609db843dfa0b43f4c1071126318fd236ba844a80fac0d27d4e3e3bb21521495c4075e5f89f02033a1148326dbf94a9b4889e0a10a57121a31b8148af2fb2faf85d07b78928d3752ef076574fc3637060e101466073526bf303c5101fe37cb285ba8102c07382cd7ce8769a3816629e435e63423e51e34785ce1cef052be4dd3fd30ae6ee7410d322e6550000000049454e44ae426082</icon>
+		<icon>89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff6100000006624b474400ff00ff00ffa0bda793000000097048597300000ec400000ec401952b0e1b000000f949444154388d9d93318a86301085df6c14410b4110b5510fa087f7149e40ec0403468468636113cd5f6cf91bcdeeb4df9b17de4c86b4d61a2fa59482e338b7ece7ad1900c67134b25703a5148410ff37701c07aeeb9af95333e71c42080cc3002242511448d3d4dee03c4fc4718cbaaec139c7755d5f9ac708799e833106dff7e1791eb22cb337d05a8331862008d0751da22802117de96e234829d1f73d80df2d2ccb82aaaa6e1f22d347d25a838820a5c4344d28cb126118da4720225cd7857ddf51d735b66dbbd53d0e91730ea5148ee3c0711c98e7f96f064484755dd1340df67dbf1d22b445b56d6b6456b7a0943272ab5b4892c4c83f58e0a4fc1040e4ff0000000049454e44ae426082</icon>
+	</icons>
+</modelConfiguration>]]></token>
+	<token name="MODEL_DESCRIPTION"><![CDATA[<Information><Description><Version>4.5</Version><IsMainModel>1</IsMainModel><KeepParameterValues>False</KeepParameterValues><AllowLibraryUpdate>True</AllowLibraryUpdate><Configuration><struct><member><name>DocumentationMask</name><value><struct></struct></value></member></struct></Configuration></Description></Information>]]></token>
+	<token name="MODEL_FILE"><![CDATA[C:\data\destecs\destecs_chess_svn\WP3\co-sim_models\destecs_projects\WatertankPeriodic\model_ct\Watertank.emx]]></token>
+	<token name="MODEL_FUNCTION_NAME"><![CDATA[Watertank]]></token>
+	<token name="MODEL_IS_DISCRETE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ABSFUNCTION"><![CDATA[2]]></token>
+	<token name="NUMBEROF_ADJOINTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ALGEBRAICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ALGLOOPIN"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ALGLOOPOUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_AND"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ANTISYMMETRICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCCOSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCCOSHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCSINFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCSINHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCTANFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ARCTANHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ASSIGNMENT"><![CDATA[15]]></token>
+	<token name="NUMBEROF_ATAN2FUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BACKDIVISION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITAND"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITCLEAR"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITCMP"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITGET"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITOR"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITSET"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITSHIFT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITSWAPBYTES"><![CDATA[0]]></token>
+	<token name="NUMBEROF_BITXOR"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CASESTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CEILFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CODESTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_COLUMNSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CONDITIONAL"><![CDATA[4]]></token>
+	<token name="NUMBEROF_CONSTANT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CONSTRAINTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CONSTRAINTIN"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CONSTRAINTOUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_COSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_COSHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_CROSSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DATAFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DDTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DEFAULTCASESTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DELAYFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DEPENDENTRATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DEPENDENTSTATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DEPENDENTSTATERATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DERIVATIVEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DETFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DIAGFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DISCRETERATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DISCRETESTATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DISCRETESTATERATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DISCRETETIME"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DISCRETETIMENODEWITHOUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DIV"><![CDATA[2]]></token>
+	<token name="NUMBEROF_DIVISION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DLLDYNAMICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DLLFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_DOMATLABSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EFFORTCAUSALITYSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ELEMENTDIV"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ELEMENTMUL"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ELEMENTPOWER"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ENERGYFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EQUAL"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EQUALSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EQUATION"><![CDATA[12]]></token>
+	<token name="NUMBEROF_EVENTDOWNFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EVENTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EVENTUPFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXP10FUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXP2FUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDCAUSALITYFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDCOLLECTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDDIRECTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDFIRSTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDMULFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPANDEDSUMFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXPFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXTERNALINPUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EXTERNALOUTPUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_EYEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FALSE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FINALSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FINISHTIME"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FLOORFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FLOWCAUSALITYSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FORSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FREQUENCYEVENTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_FROMMATLABSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_GAUSSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_GREATER"><![CDATA[0]]></token>
+	<token name="NUMBEROF_GREATEREQUAL"><![CDATA[0]]></token>
+	<token name="NUMBEROF_HOLDFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_HOMOGENEOUSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_IFSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_IMPULSEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INITIALFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INITIALSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INITIALVALUE"><![CDATA[2]]></token>
+	<token name="NUMBEROF_INNERFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INVERSEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_INVERSEHOMOGENEOUSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_JACOBIAN"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LESS"><![CDATA[2]]></token>
+	<token name="NUMBEROF_LESSEQUAL"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LIMINTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LIMITFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LINEARSOLVEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LITERAL"><![CDATA[11]]></token>
+	<token name="NUMBEROF_LOG10FUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LOG2FUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_LOGFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MAJOR"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MAJORADJOINTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MAXFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MIN"><![CDATA[1]]></token>
+	<token name="NUMBEROF_MINFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MODELVARIABLES"><![CDATA[37]]></token>
+	<token name="NUMBEROF_MODULO"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MUL"><![CDATA[5]]></token>
+	<token name="NUMBEROF_MULTIPLYCOLUMNSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MULTIPLYHOMOGENEOUSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_MULTIPLYROWSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_NEXTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_NONLINEARFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_NORMFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_NORMINFFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_NOTEQUAL"><![CDATA[2]]></token>
+	<token name="NUMBEROF_OR"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PARAMETER"><![CDATA[5]]></token>
+	<token name="NUMBEROF_PLUS"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PORT"><![CDATA[15]]></token>
+	<token name="NUMBEROF_PORTVARIABLE"><![CDATA[24]]></token>
+	<token name="NUMBEROF_POWER"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PREFIXMIN"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PREFIXNOT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PREFIXPLUS"><![CDATA[0]]></token>
+	<token name="NUMBEROF_PREVIOUSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RAMPFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RANDOM"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RANDOMFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RATE"><![CDATA[2]]></token>
+	<token name="NUMBEROF_REPEATSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RESETFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RESINTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_RETURNSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ROUNDFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_ROWSFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SAMPLEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SAMPLETIME"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SIGNFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SINFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SINHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SKEWFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SQRFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SQRTFUNCTION"><![CDATA[1]]></token>
+	<token name="NUMBEROF_STARTTIME"><![CDATA[0]]></token>
+	<token name="NUMBEROF_STATE"><![CDATA[2]]></token>
+	<token name="NUMBEROF_STATERATE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_STEPFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_STEPSIZE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_STOPSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SUMFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SWITCHSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SYMMETRICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_SYSTEMVARIABLE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TABLEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TANFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TANHYPERBOLICFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TDELAYFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TILDEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TIME"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TIMEEVENTFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TIMENODEWITHOUT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TIMETRIGGERFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TOMATLABSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRACEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRANSPOSEFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRIGGERDOWNFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRIGGERFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRIGGERUPFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRUE"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TRUNCFUNCTION"><![CDATA[0]]></token>
+	<token name="NUMBEROF_TYPEPARAMETER"><![CDATA[0]]></token>
+	<token name="NUMBEROF_UNNAMED"><![CDATA[1]]></token>
+	<token name="NUMBEROF_VARIABLE"><![CDATA[2]]></token>
+	<token name="NUMBEROF_WARNSTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_WHILESTATEMENT"><![CDATA[0]]></token>
+	<token name="NUMBEROF_XOR"><![CDATA[0]]></token>
+	<token name="NUMBER_ALGLOOPS"><![CDATA[0]]></token>
+	<token name="NUMBER_ALIAS_MATRICES"><![CDATA[0]]></token>
+	<token name="NUMBER_ALIAS_VARIABLES"><![CDATA[15]]></token>
+	<token name="NUMBER_CONSTANTS"><![CDATA[0]]></token>
+	<token name="NUMBER_CONSTRAINTS"><![CDATA[0]]></token>
+	<token name="NUMBER_DEPSTATES"><![CDATA[0]]></token>
+	<token name="NUMBER_EXPORTS"><![CDATA[0]]></token>
+	<token name="NUMBER_FAVORITE_PARAMETERS"><![CDATA[0]]></token>
+	<token name="NUMBER_FAVORITE_VARIABLES"><![CDATA[0]]></token>
+	<token name="NUMBER_IMPORTS"><![CDATA[0]]></token>
+	<token name="NUMBER_INITIAL_VALUES"><![CDATA[2]]></token>
+	<token name="NUMBER_INPUTS"><![CDATA[1]]></token>
+	<token name="NUMBER_MATRICES"><![CDATA[0]]></token>
+	<token name="NUMBER_OUTPUTS"><![CDATA[1]]></token>
+	<token name="NUMBER_PARAMETERS"><![CDATA[5]]></token>
+	<token name="NUMBER_STATES"><![CDATA[2]]></token>
+	<token name="NUMBER_UNNAMED"><![CDATA[0]]></token>
+	<token name="NUMBER_VARIABLES"><![CDATA[11]]></token>
+	<token name="OUTPUT2_EQUATIONS"><![CDATA[	/* level = tank\Tank\volume / tank\Tank\area; */
+	xx_V[10] = xx_s[0] / xx_P[2];
+]]></token>
+	<token name="OUTPUT_EQUATIONS"><![CDATA[	/* Valve\puddle = 8 * sqrt (Valve\outflow_int); */
+	xx_V[8] = 8.0 * sqrt (xx_s[1]);
+]]></token>
+	<token name="OUTPUT_NAMES"><![CDATA[	"level"
+]]></token>
+	<token name="OUTPUT_NAMES2"><![CDATA[	"level"
+]]></token>
+	<token name="OUTPUT_NAMES3"><![CDATA[level
+]]></token>
+	<token name="OUTPUT_UNITS"><![CDATA[
+]]></token>
+	<token name="PARAMETER_NAMES"><![CDATA[	"Drain\\r",
+	"FlowSource\\phi",
+	"tank\\Tank\\area",
+	"tank\\Tank\\gravity",
+	"tank\\Tank\\liquid_density"
+]]></token>
+	<token name="PARAMETER_NAMES2"><![CDATA[	"Drain_r",
+	"FlowSource_phi",
+	"tank_Tank_area",
+	"tank_Tank_gravity",
+	"tank_Tank_liquid_density"
+]]></token>
+	<token name="PARAMETER_NAMES3"><![CDATA[Drain\r
+FlowSource\phi
+tank\Tank\area
+tank\Tank\gravity
+tank\Tank\liquid_density
+]]></token>
+	<token name="PARAMETER_UNITS"><![CDATA[
+m3/s
+
+
+
+]]></token>
+	<token name="PARAMETER_VALUES"><![CDATA[9.0
+1.0
+1.0
+9.81
+1.0
+]]></token>
+	<token name="RATE_NAMES"><![CDATA[	"tank\\Tank\\p.f",
+	"Valve\\outflow"
+]]></token>
+	<token name="RATE_NAMES2"><![CDATA[	"tank_Tank_p.f",
+	"Valve_outflow"
+]]></token>
+	<token name="RATE_NAMES3"><![CDATA[tank\Tank\p.f
+Valve\outflow
+]]></token>
+	<token name="RATE_UNITS"><![CDATA[m3/s
+
+]]></token>
+	<token name="SIMULINK_MODEL"><![CDATA[Model {
+  Name			  "Watertank_"
+  System {
+    Name		    "Watertank_"
+    Open		    on
+    Block {
+      BlockType		      SubSystem
+      Name		      "SubSystem"
+      Ports		      [1, 1]
+      Position		      [100, 100, 300, 150]
+      ShowPortLabels	      on
+	  MaskType		      "20-sim 4.5 S-Function block"
+	  MaskDescription	      "This block is generated by the 20-sim Matlab Code Generator. 
+
+* look under the mask to get information on the ports
+* press Help for more detailed information
+* the parameters of this block are:
+
+"
+	  MaskHelp	      "This block is generated by the 20-sim Matlab Code Generator<br>
+The block parameters are:<br><blockquote></blockquote>
+Generated at:<br>
+<blockquote><b>date:  </b>September 17, 2015<br>
+<b>time:  </b>7:49:50 pm<br></blockquote>
+From the following 20-sim model:<br>
+<blockquote><b>submodel:  </b>SingleWatertank<br>
+<b>model:  </b>Watertank<br>
+<b>file:  </b>C:\\data\\destecs\\destecs_chess_svn\\WP3\\co-sim_models\\destecs_projects\\WatertankPeriodic\\model_ct\\Watertank.emx<br>
+<b>experiment:  </b>C:\\data\\destecs\\destecs_chess_svn\\WP3\\co-sim_models\\destecs_projects\\WatertankPeriodic\\model_ct\\Watertank.emx<br></blockquote>
+Using the following 20-sim license:<br>
+<blockquote><b>user:  </b>INTO-CPS<br>
+<b>from:  </b>20-sim 4.5 Professional Single<br>
+<b>build: </b>4.5.1.5561<br></blockquote>"
+	  MaskPromptString	      ""
+	  MaskVariables	      ";"
+	  MaskDisplay		  ""
+	  MaskIconFrame		  off
+	  MaskValueString	      ""
+      System {
+        Name			"SubSystem"
+        Location		[478, 83, 978, 384]
+        Block {
+              BlockType		  Inport
+		  Name			  "valvecontrol"
+		  Position		  [40, 20, 60, 40]
+		  Port			  "1"
+        }
+		Block {
+		  BlockType		  Mux
+		  Name			  "Mux"
+		  Ports			  [1, 1]
+		  Position		  [130, 20, 135, 40]
+		  Inputs		  "[1 ]"
+		  DisplayOption		  "bar"
+		}
+		Block {
+		  BlockType		  Demux
+		  Name			  "Demux"
+		  Ports			  [1, 1]
+		  Position		  [290, 20, 295, 40]
+		  Outputs		  "[1 ]"
+		  DisplayOption		  "bar"
+		  BusSelectionMode    off
+		}
+		Block {
+		  BlockType		  "S-Function"
+		  Name			  "S-Function"
+		  Ports			  [1, 1]
+		  Position		  [170, 10, 250, 50]
+		  FunctionName		  "Watertank"
+		  Parameters	      ""
+		}
+        Block {
+              BlockType		  Outport
+		  Name			  "level"
+		  Position		  [380, 20, 400, 40]
+		  Port			  "1"
+        }
+		Line {
+		  SrcBlock		  "valvecontrol"
+		  SrcPort		  1
+		  DstBlock		  "Mux"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Demux"
+		  SrcPort		  1
+		  DstBlock		  "level"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Mux"
+		  SrcPort		  1
+		  DstBlock		  "S-Function"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "S-Function"
+		  SrcPort		  1
+		  DstBlock		  "Demux"
+		  DstPort		  1
+		}
+      }
+    }
+  }
+}
+]]></token>
+	<token name="SIMULINK_SUBMODEL"><![CDATA[Model {
+  Name			  "SingleWatertank_"
+  System {
+    Name		    "SingleWatertank_"
+    Open		    on
+    Block {
+      BlockType		      SubSystem
+      Name		      "SingleWatertank"
+      Ports		      [1, 1]
+      Position		      [146, 184, 256, 216]
+
+      ShowPortLabels	      on
+	  MaskType		      "20-sim 4.5 S-Function block"
+	  MaskDescription	      "This block is generated by the 20-sim Matlab Code Generator. 
+
+* look under the mask to get information on the ports
+* press Help for more detailed information
+* the parameters of this block are:
+
+"
+	  MaskHelp	      "This block is generated by the 20-sim Matlab Code Generator<br>
+The block parameters are:<br><blockquote></blockquote>
+Generated at:<br>
+<blockquote><b>date:  </b>September 17, 2015<br>
+<b>time:  </b>7:49:50 pm<br></blockquote>
+From the following 20-sim model:<br>
+<blockquote><b>submodel:  </b>SingleWatertank<br>
+<b>model:  </b>Watertank<br>
+<b>file:  </b>C:\\data\\destecs\\destecs_chess_svn\\WP3\\co-sim_models\\destecs_projects\\WatertankPeriodic\\model_ct\\Watertank.emx<br>
+<b>experiment:  </b>C:\\data\\destecs\\destecs_chess_svn\\WP3\\co-sim_models\\destecs_projects\\WatertankPeriodic\\model_ct\\Watertank.emx<br></blockquote>
+Using the following 20-sim license:<br>
+<blockquote><b>user:  </b>INTO-CPS<br>
+<b>from:  </b>20-sim 4.5 Professional Single<br>
+<b>build: </b>4.5.1.5561<br></blockquote>"
+	  MaskPromptString	      ""
+	  MaskVariables	      ";"
+	  MaskDisplay		  "patch ([223.749993896484 331.550012207031 331.550012207031 223.749993896484 223.749993896484 ], [269.9 269.9 300 300 269.9 ], [0.900012 0.900012 0.900012] )
+color ('black ')
+plot ([223.749993896484 331.550012207031 331.550012207031 223.749993896484 223.749993896484 ], [269.9 269.9 300 300 269.9 ])
+color ('black')
+text (277.650018310547,285,'SingleWatertank','hor','center')"
+	  MaskIconFrame		  off
+	  MaskValueString	      ""
+      System {
+        Name			"SingleWatertank"
+        Location		[478, 83, 978, 384]
+        Block {
+              BlockType		  Inport
+		  Name			  "valvecontrol"
+		  Position		  [40, 20, 60, 40]
+		  Port			  "1"
+        }
+		Block {
+		  BlockType		  Mux
+		  Name			  "Mux"
+		  Ports			  [1, 1]
+		  Position		  [130, 20, 135, 40]
+		  Inputs		  "[1 ]"
+		  DisplayOption		  "bar"
+		}
+		Block {
+		  BlockType		  Demux
+		  Name			  "Demux"
+		  Ports			  [1, 1]
+		  Position		  [290, 20, 295, 40]
+		  Outputs		  "[1 ]"
+		  DisplayOption		  "bar"
+		  BusSelectionMode    off
+		}
+		Block {
+		  BlockType		  "S-Function"
+		  Name			  "S-Function"
+		  Ports			  [1, 1]
+		  Position		  [170, 10, 250, 50]
+		  FunctionName		  "SingleWatertank"
+		  Parameters	      ""
+		}
+        Block {
+              BlockType		  Outport
+		  Name			  "level"
+		  Position		  [380, 20, 400, 40]
+		  Port			  "1"
+        }
+		Line {
+		  SrcBlock		  "valvecontrol"
+		  SrcPort		  1
+		  DstBlock		  "Mux"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Demux"
+		  SrcPort		  1
+		  DstBlock		  "level"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Mux"
+		  SrcPort		  1
+		  DstBlock		  "S-Function"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "S-Function"
+		  SrcPort		  1
+		  DstBlock		  "Demux"
+		  DstPort		  1
+		}
+      }
+    }
+  }
+}
+]]></token>
+	<token name="START_TIME"><![CDATA[0.0]]></token>
+	<token name="STATE_NAMES"><![CDATA[	"tank\\Tank\\volume",
+	"Valve\\outflow_int"
+]]></token>
+	<token name="STATE_NAMES2"><![CDATA[	"tank_Tank_volume",
+	"Valve_outflow_int"
+]]></token>
+	<token name="STATE_NAMES3"><![CDATA[tank\Tank\volume
+Valve\outflow_int
+]]></token>
+	<token name="STATE_UNITS"><![CDATA[
+
+]]></token>
+	<token name="STATIC_EQUATIONS"><![CDATA[	/* FlowSource\p.phi = FlowSource\phi; */
+	xx_V[1] = xx_P[1];
+
+	/* FlowSource\inflow = if FlowSource\p.phi < 0... ; */
+	xx_V[2] = (xx_V[1] < 0.0) ? 
+		/* 0 */
+		0.0
+	:
+		/* 0.1 * abs (FlowSource\p.phi) */
+		(0.1 * XXAbsolute (xx_V[1]))
+	;
+]]></token>
+	<token name="TIME_STEP_SIZE"><![CDATA[0.01]]></token>
+	<token name="USER_NAME"><![CDATA[INTO-CPS]]></token>
+	<token name="VARIABLE_NAMES"><![CDATA[	"Drain\\p.f",
+	"FlowSource\\p.phi",
+	"FlowSource\\inflow",
+	"tank\\Tank\\p.e",
+	"tank\\Tank\\level",
+	"Valve\\valvecontrol",
+	"Valve\\powerIn.phi",
+	"Valve\\powerOut.e",
+	"Valve\\puddle",
+	"valvecontrol",
+	"level"
+]]></token>
+	<token name="VARIABLE_NAMES2"><![CDATA[	"Drain_p.f",
+	"FlowSource_p.phi",
+	"FlowSource_inflow",
+	"tank_Tank_p.e",
+	"tank_Tank_level",
+	"Valve_valvecontrol",
+	"Valve_powerIn.phi",
+	"Valve_powerOut.e",
+	"Valve_puddle",
+	"valvecontrol",
+	"level"
+]]></token>
+	<token name="VARIABLE_NAMES3"><![CDATA[Drain\p.f
+FlowSource\p.phi
+FlowSource\inflow
+tank\Tank\p.e
+tank\Tank\level
+Valve\valvecontrol
+Valve\powerIn.phi
+Valve\powerOut.e
+Valve\puddle
+valvecontrol
+level
+]]></token>
+	<token name="VARIABLE_TO_OUTPUT_EQUATIONS"><![CDATA[	y[0] = 	xx_V[10];		/* level */
+]]></token>
+	<token name="VARIABLE_UNITS"><![CDATA[
+
+
+m3/s
+Pa
+
+
+m3/s
+
+
+
+]]></token>
+	<token name="WORK_ARRAY_SIZE"><![CDATA[0]]></token>
+	<token name="XX_ALG_IN_ARRAY_NAME"><![CDATA[A]]></token>
+	<token name="XX_ALG_OUT_ARRAY_NAME"><![CDATA[a]]></token>
+	<token name="XX_DEP_RATE_ARRAY_NAME"><![CDATA[r]]></token>
+	<token name="XX_DEP_STATE_ARRAY_NAME"><![CDATA[S]]></token>
+	<token name="XX_EXT_IN_ARRAY_NAME"><![CDATA[e]]></token>
+	<token name="XX_EXT_OUT_ARRAY_NAME"><![CDATA[E]]></token>
+	<token name="XX_FAVORITE_PARS_ARRAY_NAME"><![CDATA[F]]></token>
+	<token name="XX_FAVORITE_VARS_ARRAY_NAME"><![CDATA[f]]></token>
+	<token name="XX_INITIAL_VALUE_ARRAY_NAME"><![CDATA[I]]></token>
+	<token name="VARPREFIX"><![CDATA[xx_]]></token>
+	<token name="FUNCTIONPREFIX"><![CDATA[XX]]></token>
+	<token name="XX_TIME"><![CDATA[time]]></token>
+	<token name="XX_INITIALIZE"><![CDATA[initialize]]></token>
+	<token name="XX_VARIABLE_ARRAY_NAME"><![CDATA[V]]></token>
+	<token name="XX_PARAMETER_ARRAY_NAME"><![CDATA[P]]></token>
+	<token name="XX_CONSTANT_ARRAY_NAME"><![CDATA[C]]></token>
+	<token name="XX_STATE_ARRAY_NAME"><![CDATA[s]]></token>
+	<token name="XX_RATE_ARRAY_NAME"><![CDATA[R]]></token>
+	<token name="XX_MATRIX_ARRAY_NAME"><![CDATA[M]]></token>
+	<token name="XX_UNNAMED_ARRAY_NAME"><![CDATA[U]]></token>
+	<token name="ABSOLUTE_TOLERANCE"><![CDATA[1e-005]]></token>
+	<token name="RELATIVE_TOLERANCE"><![CDATA[1e-005]]></token>
+	<token name="INITIAL_STEPSIZE"><![CDATA[0]]></token>
+	<token name="MAXIMUM_STEPSIZE"><![CDATA[0.01]]></token>
+	<token name="FORMAJORVERSION"><![CDATA[4]]></token>
+	<token name="FORMINORVERSION"><![CDATA[0]]></token>
+	<token name="FORMAJORBUILD"><![CDATA[1]]></token>
+	<token name="FORMINORBUILD"><![CDATA[5]]></token>
+	<token name="MAJORVERSION"><![CDATA[4]]></token>
+	<token name="MINORVERSION"><![CDATA[5]]></token>
+	<token name="MAJORBUILD"><![CDATA[1]]></token>
+	<token name="MINORBUILD"><![CDATA[5561]]></token>
+	<token name="FMIVERSION"><![CDATA[2.0]]></token>
+	<token name="FMI2"><![CDATA[fmi2]]></token>
+	<token name="FMI_PREFIX"><![CDATA[fmi2]]></token>
+	<token name="INPUT_ARRAY_NAME"><![CDATA[u]]></token>
+	<token name="OUTPUT_ARRAY_NAME"><![CDATA[y]]></token>
+	<token name="TEMPLATENAME"><![CDATA[StandaloneFMU 2.0]]></token>
+	<token name="TEMPLATEDIR"><![CDATA[C:\into-cps\fmi-export-20sim\StandaloneFMU]]></token>
+	<token name="TEMPLATE_DIR"><![CDATA[C:\into-cps\fmi-export-20sim\StandaloneFMU]]></token>
+	<token name="TOKENNAMES"><![CDATA[MODEL_NAME
+20SIM_DIR
+SUBMODEL_NAME
+ALGLOOP_NAMES
+ALGLOOP_NAMES2
+ALGLOOP_NAMES3
+ALGLOOP_UNITS
+ALIAS_EQUATIONS
+ALIAS_MATRIX_NAMES
+ALIAS_MATRIX_NAMES2
+ALIAS_MATRIX_NAMES3
+ALIAS_MATRIX_UNITS
+ALIAS_VARIABLE_INDICES
+ALIAS_VARIABLE_NAMES
+ALIAS_VARIABLE_NAMES2
+ALIAS_VARIABLE_NAMES3
+ALIAS_VARIABLE_UNITS
+COMPANY_NAME
+CONSTANT_NAMES
+CONSTANT_NAMES2
+CONSTANT_NAMES3
+CONSTANT_UNITS
+CONSTANT_VALUES
+CONSTRAINT_NAMES
+CONSTRAINT_NAMES2
+CONSTRAINT_NAMES3
+CONSTRAINT_UNITS
+DEPRATE_NAMES
+DEPRATE_NAMES2
+DEPRATE_NAMES3
+DEPRATE_UNITS
+DEPSTATE_NAMES
+DEPSTATE_NAMES2
+DEPSTATE_NAMES3
+DEPSTATE_UNITS
+DIRECT_FEEDTHROUGH
+DYNAMIC_EQUATIONS
+EXPERIMENT_NAME
+EXPORT_NAMES
+EXPORT_NAMES2
+EXPORT_NAMES3
+EXPORT_UNITS
+FAVORITE_PARAMETER_NAMES
+FAVORITE_PARAMETER_NAMES2
+FAVORITE_PARAMETER_NAMES3
+FAVORITE_PARAMETER_UNITS
+FAVORITE_PARS_EQUATIONS
+FAVORITE_VARIABLE_NAMES
+FAVORITE_VARIABLE_NAMES2
+FAVORITE_VARIABLE_NAMES3
+FAVORITE_VARIABLE_UNITS
+FAVORITE_VARS_EQUATIONS
+FILE_NAME
+FINAL_EQUATIONS
+FINISH_TIME
+GENERATION_BUILD
+GENERATION_DATE
+GENERATION_DIR
+GENERATION_TIME
+IMPORT_NAMES
+IMPORT_NAMES2
+IMPORT_NAMES3
+IMPORT_UNITS
+INITIALIZE_ALIAS_MATRICES
+INITIALIZE_CONSTANTS
+INITIALIZE_FAVORITE_PARS
+INITIALIZE_FAVORITE_VARS
+INITIALIZE_INITIAL_VALUES
+INITIALIZE_INPUTS
+INITIALIZE_MATRICES
+INITIALIZE_OUTPUTS
+INITIALIZE_PARAMETERS
+INITIALIZE_STATES
+INITIAL_EQUATIONS
+INITIAL_VALUE_NAMES
+INITIAL_VALUE_NAMES2
+INITIAL_VALUE_NAMES3
+INITIAL_VALUE_UNITS
+INITIAL_VALUE_VALUES
+INPUT_EQUATIONS
+INPUT_NAMES
+INPUT_NAMES2
+INPUT_NAMES3
+INPUT_TO_VARIABLE_EQUATIONS
+INPUT_UNITS
+INTEGRATION_METHOD_NAME
+MATRIX_NAMES
+MATRIX_NAMES2
+MATRIX_NAMES3
+MATRIX_UNITS
+MODEL_CONFIGURATION
+MODEL_DESCRIPTION
+MODEL_FILE
+MODEL_FUNCTION_NAME
+MODEL_IS_DISCRETE
+NUMBEROF_ABSFUNCTION
+NUMBEROF_ADJOINTFUNCTION
+NUMBEROF_ALGEBRAICFUNCTION
+NUMBEROF_ALGLOOPIN
+NUMBEROF_ALGLOOPOUT
+NUMBEROF_AND
+NUMBEROF_ANTISYMMETRICFUNCTION
+NUMBEROF_ARCCOSFUNCTION
+NUMBEROF_ARCCOSHYPERBOLICFUNCTION
+NUMBEROF_ARCSINFUNCTION
+NUMBEROF_ARCSINHYPERBOLICFUNCTION
+NUMBEROF_ARCTANFUNCTION
+NUMBEROF_ARCTANHYPERBOLICFUNCTION
+NUMBEROF_ASSIGNMENT
+NUMBEROF_ATAN2FUNCTION
+NUMBEROF_BACKDIVISION
+NUMBEROF_BITAND
+NUMBEROF_BITCLEAR
+NUMBEROF_BITCMP
+NUMBEROF_BITGET
+NUMBEROF_BITOR
+NUMBEROF_BITSET
+NUMBEROF_BITSHIFT
+NUMBEROF_BITSWAPBYTES
+NUMBEROF_BITXOR
+NUMBEROF_CASESTATEMENT
+NUMBEROF_CEILFUNCTION
+NUMBEROF_CODESTATEMENT
+NUMBEROF_COLUMNSFUNCTION
+NUMBEROF_CONDITIONAL
+NUMBEROF_CONSTANT
+NUMBEROF_CONSTRAINTFUNCTION
+NUMBEROF_CONSTRAINTIN
+NUMBEROF_CONSTRAINTOUT
+NUMBEROF_COSFUNCTION
+NUMBEROF_COSHYPERBOLICFUNCTION
+NUMBEROF_CROSSFUNCTION
+NUMBEROF_DATAFUNCTION
+NUMBEROF_DDTFUNCTION
+NUMBEROF_DEFAULTCASESTATEMENT
+NUMBEROF_DELAYFUNCTION
+NUMBEROF_DEPENDENTRATE
+NUMBEROF_DEPENDENTSTATE
+NUMBEROF_DEPENDENTSTATERATE
+NUMBEROF_DERIVATIVEFUNCTION
+NUMBEROF_DETFUNCTION
+NUMBEROF_DIAGFUNCTION
+NUMBEROF_DISCRETERATE
+NUMBEROF_DISCRETESTATE
+NUMBEROF_DISCRETESTATERATE
+NUMBEROF_DISCRETETIME
+NUMBEROF_DISCRETETIMENODEWITHOUT
+NUMBEROF_DIV
+NUMBEROF_DIVISION
+NUMBEROF_DLLDYNAMICFUNCTION
+NUMBEROF_DLLFUNCTION
+NUMBEROF_DOMATLABSTATEMENT
+NUMBEROF_EFFORTCAUSALITYSTATEMENT
+NUMBEROF_ELEMENTDIV
+NUMBEROF_ELEMENTMUL
+NUMBEROF_ELEMENTPOWER
+NUMBEROF_ENERGYFUNCTION
+NUMBEROF_EQUAL
+NUMBEROF_EQUALSTATEMENT
+NUMBEROF_EQUATION
+NUMBEROF_EVENTDOWNFUNCTION
+NUMBEROF_EVENTFUNCTION
+NUMBEROF_EVENTUPFUNCTION
+NUMBEROF_EXP10FUNCTION
+NUMBEROF_EXP2FUNCTION
+NUMBEROF_EXPANDEDCAUSALITYFUNCTION
+NUMBEROF_EXPANDEDCOLLECTFUNCTION
+NUMBEROF_EXPANDEDDIRECTFUNCTION
+NUMBEROF_EXPANDEDFIRSTFUNCTION
+NUMBEROF_EXPANDEDMULFUNCTION
+NUMBEROF_EXPANDEDSUMFUNCTION
+NUMBEROF_EXPFUNCTION
+NUMBEROF_EXTERNALINPUT
+NUMBEROF_EXTERNALOUTPUT
+NUMBEROF_EYEFUNCTION
+NUMBEROF_FALSE
+NUMBEROF_FINALSTATEMENT
+NUMBEROF_FINISHTIME
+NUMBEROF_FLOORFUNCTION
+NUMBEROF_FLOWCAUSALITYSTATEMENT
+NUMBEROF_FORSTATEMENT
+NUMBEROF_FREQUENCYEVENTFUNCTION
+NUMBEROF_FROMMATLABSTATEMENT
+NUMBEROF_GAUSSFUNCTION
+NUMBEROF_GREATER
+NUMBEROF_GREATEREQUAL
+NUMBEROF_HOLDFUNCTION
+NUMBEROF_HOMOGENEOUSFUNCTION
+NUMBEROF_IFSTATEMENT
+NUMBEROF_IMPULSEFUNCTION
+NUMBEROF_INITIALFUNCTION
+NUMBEROF_INITIALSTATEMENT
+NUMBEROF_INITIALVALUE
+NUMBEROF_INNERFUNCTION
+NUMBEROF_INTFUNCTION
+NUMBEROF_INVERSEFUNCTION
+NUMBEROF_INVERSEHOMOGENEOUSFUNCTION
+NUMBEROF_JACOBIAN
+NUMBEROF_LESS
+NUMBEROF_LESSEQUAL
+NUMBEROF_LIMINTFUNCTION
+NUMBEROF_LIMITFUNCTION
+NUMBEROF_LINEARSOLVEFUNCTION
+NUMBEROF_LITERAL
+NUMBEROF_LOG10FUNCTION
+NUMBEROF_LOG2FUNCTION
+NUMBEROF_LOGFUNCTION
+NUMBEROF_MAJOR
+NUMBEROF_MAJORADJOINTFUNCTION
+NUMBEROF_MAXFUNCTION
+NUMBEROF_MIN
+NUMBEROF_MINFUNCTION
+NUMBEROF_MODELVARIABLES
+NUMBEROF_MODULO
+NUMBEROF_MUL
+NUMBEROF_MULTIPLYCOLUMNSFUNCTION
+NUMBEROF_MULTIPLYHOMOGENEOUSFUNCTION
+NUMBEROF_MULTIPLYROWSFUNCTION
+NUMBEROF_NEXTFUNCTION
+NUMBEROF_NONLINEARFUNCTION
+NUMBEROF_NORMFUNCTION
+NUMBEROF_NORMINFFUNCTION
+NUMBEROF_NOTEQUAL
+NUMBEROF_OR
+NUMBEROF_PARAMETER
+NUMBEROF_PLUS
+NUMBEROF_PORT
+NUMBEROF_PORTVARIABLE
+NUMBEROF_POWER
+NUMBEROF_PREFIXMIN
+NUMBEROF_PREFIXNOT
+NUMBEROF_PREFIXPLUS
+NUMBEROF_PREVIOUSFUNCTION
+NUMBEROF_RAMPFUNCTION
+NUMBEROF_RANDOM
+NUMBEROF_RANDOMFUNCTION
+NUMBEROF_RATE
+NUMBEROF_REPEATSTATEMENT
+NUMBEROF_RESETFUNCTION
+NUMBEROF_RESINTFUNCTION
+NUMBEROF_RETURNSTATEMENT
+NUMBEROF_ROUNDFUNCTION
+NUMBEROF_ROWSFUNCTION
+NUMBEROF_SAMPLEFUNCTION
+NUMBEROF_SAMPLETIME
+NUMBEROF_SIGNFUNCTION
+NUMBEROF_SINFUNCTION
+NUMBEROF_SINHYPERBOLICFUNCTION
+NUMBEROF_SKEWFUNCTION
+NUMBEROF_SQRFUNCTION
+NUMBEROF_SQRTFUNCTION
+NUMBEROF_STARTTIME
+NUMBEROF_STATE
+NUMBEROF_STATERATE
+NUMBEROF_STEPFUNCTION
+NUMBEROF_STEPSIZE
+NUMBEROF_STOPSTATEMENT
+NUMBEROF_SUMFUNCTION
+NUMBEROF_SWITCHSTATEMENT
+NUMBEROF_SYMMETRICFUNCTION
+NUMBEROF_SYSTEMVARIABLE
+NUMBEROF_TABLEFUNCTION
+NUMBEROF_TANFUNCTION
+NUMBEROF_TANHYPERBOLICFUNCTION
+NUMBEROF_TDELAYFUNCTION
+NUMBEROF_TILDEFUNCTION
+NUMBEROF_TIME
+NUMBEROF_TIMEEVENTFUNCTION
+NUMBEROF_TIMENODEWITHOUT
+NUMBEROF_TIMETRIGGERFUNCTION
+NUMBEROF_TOMATLABSTATEMENT
+NUMBEROF_TRACEFUNCTION
+NUMBEROF_TRANSPOSEFUNCTION
+NUMBEROF_TRIGGERDOWNFUNCTION
+NUMBEROF_TRIGGERFUNCTION
+NUMBEROF_TRIGGERUPFUNCTION
+NUMBEROF_TRUE
+NUMBEROF_TRUNCFUNCTION
+NUMBEROF_TYPEPARAMETER
+NUMBEROF_UNNAMED
+NUMBEROF_VARIABLE
+NUMBEROF_WARNSTATEMENT
+NUMBEROF_WHILESTATEMENT
+NUMBEROF_XOR
+NUMBER_ALGLOOPS
+NUMBER_ALIAS_MATRICES
+NUMBER_ALIAS_VARIABLES
+NUMBER_CONSTANTS
+NUMBER_CONSTRAINTS
+NUMBER_DEPSTATES
+NUMBER_EXPORTS
+NUMBER_FAVORITE_PARAMETERS
+NUMBER_FAVORITE_VARIABLES
+NUMBER_IMPORTS
+NUMBER_INITIAL_VALUES
+NUMBER_INPUTS
+NUMBER_MATRICES
+NUMBER_OUTPUTS
+NUMBER_PARAMETERS
+NUMBER_STATES
+NUMBER_UNNAMED
+NUMBER_VARIABLES
+OUTPUT2_EQUATIONS
+OUTPUT_EQUATIONS
+OUTPUT_NAMES
+OUTPUT_NAMES2
+OUTPUT_NAMES3
+OUTPUT_UNITS
+PARAMETER_NAMES
+PARAMETER_NAMES2
+PARAMETER_NAMES3
+PARAMETER_UNITS
+PARAMETER_VALUES
+RATE_NAMES
+RATE_NAMES2
+RATE_NAMES3
+RATE_UNITS
+SIMULINK_MODEL
+SIMULINK_SUBMODEL
+START_TIME
+STATE_NAMES
+STATE_NAMES2
+STATE_NAMES3
+STATE_UNITS
+STATIC_EQUATIONS
+TIME_STEP_SIZE
+USER_NAME
+VARIABLE_NAMES
+VARIABLE_NAMES2
+VARIABLE_NAMES3
+VARIABLE_TO_OUTPUT_EQUATIONS
+VARIABLE_UNITS
+WORK_ARRAY_SIZE
+XX_ALG_IN_ARRAY_NAME
+XX_ALG_OUT_ARRAY_NAME
+XX_DEP_RATE_ARRAY_NAME
+XX_DEP_STATE_ARRAY_NAME
+XX_EXT_IN_ARRAY_NAME
+XX_EXT_OUT_ARRAY_NAME
+XX_FAVORITE_PARS_ARRAY_NAME
+XX_FAVORITE_VARS_ARRAY_NAME
+XX_INITIAL_VALUE_ARRAY_NAME
+VARPREFIX
+FUNCTIONPREFIX
+XX_TIME
+XX_INITIALIZE
+XX_VARIABLE_ARRAY_NAME
+XX_PARAMETER_ARRAY_NAME
+XX_CONSTANT_ARRAY_NAME
+XX_STATE_ARRAY_NAME
+XX_RATE_ARRAY_NAME
+XX_MATRIX_ARRAY_NAME
+XX_UNNAMED_ARRAY_NAME
+ABSOLUTE_TOLERANCE
+RELATIVE_TOLERANCE
+INITIAL_STEPSIZE
+MAXIMUM_STEPSIZE
+FORMAJORVERSION
+FORMINORVERSION
+FORMAJORBUILD
+FORMINORBUILD
+MAJORVERSION
+MINORVERSION
+MAJORBUILD
+MINORBUILD
+FMIVERSION
+FMI2
+FMI_PREFIX
+INPUT_ARRAY_NAME
+OUTPUT_ARRAY_NAME
+TEMPLATENAME
+TEMPLATEDIR
+TEMPLATE_DIR
+]]></token>
+</tokens>
+
+
