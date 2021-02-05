@@ -36,5 +36,18 @@ public class SimpleTest {
                 new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
+
+    @Test
+    public void testWithConfig() throws Exception {
+        String initializePath = SimpleTest.class.getClassLoader().getResource("config_example/initialize.json").getPath();
+        String simulateJson = SimpleTest.class.getClassLoader().getResource("config_example/simulate.json").getPath();
+        String dumpPath = "target/test-classes/config_example/dump";
+        final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
+        faultInjectSpec.getParentFile().mkdirs();
+        try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
+            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+        }
+        org.intocps.maestro.Main.argumentHandler(new String[]{"-i","-sg1",initializePath, simulateJson,"-d",dumpPath,faultInjectSpec.getPath()} );
+    }
 }
 
