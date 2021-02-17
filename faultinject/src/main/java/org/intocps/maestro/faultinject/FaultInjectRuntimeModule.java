@@ -861,7 +861,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
     @Override
     public void destroy(Value value) {
-        throw new UnsupportedOperationException("destroy function to be implemented");
+        //throw new UnsupportedOperationException("destroy function to be implemented");
+        
     }
 
     @Override

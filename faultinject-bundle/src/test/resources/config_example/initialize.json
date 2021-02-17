@@ -1,6 +1,6 @@
 {
   "fmus": {
-    "{crtl}": "target/test-classes/watertankController-c",
+    "{crtl}": "target/test-classes/watertankController-c.fmu",
     "{wt}": "target/test-classes/singlewatertank-20sim.fmu"
   },
   "connections": {

@@ -2,7 +2,6 @@ package org.intocps.maestro.faultinject;
 
 
 import org.apache.commons.io.IOUtils;
-import org.intocps.maestro.typechecker.TypeChecker;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,28 +11,15 @@ import java.nio.file.Paths;
 
 public class rbmqMonitorTest {
     @Test
-    public void test() throws Exception {
-
-        final File faultInjectSpec = Paths.get("target", "rbmqtest", "FaultInject.mabl").toFile();
+    public void testWithConfig() throws Exception {
+        String initializePath = SimpleTest.class.getClassLoader().getResource("rbmq_example/multimodel.json").getPath();
+        String simulateJson = SimpleTest.class.getClassLoader().getResource("rbmq_example/coe.json").getPath();
+        String dumpPath = "target/test-classes/rbmq_example/dump";
+        final File faultInjectSpec = Paths.get("target", "rbmqmonitortest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
-
-        final File spec = Paths.get("target", "rbmqtest", "rabbitmq-casestudy.mabl").toFile();
-        try (final FileWriter writer = new FileWriter(spec)) {
-            IOUtils.copy(this.getClass().getResourceAsStream("/rabbitmq-casestudy.mabl"), writer, StandardCharsets.UTF_8);
-        }
-
-        //TODO: the FMI2 copying and addition to the parse path can be skipped once mable is updated - next release
-        final File fmi2 = Paths.get("target", "rbmqtest", "FMI2.mabl").toFile();
-        try (final FileWriter writer = new FileWriter(fmi2)) {
-            IOUtils.copy(TypeChecker.class.getResourceAsStream("FMI2.mabl"), writer, StandardCharsets.UTF_8);
-        }
-
-        //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
-        org.intocps.maestro.Main.argumentHandler(
-                new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
-
+        org.intocps.maestro.Main.argumentHandler(new String[]{"-i","-sg1",initializePath, simulateJson,"-d",dumpPath,faultInjectSpec.getPath()} );
     }
 }
