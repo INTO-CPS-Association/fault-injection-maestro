@@ -25,9 +25,14 @@
     },
     "parameters": {
         "{rbmq}.rbmqInstance.config.maxage": 2000,
-        "{rbmq}.rbmqInstance.config.hostname": "localhost",
+        "{rbmq}.rbmqInstance.config.hostname": "gitvm",
         "{rbmq}.rbmqInstance.config.precision": 10,
         "{sMonitor}.sMonitorInstance.safety_dist": 10
     },
-    "algorithm":{"type":"fixed-step","size":0.1}
+    "algorithm":{"type":"fixed-step","size":0.1}, 
+    "faultInjectConfigurationPath": "target/test-classes/faultInjectSpecificationRbmqMonitor.xml",
+    "faultInjectInstances": {
+        "sMonitorInstance": "id"
+    }
+
 }

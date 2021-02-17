@@ -32,7 +32,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.StackWalker.Option;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -360,7 +359,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     boolean[] values = ArrayUtils.toPrimitive(
                             getArrayValue(fcargs.get(2), Optional.of(elementsToUse), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
                                     .toArray(new Boolean[]{}));
-                    
                     if(simulationEvents.length != 0){
                         //Get data from the next event if any
                         boolean[] result;
@@ -371,10 +369,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         newValuesRefs = out.getRight();
                         
                         //Turn arrays of primitives to arrays of Boolean
-                        Boolean[] newValues = Arrays.stream(ArrayUtils.toObject(result)).map(BooleanValue::new).collect(Collectors.toList()).toArray(Boolean[]::new);
+                        Boolean[] newValues = ArrayUtils.toObject(result);
 
-                        Boolean[] oldValues = Arrays.stream(ArrayUtils.toObject(values)).map(BooleanValue::new).collect(Collectors.toList()).toArray(Boolean[]::new);
-
+                        Boolean[] oldValues = ArrayUtils.toObject(values);
                         // Inject -- if so defined in the specification -- the values before setting them
                         Boolean[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
                         values = ArrayUtils.toPrimitive(injected); 
@@ -554,7 +551,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }));
                 
                 wrapperMembers.put("setupExperiment", new FunctionValue.ExternalFunctionValue(fcargs -> {
-                    logger.warn("SETUPEXPERIMETN");
+                    logger.warn("SETUPEXPERIMENT");
 
                     checkArgLength(fcargs, 5);
         
@@ -565,7 +562,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     double stopTime = getDouble(fcargs.get(4));
                     try {
                         Fmi2Status res = component.getModule().setupExperiment(toleranceDefined, tolerance, startTime, stopTimeDefined, stopTime);
-                        //logger.warn(String.format("setupExperiment outcome %d", res.value));
+                        logger.warn(String.format("setupExperiment outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (FmuInvocationException e) {
                         throw new InterpreterException(e);
