@@ -1,0 +1,56 @@
+{
+    "startTime": 0,
+    "endTime": 100,
+    "multimodel_path": "Multi-models/rmq-fmu/mm.json",
+    "liveGraphColumns": 1,
+    "liveGraphVisibleRowCount": 1,
+    "graphs": [
+        {
+            "title": "Robotti Location",
+            "livestream": {
+                "{rbmq}.rbmqInstance": [
+                    "xpos",
+                    "ypos"
+                ]
+            },
+            "externalWindow": false
+        },
+        {
+            "title": "Distance to Obstacle",
+            "livestream": {
+                "{sMonitor}.sMonitorInstance": [
+                    "dist",
+                    "command_stop"
+                ]
+            },
+            "externalWindow": false
+        },
+        {
+            "title": "Live Graph",
+            "livestream": {
+                "{rbmq}.rbmqInstance": [
+                    "simtime_discrepancy",
+                    "time_discrepancy"
+                ]
+            },
+            "externalWindow": false
+        }
+    ],
+    "livestreamInterval": 0,
+    "logVariables": {},
+    "visible": true,
+    "loggingOn": true,
+    "overrideLogLevel": "Not set",
+    "enableAllLogCategoriesPerInstance": true,
+    "algorithm": {
+        "type": "fixed-step",
+        "size": 0.1
+    },
+    "postProcessingScript": "",
+    "multimodel_crc": "5582d8fc4ce422f2739be7fb77448964",
+    "parallelSimulation": false,
+    "stabalizationEnabled": false,
+    "global_absolute_tolerance": 0,
+    "global_relative_tolerance": 0.01,
+    "simulationProgramDelay": false
+}

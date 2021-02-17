@@ -1,0 +1,32 @@
+{
+    "fmus": {
+        "{rbmq}": "rabbitmq_v6.fmu",
+        "{sMonitor}": "safety_monitor_v3.fmu"
+    },
+    "connections": {
+        "{rbmq}.rbmqInstance.obs_xpos": [
+            "{sMonitor}.sMonitorInstance.obs_xpos_input"
+        ],
+        "{rbmq}.rbmqInstance.obs_ypos": [
+            "{sMonitor}.sMonitorInstance.obs_ypos_input"
+        ],
+        "{rbmq}.rbmqInstance.ypos": [
+            "{sMonitor}.sMonitorInstance.robotti_ypos_input"
+        ],
+        "{rbmq}.rbmqInstance.obstacles": [
+            "{sMonitor}.sMonitorInstance.obstacles_input"
+        ],
+        "{rbmq}.rbmqInstance.xpos": [
+            "{sMonitor}.sMonitorInstance.robotti_xpos_input"
+        ],
+        "{sMonitor}.sMonitorInstance.command_stop": [
+            "{rbmq}.rbmqInstance.command stop"
+        ]
+    },
+    "parameters": {
+        "{rbmq}.rbmqInstance.config.maxage": 2000,
+        "{rbmq}.rbmqInstance.config.hostname": "gitvm",
+        "{rbmq}.rbmqInstance.config.precision": 10,
+        "{sMonitor}.sMonitorInstance.safety_dist": 10
+    }
+}
