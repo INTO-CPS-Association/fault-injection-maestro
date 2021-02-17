@@ -39,7 +39,6 @@ public class SimpleTest {
     }
 
     @Test
-    @Ignore("Not needed now")
     public void testWithConfig() throws Exception {
         String initializePath = SimpleTest.class.getClassLoader().getResource("config_example/initialize.json").getPath();
         String simulateJson = SimpleTest.class.getClassLoader().getResource("config_example/simulate.json").getPath();
