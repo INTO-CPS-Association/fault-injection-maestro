@@ -6,14 +6,14 @@ import Logger;
 import Math;
 {
     real START_TIME = 0.0;
-    real END_TIME = 4.0;
+    real END_TIME = 60.0;
     real STEP_SIZE = 0.1;
 
     // #############################
     // DataWriter for results
     // #############################
     DataWriter dataWriter = load("DataWriter");
-    string data_headers[2] = {"{crtl}.crtlInstance.valve","{wt}.wtInstance.level"};
+    string data_headers[2] = {"{crtl}.crtlInstance.valve", "{wt}.wtInstance.level"};
     DataWriterConfig dataWriterConfiguration = dataWriter.writeHeader(data_headers);
 
 
@@ -139,7 +139,7 @@ import Math;
         // Write the valve state and the water level to the results
         // #############################
         time = time + STEP_SIZE;
-        dataWriter.writeDataPoint(dataWriterConfiguration, time, crtlValveStateOutput[0], wtLevelOutputValue[0]);
+        dataWriter.writeDataPoint(dataWriterConfiguration, time, crtlValveStateOutput[0],  wtLevelOutputValue[0]);
 
     }
     

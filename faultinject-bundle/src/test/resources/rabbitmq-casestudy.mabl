@@ -1,0 +1,125 @@
+simulation
+import FaultInject;
+import FMI2;
+import DataWriter;
+import Logger;
+import Math;
+{
+    real START_TIME = 0.0;
+    real END_TIME = 60.0;
+    real STEP_SIZE = 0.1;
+
+    // #############################
+    // DataWriter for results
+    // #############################
+    DataWriter dataWriter = load("DataWriter");
+    string data_headers[2] = {"{crtl}.crtlInstance.valve", "{wt}.wtInstance.level"};
+    DataWriterConfig dataWriterConfiguration = dataWriter.writeHeader(data_headers);
+
+
+    // #############################
+    // Load the FMUs and instantiate instances
+    // #############################
+    FMI2 rabbitmq = load("FMI2", "{cfc65592-ffff-4563-9705-1581b6e7071c}", "src/test/resources/rabbitmq_v6.fmu");
+    FMI2 safety_monitor = load("FMI2", "{9135211e-e830-4846-b63f-65899e11bf3a}",  "src/test/resources/safety_monitor_v3.fmu");
+    FMI2Component rbmqInstance = rabbitmq.instantiate("rbmqInstance", false, false);
+    FMI2Component sfInstance = safety_monitor.instantiate("sfInstance", false, false);
+
+    // Create the fault innject wrapper for the controller
+    //FaultInject fi = load("FaultInject","src/test/resources/faultInjectSpecificationWaterTank.xml");
+	//crtlInstance = fi.faultInject(tankController, crtlInstance, "jjj");
+
+    // Continue with the setup
+    rbmqInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
+    sfInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
+
+    // #############################
+    // Set parameters
+    // #############################
+
+    real sfParams[1] = {10};
+    uint sfParamsValRefs[1] = {12};
+    sfInstance.setReal(sfParamsValRefs, 1, sfParams);
+
+    int rbmqParams[5] = {2000, 10, 5672, 60, 1};
+    uint rbmqParamsValRefs[5] = {7, 6, 1, 5, 8};
+    rbmqInstance.setInteger(rbmqParamsValRefs, 5,rbmqParams);
+
+    string rbmqParamsStr[5]= {"gitvm", "guest", "guest", "linefollower", "system_health"};
+    uint rbmqParamsValRefsStr[5] = {0, 2, 3, 4, 9};
+    rbmqInstance.setString(rbmqParamsValRefsStr, 5,rbmqParamsStr);
+
+    rbmqInstance.enterInitializationMode();
+    sfInstance.enterInitializationMode();
+
+    rbmqInstance.exitInitializationMode();
+    sfInstance.exitInitializationMode();
+
+
+    dataWriter.writeDataPoint(dataWriterConfiguration, START_TIME, 1, 2);
+    
+    //sf inputs and outputs
+    uint sfInputsValRefs[4] = {3,4,5,6};
+    real sfInputs[4];
+    uint sfOutputsValRefs[1] = {1};
+    real sfOutputs[1];
+
+    uint sfOutputsValRefsBool[1] = {0};
+    bool sfOutputsBool[1];
+    //rbmq inputs and outputs
+    uint rbmqInputsValRefs[1] = {27};
+    bool rbmqInputs[1] = {false};
+    uint rbmqOutputsValRefs[4] = {20,21,22,23};
+    real rbmqOutputs[4];
+
+    real time = START_TIME;
+    // #############################
+    // Simulation Loop until END_TIME
+    // #############################
+    while(time + STEP_SIZE <= END_TIME)
+    {
+        // #############################
+        // Set Inputs
+        // #############################
+        rbmqInstance.setBoolean(rbmqInputsValRefs, 1, sfOutputsBool);
+        sfInstance.setReal(sfInputsValRefs, 4, rbmqOutputs);
+
+        // #############################
+        // Step fmus
+        // #############################
+        rbmqInstance.doStep(time, STEP_SIZE, true);
+        sfInstance.doStep(time, STEP_SIZE, true);
+
+        // #############################
+        // Get Outputs
+        // #############################
+        sfInstance.getReal(sfOutputsValRefs, 1, sfOutputs);
+        sfInstance.getBoolean(sfOutputsValRefsBool, 1, sfOutputsBool);
+        rbmqInstance.getReal(rbmqOutputsValRefs, 1, rbmqOutputs);
+
+        // #############################
+        // Increase the time with STEP_SIZE
+        // Log results
+        // #############################
+        time = time + STEP_SIZE;
+        //dataWriter.writeDataPoint(dataWriterConfiguration, time, crtlValveStateOutput[0],  wtLevelOutputValue[0]);
+
+    }
+    
+    // #############################
+    // Clean up
+    // #############################
+    dataWriter.close();
+    rbmqInstance.terminate();
+    sfInstance.terminate();
+    
+    //Return wrapped component
+    //sfInstance = fi.returnFmuComponentValue(sfInstance);
+
+    rabbitmq.freeInstance(rbmqInstance);
+    safety_monitor.freeInstance(sfInstance);
+
+    unload(rabbitmq);
+    unload(safety_monitor);
+    unload(dataWriter);
+}

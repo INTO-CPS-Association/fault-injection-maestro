@@ -21,3 +21,4 @@ For simulating the watertank + controller:
 
 Run WaterTankTest 
 Events can be changed at faultInjectSpecificationWaterTank.xml
+MaBL file: watertank-casestudy.mabl

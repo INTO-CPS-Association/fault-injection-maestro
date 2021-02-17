@@ -1,0 +1,37 @@
+class RealInputs
+
+
+instance variables
+
+xpos : RealPort;
+ypos : RealPort;
+obs_xpos : RealPort;
+obs_ypos : RealPort;
+obstacles : StringPort;
+
+operations
+
+public RealInputs: RealPort * RealPort * RealPort * RealPort * StringPort ==> RealInputs
+RealInputs(i1, i2, i3, i4, i5) == 
+	(xpos := i1;
+	 ypos := i2;
+	 obs_xpos := i3;
+	 obs_ypos := i4;
+	 obstacles := i5;);
+
+public getInput1: () ==> real
+getInput1() == return xpos.getValue();
+
+public getInput2: () ==> real
+getInput2() == return ypos.getValue();
+
+public getInput3: () ==> real
+getInput3() == return obs_xpos.getValue();
+
+public getInput4: () ==> real
+getInput4() == return obs_ypos.getValue();
+
+public getInput5: () ==> Port`String
+getInput5() == return obstacles.getValue();
+
+end RealInputs
