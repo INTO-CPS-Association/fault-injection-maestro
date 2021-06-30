@@ -21,6 +21,6 @@ public class rbmqMonitorTest {
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
-        org.intocps.maestro.Main.argumentHandler(new String[]{"-i","-sg1",initializePath, simulateJson,"-d",dumpPath,faultInjectSpec.getPath()} );
+        org.intocps.maestro.Main.argumentHandler(new String[]{"import","-output",dumpPath, "-i","Sg1",initializePath, simulateJson,faultInjectSpec.getPath()} );
     }
 }

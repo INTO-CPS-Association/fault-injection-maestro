@@ -33,7 +33,7 @@ public class WaterTankTest {
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"interpret", "--verbose", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
 }
