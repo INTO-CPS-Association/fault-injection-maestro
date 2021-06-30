@@ -173,7 +173,7 @@ public class Event {
         if(events.length !=0 && Math.abs(currentStep - events[0].timePoint) <= 0.0000001){
             events = (Event[]) ArrayUtils.remove(events, 0);
             if(verbose){
-                printEvent(events);
+                //printEvent(events);
                 if(events.length == 0){
                     logger.warn("No more events");
                 }

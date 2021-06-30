@@ -1,22 +1,22 @@
 import xml.etree.ElementTree as gfg 
 
 
-def GenerateXML(fileName, no_events) : 
+def GenerateXML(fileName, no_events, step_size) : 
 	
     root = gfg.Element("events") 
 	
-    inittime = 30
+    inittime = 10.0
     for i in range(no_events):
         m1 = gfg.Element("event") 
         m1.set("id", str(i+1))
-        m1.set("timeStep", str(inittime))
-        inittime += 0.1
+        m1.set("timeStep", str(round(inittime,1)))
+        inittime += step_size
         root.append (m1) 
         
         b1 = gfg.SubElement(m1, "variable") 
-        b1.set("valRef", "3")
+        b1.set("valRef", "11")
         b1.set("type", "real")
-        b1.set("newVal", "2.1")
+        b1.set("newVal", "50.0")
 	
     tree = gfg.ElementTree(root) 
 	
@@ -25,5 +25,9 @@ def GenerateXML(fileName, no_events) :
 
 # Driver Code 
 if __name__ == "__main__": 
-    GenerateXML("Catalog.xml", 201) 
+    nr_of_events = 19
+    step_size = 0.1
+    total = nr_of_events/step_size + 1
+    print("Generating a total of events: ",total)
+    GenerateXML("Catalog.xml", int(total), step_size) 
 

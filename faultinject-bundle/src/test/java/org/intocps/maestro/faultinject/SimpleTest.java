@@ -1,8 +1,8 @@
 package org.intocps.maestro.faultinject;
 
-
 import org.apache.commons.io.IOUtils;
 import org.intocps.maestro.typechecker.TypeChecker;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 
 public class SimpleTest {
     @Test
+    @Ignore("Not needed now")
     public void test() throws Exception {
 
         final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();

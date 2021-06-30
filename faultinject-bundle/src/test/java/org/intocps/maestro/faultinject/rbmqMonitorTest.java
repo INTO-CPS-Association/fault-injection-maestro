@@ -1,7 +1,7 @@
 package org.intocps.maestro.faultinject;
 
-
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 
 public class rbmqMonitorTest {
     @Test
+    @Ignore("Not needed now")
     public void testWithConfig() throws Exception {
         String initializePath = SimpleTest.class.getClassLoader().getResource("rbmq_example/multimodel.json").getPath();
         String simulateJson = SimpleTest.class.getClassLoader().getResource("rbmq_example/coe.json").getPath();
