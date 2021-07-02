@@ -27,7 +27,7 @@
 
 		<ScalarVariable name="minlevel" valueReference="1"
 			description="the min tank level" causality="parameter"
-			 variability="fixed" initial="exact"><Real start="0.0" />
+			 variability="fixed" initial="exact"><Real start="1.0" />
 		</ScalarVariable>
 
 		<ScalarVariable name="level" valueReference="3"
