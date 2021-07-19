@@ -30,4 +30,23 @@ The relevant files are in rbmq_example.
 
 
 #### Development Notes
-Currently it is possible to specify onetime events, and events with duration. Events with duration cannot overlap, if they do, the event that starts later will only be active after the other event has ended. 
+It is possible to define one-time events e.g.
+
+<event id="2" timeStep="9.0">
+    <variable valRef="3" type="real" newVal="50.0" />
+</event>
+Note that all variables that should be affected at that time-step should be included within the same one-time event.
+
+It is also possible to define events with a duration. Different variables might be injected for different periods as such, events with different and overlapping durations
+can be defined, e.g.
+
+<event id="3" timeStep="21.0" duration="5.0" durationToggle="false">
+    <variable valRef="3" type="real" newVal="57.0" />
+</event>
+<event id="4" timeStep="25.0" duration="2.0" durationToggle="false">
+    <variable valRef="4" type="real" newVal="60.0" />
+</event>
+
+If the injection should be performed for the whole time, then durationToggle can be set to "true". Note that the attributes duration and durationToggle are optional, if not defined, they will de set to default values, i.e. 1 and false.
+
+Should there be multiple overlapping events with duration that target the same variable, the latter will be injected with the value in the event defined last in the xml file. 

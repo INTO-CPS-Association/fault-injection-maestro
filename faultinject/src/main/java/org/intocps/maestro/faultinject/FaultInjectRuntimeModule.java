@@ -188,15 +188,23 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     result = Pair.of(simulationEvents[0].doubleValues, simulationEvents[0].doubleValuesRefs);
                 }
                 //checking for duration events
-                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
-                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
-                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
-                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+                //loop over duration events
+                int atStartorBigger, atEndorSmaller;
+                boolean equalToStart, equalToEnd, withinDuration;
+                for(var i = 0; i < simulationDurationEvents.length; i++){
+                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
+                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
+                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
+                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
 
-                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
-                    logger.warn("Injecting Duration Events");
-                    result = Pair.of(simulationDurationEvents[0].doubleValues, simulationDurationEvents[0].doubleValuesRefs);
+                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
+
+                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                        logger.warn("Injecting Duration Events");
+                        result = Pair.of(simulationDurationEvents[i].doubleValues, simulationDurationEvents[i].doubleValuesRefs);
+                    }
                 }
+                
                 return result;
             }
 
@@ -210,14 +218,21 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     result = Pair.of(simulationEvents[0].intValues, simulationEvents[0].intValuesRefs);
                 }
                 //checking for duration events
-                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
-                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
-                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
-                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+                //loop over duration events
+                int atStartorBigger, atEndorSmaller;
+                boolean equalToStart, equalToEnd, withinDuration;
+                for(var i = 0; i < simulationDurationEvents.length; i++){
+                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
+                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
+                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
+                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
 
-                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
-                    logger.warn("Injecting Duration Events");
-                    result = Pair.of(simulationDurationEvents[0].intValues, simulationDurationEvents[0].intValuesRefs);
+                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
+
+                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                        logger.warn("Injecting Duration Events");
+                        result = Pair.of(simulationDurationEvents[i].intValues, simulationDurationEvents[i].intValuesRefs);
+                    }
                 }
                 return result;
             }
@@ -232,14 +247,21 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     result = Pair.of(simulationEvents[0].boolValues, simulationEvents[0].boolValuesRefs);
                 }
                 //checking for duration events
-                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
-                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
-                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
-                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+                //loop over duration events
+                int atStartorBigger, atEndorSmaller;
+                boolean equalToStart, equalToEnd, withinDuration;
+                for(var i = 0; i < simulationDurationEvents.length; i++){
+                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
+                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
+                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
+                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
 
-                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
-                    logger.warn("Injecting Duration Events");
-                    result = Pair.of(simulationDurationEvents[0].boolValues, simulationDurationEvents[0].boolValuesRefs);
+                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
+
+                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                        logger.warn("Injecting Duration Events");
+                        result = Pair.of(simulationDurationEvents[i].boolValues, simulationDurationEvents[i].boolValuesRefs);
+                    }
                 }
                 return result;
             }
@@ -253,16 +275,22 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     logger.warn("Injecting One-Time Events");
                     result = Pair.of(simulationEvents[0].stringValues, simulationEvents[0].stringValuesRefs);
                 }
-
                 //checking for duration events
-                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
-                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
-                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
-                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+                //loop over duration events
+                int atStartorBigger, atEndorSmaller;
+                boolean equalToStart, equalToEnd, withinDuration;
+                for(var i = 0; i < simulationDurationEvents.length; i++){
+                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
+                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
+                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
+                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
 
-                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
-                    logger.warn("Injecting Duration Events");
-                    result = Pair.of(simulationDurationEvents[0].stringValues, simulationDurationEvents[0].stringValuesRefs);
+                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
+
+                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                        logger.warn("Injecting Duration Events");
+                        result = Pair.of(simulationDurationEvents[i].stringValues, simulationDurationEvents[i].stringValuesRefs);
+                    }
                 }
                 return result;
             }

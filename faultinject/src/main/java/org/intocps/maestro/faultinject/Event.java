@@ -333,12 +333,14 @@ public class Event {
             }
         }
         else{
-            if(events.length !=0 && Math.abs(currentStep - events[0].timePoint - events[0].duration)<= 0.0000001){
-                events = (Event[]) ArrayUtils.remove(events, 0);
-                if(verbose){
-                    printEvent(events);
-                    if(events.length == 0){
-                        logger.warn("No more duration events");
+            for(var i=events.length-1; i >= 0; i--){
+                if(!events[i].durationToggle && Math.abs(currentStep - events[i].timePoint - events[i].duration)<= 0.0000001){
+                    events = (Event[]) ArrayUtils.remove(events, i); //remove elements from the end, not to mess up indexes if multiple events are to be removed.
+                    if(verbose){
+                        printEvent(events);
+                        if(events.length == 0){
+                            logger.warn("No more duration events");
+                        }
                     }
                 }
             }
