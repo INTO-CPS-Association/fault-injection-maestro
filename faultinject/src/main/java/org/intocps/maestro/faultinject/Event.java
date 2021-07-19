@@ -40,10 +40,12 @@ public class Event {
     public String[] stringValues;
     public long[] stringValuesRefs;
     public boolean injected = false;
+    public double duration;
+    public boolean durationToggle;
 
     public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
-            long[] stringValuesRefs) {
+            long[] stringValuesRefs, double duration, boolean durationToggle) {
         this.id = id;
         this.timePoint = timePoint;
         this.doubleValues = doubleValues;
@@ -54,6 +56,8 @@ public class Event {
         this.boolValuesRefs = boolValuesRefs;
         this.stringValues = stringValues;
         this.stringValuesRefs = stringValuesRefs;
+        this.duration = duration;
+        this.durationToggle = durationToggle; // if set the event is applied to all timesteps, and overrides the effect of duration
     }
 
     public static void setVerbose(boolean verbose){
@@ -88,120 +92,283 @@ public class Event {
         logger.warn(String.format("Nr of events %d", nrEvents));
 
         Event.verbose = verbose;
+        
+        //find how many one time events
+        int nrOneOffEvents = 0;
+        for(int i = 0; i < nrEvents; i++){
+            Node node = eventsList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE)
+            {
+                Element eElement = (Element) node;
+                if(!eElement.hasAttribute("duration") && !eElement.hasAttribute("durationToggle")){
+                    nrOneOffEvents++;
+                }
+            }
+        }
 
         //create events one by one manually
-        Event[] events = new Event[nrEvents];
+        Event[] events = new Event[nrOneOffEvents];
         //Loop through events
+        //loop all events and keep only those that are one off events
+        int eIndex = 0; // use eIndex to index the events array for one time events.
         for(int i = 0; i < nrEvents; i++){
             Node node = eventsList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE)
             {
                 Element eElement = (Element) node;
 
-                int id = Integer.parseInt(eElement.getAttribute("id"));
-                double time = Double.parseDouble(eElement.getAttribute("timeStep"));
-                List<Double> dValues = new ArrayList<Double>();
-                List<Long> dValuesRefs = new ArrayList<Long>();
+                if(!eElement.hasAttribute("duration") && !eElement.hasAttribute("durationToggle")){
+                    int id = Integer.parseInt(eElement.getAttribute("id"));
+                    double time = Double.parseDouble(eElement.getAttribute("timeStep"));
+                    double duration = 1;
+                    Boolean durationToggle = false;
+                    
+                    List<Double> dValues = new ArrayList<Double>();
+                    List<Long> dValuesRefs = new ArrayList<Long>();
 
-                List<Boolean> bValues = new ArrayList<Boolean>();
-                List<Long> bValuesRefs = new ArrayList<Long>();
+                    List<Boolean> bValues = new ArrayList<Boolean>();
+                    List<Long> bValuesRefs = new ArrayList<Long>();
 
-                List<Integer> iValues = new ArrayList<Integer>();
-                List<Long> iValuesRefs = new ArrayList<Long>();
+                    List<Integer> iValues = new ArrayList<Integer>();
+                    List<Long> iValuesRefs = new ArrayList<Long>();
 
-                List<String> sValues = new ArrayList<String>();
-                List<Long> sValuesRefs = new ArrayList<Long>();
+                    List<String> sValues = new ArrayList<String>();
+                    List<Long> sValuesRefs = new ArrayList<Long>();
 
-                NodeList variables = eElement.getElementsByTagName("variable");
-                //Loop through variables within one event
-                for(int j = 0; j < variables.getLength(); j++){
-                    Node var = variables.item(j);
-                    //prepare the values which are passed to the event constructor.
-                    if(var.getNodeType() == Node.ELEMENT_NODE){
-                        Element v = (Element) var;
-                        if(v.getAttribute("type").equals("real")){
-                            dValues.add(Double.parseDouble(v.getAttribute("newVal")));
-                            dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                        }
-                        else if(v.getAttribute("type").equals("bool")){
-                            bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
-                            bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                        }
-                        else if(v.getAttribute("type").equals("int")){
-                            iValues.add(Integer.parseInt(v.getAttribute("newVal")));
-                            iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                        }
-                        else if(v.getAttribute("type").equals("string")){
-                            sValues.add(v.getAttribute("newVal"));
-                            sValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                        }
-                        else{
-                            throw new WrapperException(String.format("Unrecognized type: %s, when parsing faultInjectSpecification xml", v.getAttribute("type")));
+                    NodeList variables = eElement.getElementsByTagName("variable");
+                    //Loop through variables within one event
+                    for(int j = 0; j < variables.getLength(); j++){
+                        Node var = variables.item(j);
+                        //prepare the values which are passed to the event constructor.
+                        if(var.getNodeType() == Node.ELEMENT_NODE){
+                            Element v = (Element) var;
+                            if(v.getAttribute("type").equals("real")){
+                                dValues.add(Double.parseDouble(v.getAttribute("newVal")));
+                                dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("bool")){
+                                bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+                                bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("int")){
+                                iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("string")){
+                                sValues.add(v.getAttribute("newVal"));
+                                sValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else{
+                                throw new WrapperException(String.format("Unrecognized type: %s, when parsing faultInjectSpecification xml", v.getAttribute("type")));
+                            }
                         }
                     }
+
+                    //Convert List<Boolean> to boolean[]
+                    boolean[] bbValues = new boolean[bValues.size()];
+                    for(int k = 0; k< bValues.size(); k++){
+                        bbValues[k] = bValues.get(k);
+                    }
+                    String[] ssValues = new String[sValues.size()];
+                    //Convert List<String> to string[]
+                    for(int k = 0; k< sValues.size(); k++){
+                        ssValues[k] = sValues.get(k);
+                    }
+                    
+                    //Call event i constructor
+                    events[eIndex] = new Event(id, time, 
+                                            dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
+                                            dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            iValues.stream().mapToInt(Integer::intValue).toArray(), 
+                                            iValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            bbValues, 
+                                            bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            ssValues, 
+                                            sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                                            duration, durationToggle
+                                        );
+                    eIndex++;
                 }
 
-                //Convert List<Boolean> to boolean[]
-                boolean[] bbValues = new boolean[bValues.size()];
-                for(int k = 0; k< bValues.size(); k++){
-                    bbValues[k] = bValues.get(k);
-                }
-                String[] ssValues = new String[sValues.size()];
-                //Convert List<String> to string[]
-                for(int k = 0; k< sValues.size(); k++){
-                    ssValues[k] = sValues.get(k);
-                }
                 
-                //Call event i constructor
-                events[i] = new Event(id, time, 
-                                        dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
-                                        dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                        iValues.stream().mapToInt(Integer::intValue).toArray(), 
-                                        iValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                        bbValues, 
-                                        bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                        ssValues, 
-                                        sValuesRefs.stream().mapToLong(Long::longValue).toArray()
-                                    );
             }
         }
 
         return events;
     }
 
-    public static Event[] cutArrayOfEvents(Event[] events, double currentStep){
-        if(events.length !=0 && Math.abs(currentStep - events[0].timePoint) <= 0.0000001){
-            events = (Event[]) ArrayUtils.remove(events, 0);
-            if(verbose){
-                //printEvent(events);
-                if(events.length == 0){
-                    logger.warn("No more events");
+    public static Event[] getEventswithDuration(String specificationFileName, boolean verbose)throws SAXException, IOException, ParserConfigurationException, 
+    NullPointerException, NumberFormatException {
+        //Parse document
+        NodeList eventsList = parseXMLDom(specificationFileName);
+
+        //find out how many events
+        int nrEvents = eventsList.getLength();
+        logger.warn(String.format("Nr of events %d", nrEvents));
+
+        Event.verbose = verbose;
+
+        //find how many one time events
+        int nrDurationEvents = 0;
+        for(int i = 0; i < nrEvents; i++){
+            Node node = eventsList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE)
+            {
+                Element eElement = (Element) node;
+                if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle")){
+                    nrDurationEvents++;
                 }
             }
         }
-        
+
+        //create events one by one manually
+        Event[] events = new Event[nrDurationEvents];
+        //Loop through events
+        //loop all events and keep only those that are duration events
+        int eIndex = 0; // use eIndex to index the events array for duration events.
+        for(int i = 0; i < nrEvents; i++){
+            Node node = eventsList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE)
+            {
+                Element eElement = (Element) node;
+
+                if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle"))
+                {
+                    int id = Integer.parseInt(eElement.getAttribute("id"));
+                    double time = Double.parseDouble(eElement.getAttribute("timeStep"));
+                    double duration = 1;
+                    Boolean durationToggle = false;
+
+                    if(eElement.hasAttribute("duration")){
+                        duration = Double.parseDouble(eElement.getAttribute("duration"));
+                    }
+                    if(eElement.hasAttribute("durationToggle")){
+                        durationToggle = Boolean.parseBoolean(eElement.getAttribute("durationToggle"));
+                    }
+                    
+                    List<Double> dValues = new ArrayList<Double>();
+                    List<Long> dValuesRefs = new ArrayList<Long>();
+
+                    List<Boolean> bValues = new ArrayList<Boolean>();
+                    List<Long> bValuesRefs = new ArrayList<Long>();
+
+                    List<Integer> iValues = new ArrayList<Integer>();
+                    List<Long> iValuesRefs = new ArrayList<Long>();
+
+                    List<String> sValues = new ArrayList<String>();
+                    List<Long> sValuesRefs = new ArrayList<Long>();
+
+                    NodeList variables = eElement.getElementsByTagName("variable");
+                    //Loop through variables within one event
+                    for(int j = 0; j < variables.getLength(); j++){
+                        Node var = variables.item(j);
+                        //prepare the values which are passed to the event constructor.
+                        if(var.getNodeType() == Node.ELEMENT_NODE){
+                            Element v = (Element) var;
+                            if(v.getAttribute("type").equals("real")){
+                                dValues.add(Double.parseDouble(v.getAttribute("newVal")));
+                                dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("bool")){
+                                bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+                                bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("int")){
+                                iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else if(v.getAttribute("type").equals("string")){
+                                sValues.add(v.getAttribute("newVal"));
+                                sValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
+                            }
+                            else{
+                                throw new WrapperException(String.format("Unrecognized type: %s, when parsing faultInjectSpecification xml", v.getAttribute("type")));
+                            }
+                        }
+                    }
+
+                    //Convert List<Boolean> to boolean[]
+                    boolean[] bbValues = new boolean[bValues.size()];
+                    for(int k = 0; k< bValues.size(); k++){
+                        bbValues[k] = bValues.get(k);
+                    }
+                    String[] ssValues = new String[sValues.size()];
+                    //Convert List<String> to string[]
+                    for(int k = 0; k< sValues.size(); k++){
+                        ssValues[k] = sValues.get(k);
+                    }
+                    
+                    //Call event i constructor
+                    events[eIndex] = new Event(id, time, 
+                                            dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
+                                            dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            iValues.stream().mapToInt(Integer::intValue).toArray(), 
+                                            iValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            bbValues, 
+                                            bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
+                                            ssValues, 
+                                            sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                                            duration, durationToggle
+                                        );
+                    eIndex++;
+                }
+
+            }
+        }
+
+        return events;
+    }
+
+    public static Event[] cutArrayOfEvents(Event[] events, double currentStep, int eventType){
+        if(eventType == 1){
+            if(events.length !=0 && Math.abs(currentStep - events[0].timePoint) <= 0.0000001){
+                
+                events = (Event[]) ArrayUtils.remove(events, 0);
+                if(verbose){
+                    printEvent(events);
+                    if(events.length == 0){
+                        logger.warn("No more on-time events");
+                    }
+                }
+            }
+        }
+        else{
+            if(events.length !=0 && Math.abs(currentStep - events[0].timePoint - events[0].duration)<= 0.0000001){
+                events = (Event[]) ArrayUtils.remove(events, 0);
+                if(verbose){
+                    printEvent(events);
+                    if(events.length == 0){
+                        logger.warn("No more duration events");
+                    }
+                }
+            }
+        }
+            
         return events;
     }
 
     //Print all events
     public static void printEvent(Event[] events){
+        logger.warn(String.format("events %d", events.length));
         for(Event e: events){
             String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
                                 + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
                                 + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
-                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs);
+                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
+                                + "; duration: " + e.duration + "; durationToggle: " + e.durationToggle;
             logger.warn(printText);
         }
     }
 
     //Print event at given index
-    public static void PrintEvent(Event[] events, int eventIndex){
+    public static void printEvents(Event[] events, int eventIndex){
         String printText = "Event with id: " + events[eventIndex].id + ", at time: " + events[eventIndex].timePoint
                             + " with doubles: " + Arrays.toString(events[eventIndex].doubleValues) + " with vrefs: " + Arrays.toString(events[eventIndex].doubleValuesRefs)
                             + "; with ints: " + Arrays.toString(events[eventIndex].intValues) + " with vrefs: " + Arrays.toString(events[eventIndex].intValuesRefs)
                             + "; with bools: " + Arrays.toString(events[eventIndex].boolValues) + " with vrefs: " + Arrays.toString(events[eventIndex].boolValuesRefs)
-                            + "; with strings: " + Arrays.toString(events[eventIndex].stringValues) + " with vrefs: " + Arrays.toString(events[eventIndex].stringValuesRefs);
+                            + "; with strings: " + Arrays.toString(events[eventIndex].stringValues) + " with vrefs: " + Arrays.toString(events[eventIndex].stringValuesRefs)
+                            + "; duration: " + events[eventIndex].duration + "; durationToggle: " + events[eventIndex].durationToggle;
         logger.warn(printText);
     }
 

@@ -27,3 +27,7 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 
 #### RBMQ Co-simulation Case-Study
 The relevant files are in rbmq_example.
+
+
+#### Development Notes
+Currently it is possible to specify onetime events, and events with duration. Events with duration cannot overlap, if they do, the event that starts later will only be active after the other event has ended. 

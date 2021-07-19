@@ -66,6 +66,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
             private static double stepSize = 0.1;
 
             private static Event[] simulationEvents;
+            private static Event[] simulationDurationEvents;
 
             public WrapperFmuComponentValue(FmuComponentValue component, Map<String, Value> wrapperMembers,
                     String wrapperID, FmuValue fmu) {
@@ -80,6 +81,21 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 try {
                     boolean verbose = true;
                     simuEvents = Event.getEvents(faultSpecFile, verbose);
+                    Event.printEvent(simuEvents);
+                    return simuEvents;
+                } catch (NumberFormatException | NullPointerException | SAXException | IOException
+                        | ParserConfigurationException e) {
+                    logger.error("Something went terribly wrong when creating the events");
+                    e.printStackTrace();
+                    return simuEvents;
+                }
+            }
+
+            public static Event[] createDurationEvents(String faultSpecFile){
+                Event[] simuEvents = {};
+                try {
+                    boolean verbose = true;
+                    simuEvents = Event.getEventswithDuration(faultSpecFile, verbose);
                     Event.printEvent(simuEvents);
                     return simuEvents;
                 } catch (NumberFormatException | NullPointerException | SAXException | IOException
@@ -166,9 +182,20 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 double[] dv = {};
                 long[] dvr = {};
                 Pair<double[], long[]> result = Pair.of(dv,dvr);
-                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Supposedly injecting");
+                //checking for one time events
+                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Injecting One-Time Events");
                     result = Pair.of(simulationEvents[0].doubleValues, simulationEvents[0].doubleValuesRefs);
+                }
+                //checking for duration events
+                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
+                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
+                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
+                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+
+                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
+                    logger.warn("Injecting Duration Events");
+                    result = Pair.of(simulationDurationEvents[0].doubleValues, simulationDurationEvents[0].doubleValuesRefs);
                 }
                 return result;
             }
@@ -178,9 +205,19 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 int[] dv = {};
                 long[] dvr = {};
                 Pair<int[], long[]> result = Pair.of(dv,dvr);
-                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Supposedly injecting");
+                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Injecting One-Time Events");
                     result = Pair.of(simulationEvents[0].intValues, simulationEvents[0].intValuesRefs);
+                }
+                //checking for duration events
+                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
+                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
+                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
+                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+
+                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
+                    logger.warn("Injecting Duration Events");
+                    result = Pair.of(simulationDurationEvents[0].intValues, simulationDurationEvents[0].intValuesRefs);
                 }
                 return result;
             }
@@ -190,9 +227,19 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 boolean[] dv = {};
                 long[] dvr = {};
                 Pair<boolean[], long[]> result = Pair.of(dv,dvr);
-                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Supposedly injecting");
+                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
+                    logger.warn("Injecting One-Time Events");
                     result = Pair.of(simulationEvents[0].boolValues, simulationEvents[0].boolValuesRefs);
+                }
+                //checking for duration events
+                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
+                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
+                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
+                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+
+                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
+                    logger.warn("Injecting Duration Events");
+                    result = Pair.of(simulationDurationEvents[0].boolValues, simulationDurationEvents[0].boolValuesRefs);
                 }
                 return result;
             }
@@ -203,8 +250,19 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 long[] dvr = {};
                 Pair<String[], long[]> result = Pair.of(dv,dvr);
                 if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Supposedly injecting");
+                    logger.warn("Injecting One-Time Events");
                     result = Pair.of(simulationEvents[0].stringValues, simulationEvents[0].stringValuesRefs);
+                }
+
+                //checking for duration events
+                int atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint);
+                boolean equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint) <= 0.0000001;
+                int atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[0].timePoint+simulationDurationEvents[0].duration);
+                boolean equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[0].timePoint-simulationDurationEvents[0].duration) <= 0.0000001;
+
+                if(simulationDurationEvents.length != 0 &&  (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0)){//comparing doubles...
+                    logger.warn("Injecting Duration Events");
+                    result = Pair.of(simulationDurationEvents[0].stringValues, simulationDurationEvents[0].stringValuesRefs);
                 }
                 return result;
             }
@@ -266,7 +324,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     // Keep track of the current timestep in which the fmu is. Needed by the inject functions. 
                     currentStep = currentCommunicationPoint;
                     // Cleanup the events array
-                    simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep);
+                    simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep, 1);
+                    simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep, 0);
         
                     try {
                         Fmi2Status res = component.getModule().doStep(currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint);
@@ -288,7 +347,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                     logger.warn(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
                     
-                    if(simulationEvents.length != 0){
+                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
                         //Get data from the next event if any
                         double[] result;
                         long[] newValuesRefs;
@@ -359,7 +418,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     boolean[] values = ArrayUtils.toPrimitive(
                             getArrayValue(fcargs.get(2), Optional.of(elementsToUse), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
                                     .toArray(new Boolean[]{}));
-                    if(simulationEvents.length != 0){
+                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
                         //Get data from the next event if any
                         boolean[] result;
                         long[] newValuesRefs;
@@ -423,7 +482,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     int[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
                     
-                    if(simulationEvents.length != 0){
+                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
                         //Get data from the next event if any data
                         int[] result;
                         long[] newValuesRefs;
@@ -494,7 +553,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     String[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), StringValue.class).stream().map(StringValue::getValue).collect(Collectors.toList())
                             .toArray(new String[]{});
 
-                    if(simulationEvents.length != 0){
+                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
                         //Get data from the next event if any data
                         String[] newValues;
                         long[] newValuesRefs;
@@ -754,6 +813,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }));
                 
                 simulationEvents = createEvents(faultSpecFile);
+                simulationDurationEvents = createDurationEvents(faultSpecFile);
                 return new WrapperFmuComponentValue(component, wrapperMembers, wrapperID, fmu);
             }
         }
