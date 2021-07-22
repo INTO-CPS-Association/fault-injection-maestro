@@ -36,6 +36,7 @@
     <modules>
         <module>faultinject</module>
         <module>faultinject-bundle</module>
+        <module>faultinject-incubator</module>
     </modules>
 
     <build>
