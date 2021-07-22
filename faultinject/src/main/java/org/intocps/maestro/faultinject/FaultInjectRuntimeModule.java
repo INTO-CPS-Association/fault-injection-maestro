@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -418,13 +419,39 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     try {
                         FmuResult<double[]> res = component.getModule().getReal(scalarValueIndices);
                         logger.warn(String.format("getReal outcome: %d", res.status.value));
-        
+
                         if (res.status == Fmi2Status.OK) {
                             UpdatableValue ref = (UpdatableValue) fcargs.get(2);
                             //logger.warn(String.format("getReal outcome %d", res.status.value));
         
                             List<RealValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(d -> new RealValue(d)).collect(Collectors.toList());
         
+                            //Inject after getting the values
+                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                                //Get data from the next event if any
+                                double[] result;
+                                long[] newValuesRefs;
+        
+                                Pair<double[], long[]> out = getDoublesFromEvent();
+                                result = out.getLeft();
+                                newValuesRefs = out.getRight();
+                                
+                                //Turn arrays of primitives to arrays of Double
+                                Double[] newValues = DoubleStream.of(result).boxed().collect(Collectors.toList()).toArray(Double[]::new);
+
+                                //Turn List<RealValue> to Double[]
+                                Double[] oldValues = values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Double[]::new);
+        
+                                // Inject -- if so defined in the specification -- the values before setting them
+                                Double[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
+
+                                //convert Double[] to List<RealValue>
+                                values = Arrays.asList(injected).stream().map(x-> new RealValue(x)).collect(Collectors.toList());
+
+                                logger.warn(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                
+                            }
+
                             ref.setValue(new ArrayValue<>(values));
                         }
         
@@ -492,6 +519,32 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                             List<BooleanValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(BooleanValue::new).collect(Collectors.toList());
         
+                            //Inject after getting the values
+                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                                //Get data from the next event if any
+                                boolean[] result;
+                                long[] newValuesRefs;
+        
+                                Pair<boolean[], long[]> out = getBooleansFromEvent();
+                                result = out.getLeft();
+                                newValuesRefs = out.getRight();
+                                
+                                //Turn arrays of primitives to arrays of Double
+                                Boolean[] newValues = ArrayUtils.toObject(result);
+
+                                //Turn List<BooleanValue> to Boolean[]
+                                Boolean[] oldValues = values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Boolean[]::new);
+        
+                                // Inject -- if so defined in the specification -- the values before setting them
+                                Boolean[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
+
+                                //convert Boolean[] to List<BooleanValue>
+                                values = Arrays.asList(injected).stream().map(x-> new BooleanValue(x)).collect(Collectors.toList());
+
+                                logger.warn(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                
+                            }
+
                             ref.setValue(new ArrayValue<>(values));
                         }
         
@@ -560,6 +613,32 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             List<IntegerValue> values =
                                     Arrays.stream(ArrayUtils.toObject(res.result)).map(i -> new IntegerValue(i)).collect(Collectors.toList());
         
+                            //Inject after getting the values
+                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                                //Get data from the next event if any
+                                int[] result;
+                                long[] newValuesRefs;
+        
+                                Pair<int[], long[]> out = getIntsFromEvent();
+                                result = out.getLeft();
+                                newValuesRefs = out.getRight();
+                                
+                                //Turn arrays of primitives to arrays of Double
+                                Integer[] newValues = IntStream.of(result).boxed().collect(Collectors.toList()).toArray(Integer[]::new);
+
+                                //Turn List<RealValue> to Double[]
+                                Integer[] oldValues = values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Integer[]::new);
+        
+                                // Inject -- if so defined in the specification -- the values before setting them
+                                Integer[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
+
+                                //convert Double[] to List<RealValue>
+                                values = Arrays.asList(injected).stream().map(x-> new IntegerValue(x)).collect(Collectors.toList());
+
+                                logger.warn(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                
+                            }
+
                             ref.setValue(new ArrayValue<>(values));
                         }
         
@@ -624,6 +703,29 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                             List<StringValue> values = Arrays.stream(res.result).map(StringValue::new).collect(Collectors.toList());
         
+                            //Inject after getting the values
+                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                                //Get data from the next event if any
+                                String[] newValues;
+                                long[] newValuesRefs;
+        
+                                Pair<String[], long[]> out = getStringsFromEvent();
+                                newValues = out.getLeft();
+                                newValuesRefs = out.getRight();
+                                
+                                //Turn List<RealValue> to Double[]
+                                String[] oldValues = values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(String[]::new);
+        
+                                // Inject -- if so defined in the specification -- the values before setting them
+                                String[] injected = inject(oldValues, scalarValueIndices, newValues, newValuesRefs);
+
+                                //convert Double[] to List<RealValue>
+                                values = Arrays.asList(injected).stream().map(x-> new StringValue(x)).collect(Collectors.toList());
+
+                                logger.warn(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                
+                            }
+
                             ref.setValue(new ArrayValue<>(values));
                         }
         

@@ -1,14 +1,5 @@
 <events>
     <event id="1" timeStep="10.0" durationToggle="true">
-        <variable valRef="3" type="real" newVal="55.0" />
-    </event>
-    <event id="2" timeStep="9.0">
-        <variable valRef="3" type="real" newVal="50.0" />
-    </event>
-    <event id="3" timeStep="21.0" duration="5.0" durationToggle="false">
-        <variable valRef="3" type="real" newVal="57.0" />
-    </event>
-    <event id="4" timeStep="27.0" duration="2.0" durationToggle="false">
-        <variable valRef="3" type="real" newVal="60.0" />
+        <variable valRef="4" type="bool" newVal="true" />
     </event>
 </events>

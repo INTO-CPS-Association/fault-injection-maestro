@@ -6,7 +6,7 @@ import Logger;
 import Math;
 {
     real START_TIME = 0.0;
-    real END_TIME = 30.0;
+    real END_TIME = 8.0;
     real STEP_SIZE = 0.1;
 
     // #############################
