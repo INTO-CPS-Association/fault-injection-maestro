@@ -6,4 +6,8 @@
     <event id="2" timeStep="2.1" >
         <variable valRef="1" type="bool" newVal="~var_1" vars="var_1," />
     </event>
+
+    <event id="3" timeStep="2.2" >
+        <variable valRef="5" type="int" newVal="var_5+35" vars="var_5," />
+    </event>
 </events>

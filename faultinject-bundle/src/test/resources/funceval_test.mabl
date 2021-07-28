@@ -13,7 +13,7 @@ import Math;
     // DataWriter for results
     // #############################
     DataWriter dataWriter = load("DataWriter");
-    string data_headers[2] = {"{crtl}.crtlInstance.valve", "{wt}.wtInstance.level"};
+    string data_headers[4] = {"boolout", "realout", "intout", "stringout"};
     DataWriterConfig dataWriterConfiguration = dataWriter.writeHeader(data_headers);
 
 
@@ -126,6 +126,8 @@ import Math;
         // Write the valve state and the water level to the results
         // #############################
         time = time + STEP_SIZE;
+
+        dataWriter.writeDataPoint(dataWriterConfiguration, time, boolOutput[0],  doubleOutput[0], intOutput[0], stringOutput[0]);
 
     }
     

@@ -67,3 +67,6 @@ It might also be needed to calculate the injected valued based on the inputs or 
 In the same way these expression can be defined for duration events. 
 
 Expressions can be defined only for the real, int, and bool types. In case of injection of strings, the value assigned to ```newVal``` is going to copied directly to the input/output.
+Injection for type int functions in the same way as for double. Note that double values will be used in the calculation if given as such in the expression, however the final value to which an input/output is set will be rounded to an int.
+
+Expressions for type bool accept the following operators: not -> "~", and -> "&", or -> "|". A boolean expression can be used on all fmu variables, inputs/outputs.

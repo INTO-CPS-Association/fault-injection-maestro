@@ -197,47 +197,49 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 Pair<double[], long[]> result = Pair.of(dv,dvr);
                 //checking for one time events
                 if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Injecting One-Time Events");
+                    logger.warn("Looking for One-Time Events");
                     //Evaluate expression, by checking which variables are contained, and setting them first. 
-                    List<Double> doubleValues = new ArrayList<Double>(simulationEvents[0].doubleValuesRefs.length);
-                    ListIterator<Expression> listIterator = simulationEvents[0].expressionForDoubles.listIterator();
+                    List<Double> doubleValues = new ArrayList<>(simulationEvents[0].doubleValuesRefs.length);
 
-                    while(listIterator.hasNext()) {
-                        Expression e = listIterator.next();
-                        System.out.println(e);
+                    //for(int i = 0; i <simulationEvents[0].doubleValuesRefs.length; i++) 
+                        //logger.warn(String.format("dvr %d", simulationEvents[0].doubleValuesRefs[i]));
+                    for(int vr = 0; vr < simulationEvents[0].doubleValuesRefs.length; vr++)
+                    {
+                            Expression e = simulationEvents[0].expressionForDoubles.get(vr);
+                            System.out.println(e);
 
-                        Set<String> vars = e.getVariableNames();
-                                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+                            Set<String> vars = e.getVariableNames();
+                            //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
 
-                        //if variable in expression set its value
-                        if (vars.contains("t"))//simulation time
-                        {
-                            e.setVariable("t", currentStep + stepSize);
-                            logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
-                        }
-                        //Check if any inputs are needed in the expression
-                        for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
+                            //if variable in expression set its value
+                            if (vars.contains("t"))//simulation time
                             {
-                                e.setVariable(var, entry.getValue());
-                                logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                e.setVariable("t", currentStep + stepSize);
+                                //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
                             }
-                        }
-                        //Check if any outputs are needed in the expression
-                        for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
+                            //Check if any inputs are needed in the expression
+                            for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
                             {
-                                e.setVariable(var, entry.getValue());
-                                logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                String var = "var_"+entry.getKey();
+                                logger.warn(var);
+                                if (vars.contains(var))
+                                {
+                                    e.setVariable(var, entry.getValue());
+                                    //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                }
                             }
-                        }
-                        doubleValues.add(e.evaluate());
+                            //Check if any outputs are needed in the expression
+                            for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
+                            {
+                                String var = "var_"+entry.getKey();
+                                logger.warn(var);
+                                if (vars.contains(var))
+                                {
+                                    e.setVariable(var, entry.getValue());
+                                    //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                }
+                            }
+                            doubleValues.add(e.evaluate());
                     }
 
                     result = Pair.of(doubleValues.stream().mapToDouble(Double::doubleValue).toArray(), simulationEvents[0].doubleValuesRefs);
@@ -255,48 +257,49 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
 
                     if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
-                        logger.warn("Injecting Duration Events");
+                        logger.warn("Looking for Duration Events");
                         //Evaluate expression, by checking which variables are contained, and setting them first. 
-                        List<Double> doubleValues = new ArrayList<Double>(simulationDurationEvents[i].doubleValuesRefs.length);
-                        ListIterator<Expression> listIterator = simulationDurationEvents[i].expressionForDoubles.listIterator();
+                        List<Double> doubleValues = new ArrayList<>(simulationDurationEvents[i].doubleValuesRefs.length);
 
-                        while(listIterator.hasNext()) {
-                            Expression e = listIterator.next();
-                            System.out.println(e);
-
-                            Set<String> vars = e.getVariableNames();
-                            //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
-
-                            //if variable in expression set its value
-                            if (vars.contains("t"))//simulation time
-                            {
-                                e.setVariable("t", currentStep + stepSize);
-                                logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
-                            }
-                            //Check if any inputs are needed in the expression
-                            for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
-                            {
-                                String var = "var_"+entry.getKey();
-                                logger.warn(var);
-                                if (vars.contains(var))
+                        for(int vr = 0; vr < simulationEvents[i].doubleValuesRefs.length; vr++)
+                        {
+                                Expression e = simulationDurationEvents[i].expressionForDoubles.get(vr);
+                                System.out.println(e);
+    
+                                Set<String> vars = e.getVariableNames();
+                                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+    
+                                //if variable in expression set its value
+                                if (vars.contains("t"))//simulation time
                                 {
-                                    e.setVariable(var, entry.getValue());
-                                    logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                    e.setVariable("t", currentStep + stepSize);
+                                    logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
                                 }
-                            }
-                            //Check if any outputs are needed in the expression
-                            for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
-                            {
-                                String var = "var_"+entry.getKey();
-                                logger.warn(var);
-                                if (vars.contains(var))
+                                //Check if any inputs are needed in the expression
+                                for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
                                 {
-                                    e.setVariable(var, entry.getValue());
-                                    logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                    String var = "var_"+entry.getKey();
+                                    logger.warn(var);
+                                    if (vars.contains(var))
+                                    {
+                                        e.setVariable(var, entry.getValue());
+                                        logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                    }
                                 }
-                            }
-                            doubleValues.add(e.evaluate());
+                                //Check if any outputs are needed in the expression
+                                for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
+                                {
+                                    String var = "var_"+entry.getKey();
+                                    logger.warn(var);
+                                    if (vars.contains(var))
+                                    {
+                                        e.setVariable(var, entry.getValue());
+                                        logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                    }
+                                }
+                                doubleValues.add(e.evaluate());
                         }
+
                         result = Pair.of(doubleValues.stream().mapToDouble(Double::doubleValue).toArray(), simulationDurationEvents[i].doubleValuesRefs);
                     }
                 }
@@ -311,11 +314,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 Pair<int[], long[]> result = Pair.of(dv,dvr);
                 if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
                     logger.warn("Injecting One-Time Events");
-                    List<Integer> intValues = new ArrayList<Integer>(simulationEvents[0].intValuesRefs.length);
-                    ListIterator<Expression> listIterator = simulationEvents[0].expressionForInts.listIterator();
+                    List<Integer> intValues = new ArrayList<>(simulationEvents[0].intValuesRefs.length);
 
-                    while(listIterator.hasNext()) {
-                        Expression e = listIterator.next();
+                    for(int vr = 0; vr < simulationEvents[0].intValuesRefs.length; vr++)
+                    {
+                        Expression e = simulationEvents[0].expressionForInts.get(vr);
                         System.out.println(e);
 
                         Set<String> vars = e.getVariableNames();
@@ -325,7 +328,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         if (vars.contains("t"))//simulation time
                         {
                             e.setVariable("t", currentStep + stepSize);
-                            logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
+                            //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
                         }
                         //Check if any inputs are needed in the expression
                         for (Map.Entry<Long,Integer> entry : currentInput.integerValues.entrySet())
@@ -335,7 +338,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             if (vars.contains(var))
                             {
                                 e.setVariable(var, entry.getValue());
-                                logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
                             }
                         }
                         //Check if any outputs are needed in the expression
@@ -346,7 +349,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             if (vars.contains(var))
                             {
                                 e.setVariable(var, entry.getValue());
-                                logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
                             }
                         }
                         intValues.add((int) e.evaluate());
@@ -367,11 +370,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                     if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
                         logger.warn("Injecting Duration Events");
-                        List<Integer> intValues = new ArrayList<Integer>(simulationDurationEvents[i].intValuesRefs.length);
-                        ListIterator<Expression> listIterator = simulationDurationEvents[i].expressionForInts.listIterator();
+                        List<Integer> intValues = new ArrayList<>(simulationDurationEvents[i].intValuesRefs.length);
 
-                        while(listIterator.hasNext()) {
-                            Expression e = listIterator.next();
+                        for(int vr = 0; vr < simulationEvents[i].intValuesRefs.length; vr++)
+                        {
+                            Expression e = simulationEvents[i].expressionForInts.get(vr); 
                             System.out.println(e);
 
                             Set<String> vars = e.getVariableNames();
@@ -381,7 +384,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             if (vars.contains("t"))//simulation time
                             {
                                 e.setVariable("t", currentStep + stepSize);
-                                logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
+                                //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
                             }
                             //Check if any inputs are needed in the expression
                             for (Map.Entry<Long,Integer> entry : currentInput.integerValues.entrySet())
@@ -391,7 +394,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 if (vars.contains(var))
                                 {
                                     e.setVariable(var, entry.getValue());
-                                    logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                                    //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
                                 }
                             }
                             //Check if any outputs are needed in the expression
@@ -402,7 +405,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 if (vars.contains(var))
                                 {
                                     e.setVariable(var, entry.getValue());
-                                    logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                                    //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
                                 }
                             }
                             intValues.add((int) e.evaluate());
@@ -419,12 +422,12 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 long[] dvr = {};
                 Pair<boolean[], long[]> result = Pair.of(dv,dvr);
                 if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Injecting One-Time Events");
-                    List<Boolean> boolValues = new ArrayList<Boolean>(simulationEvents[0].boolValuesRefs.length);
-                    ListIterator<Expression> listIter = simulationEvents[0].expressionForBools.listIterator();
+                    logger.warn("Looking for One-Time Events");
+                    List<Boolean> boolValues = new ArrayList<>(simulationEvents[0].boolValuesRefs.length);
                     
-                    while(listIter.hasNext()) {
-                        Expression e = listIter.next();
+                    for(int vr = 0; vr < simulationEvents[0].boolValuesRefs.length; vr++)
+                    {
+                        Expression e = simulationEvents[0].expressionForBools.get(vr);
                         System.out.println(e);
 
                         Set<String> vars = e.getVariableNames();
@@ -434,7 +437,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         if (vars.contains("t"))//simulation time
                         {
                             e.setVariable("t", currentStep + stepSize);
-                            logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
+                            //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
                         }
                         //Check if any inputs are needed in the expression
                         for (Map.Entry<Long,Boolean> entry : currentInput.booleanValues.entrySet())
@@ -450,7 +453,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 else{
                                     e.setVariable(var, 0d);
                                 }
-                                logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
+                                //logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
                             }
                         }
                         //Check if any outputs are needed in the expression
@@ -467,7 +470,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 else{
                                     e.setVariable(var, 0d);
                                 }
-                                logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
+                                //logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
                             }
                         }
                         if(e.evaluate() == 0d)
@@ -495,8 +498,67 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
 
                     if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
-                        logger.warn("Injecting Duration Events");
-                        result = Pair.of(simulationDurationEvents[i].boolValues, simulationDurationEvents[i].boolValuesRefs);
+                        logger.warn("Looking for Duration Events");
+                        List<Boolean> boolValues = new ArrayList<>(simulationEvents[i].boolValuesRefs.length);
+                    
+                        for(int vr = 0; vr < simulationEvents[i].boolValuesRefs.length; vr++)
+                        {
+                            Expression e = simulationEvents[i].expressionForBools.get(vr);
+                            System.out.println(e);
+
+                            Set<String> vars = e.getVariableNames();
+                                    //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+
+                            //if variable in expression set its value
+                            if (vars.contains("t"))//simulation time
+                            {
+                                e.setVariable("t", currentStep + stepSize);
+                                //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
+                            }
+                            //Check if any inputs are needed in the expression
+                            for (Map.Entry<Long,Boolean> entry : currentInput.booleanValues.entrySet())
+                            {
+                                String var = "var_"+entry.getKey();
+                                logger.warn(var);
+                                if (vars.contains(var))
+                                {
+                                    if(entry.getValue().booleanValue())
+                                    {
+                                        e.setVariable(var, 1d);
+                                    }
+                                    else{
+                                        e.setVariable(var, 0d);
+                                    }
+                                    //logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
+                                }
+                            }
+                            //Check if any outputs are needed in the expression
+                            for (Map.Entry<Long,Boolean> entry : currentOutput.booleanValues.entrySet())
+                            {
+                                String var = "var_"+entry.getKey();
+                                logger.warn(var);
+                                if (vars.contains(var))
+                                {
+                                    if(entry.getValue().booleanValue())
+                                    {
+                                        e.setVariable(var, 1d);
+                                    }
+                                    else{
+                                        e.setVariable(var, 0d);
+                                    }
+                                    //logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
+                                }
+                            }
+                            if(e.evaluate() == 0d)
+                            {
+                                boolValues.add(false);
+                            }
+                            else
+                            {
+                                boolValues.add(true);
+                            }
+                        }
+                        result = Pair.of(ArrayUtils.toPrimitive(boolValues.toArray(ArrayUtils.EMPTY_BOOLEAN_OBJECT_ARRAY)), simulationDurationEvents[i].boolValuesRefs);
                     }
                 }
                 return result;

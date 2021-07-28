@@ -174,7 +174,7 @@ public class Event {
                                 List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
                                 expressionVars.add("t");
                                 CustomOperators operators = new CustomOperators();
-                                eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not).variables(expressionVars.stream().toArray(String[]::new)).build());
+                                eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not, operators.or, operators.and).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("int")){
@@ -310,7 +310,12 @@ public class Event {
                                 dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("bool")){
-                                bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+                                //bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                expressionVars.add("t");
+                                CustomOperators operators = new CustomOperators();
+                                eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not, operators.or, operators.and).variables(expressionVars.stream().toArray(String[]::new)).build());
+                                
                                 bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("int")){
