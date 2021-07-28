@@ -1,0 +1,145 @@
+simulation
+import FaultInject;
+import FMI2;
+import DataWriter;
+import Logger;
+import Math;
+{
+    real START_TIME = 0.0;
+    real END_TIME = 8.0;
+    real STEP_SIZE = 0.1;
+
+    // #############################
+    // DataWriter for results
+    // #############################
+    DataWriter dataWriter = load("DataWriter");
+    string data_headers[2] = {"{crtl}.crtlInstance.valve", "{wt}.wtInstance.level"};
+    DataWriterConfig dataWriterConfiguration = dataWriter.writeHeader(data_headers);
+
+
+    // #############################
+    // Load the FMUs and instantiate instances
+    // #############################
+    FMI2 alltypes = load("FMI2", "{a433c2b9-5929-4d29-a5fd-75f2e9961b13}", "src/test/resources/AllTypes.fmu");
+    FMI2Component alltypesInstance = alltypes.instantiate("alltypesInstance", false, false);
+
+
+    // Create the fault innject wrapper for the controller
+    FaultInject fi = load("FaultInject","src/test/resources/funceval.xml");
+	alltypesInstance = fi.faultInject(alltypes, alltypesInstance, "jjj");
+
+    // Continue with the setup
+    alltypesInstance.setupExperiment(false, 0.0, START_TIME, true, END_TIME);
+
+    // #############################
+    // Set  parameters
+    // #############################
+
+    alltypesInstance.enterInitializationMode();
+
+    uint boolInputVref[1] = { 0 };
+    bool boolInput[1];
+
+    uint doubleInputVref[1] = { 2 };
+    real doubleInput[1];
+
+    uint intInputVref[1] = { 4 };
+    int intInput[1];
+
+    uint stringInputVref[1] = { 6 };
+    string stringInput[1];
+
+    uint boolOutputVref[1] = { 1 };
+    bool boolOutput[1];
+
+    uint doubleOutputVref[1] = { 3 };
+    real doubleOutput[1];
+
+    uint intOutputVref[1] = { 5 };
+   
+    int intOutput[1];
+
+    uint stringOutputVref[1] = { 7 };
+    string stringOutput[1];
+
+    // #############################
+    // Perform the Initialization:
+    // 1. Extract valve state from controller
+    // 2. Convert the valve state from boolean to real
+    // 3. Set the valve state on the tank
+    // 4. Extract the level from the tank
+    // 5. Set the level on the controller
+    // #############################
+
+    bool randomBool[1] = {false};
+    real randomDouble[1] = {3.0};
+    int randomInt[1] = {1};
+    string randomString[1] = {"blahh"};
+
+    alltypesInstance.setBoolean(boolInputVref, 1, randomBool);
+    alltypesInstance.setReal(doubleInputVref, 1, randomDouble);
+    alltypesInstance.setInteger(intInputVref, 1, randomInt);
+    alltypesInstance.setString(stringInputVref, 1, randomString);
+
+    alltypesInstance.exitInitializationMode();
+
+    // #############################
+    // Get the valve state from the controller
+    // Get the level from the tank 
+    // Write the valve state and the water level to the results
+    // #############################
+
+    real time = START_TIME;
+    // #############################
+    // Simulation Loop until END_TIME
+    // #############################
+    while(time + STEP_SIZE <= END_TIME)
+    {
+        // #############################
+        // Set the valve state on the tank
+        // Set the level on the controller
+        // #############################
+        
+        alltypesInstance.setBoolean(boolInputVref, 1, randomBool);
+        alltypesInstance.setReal(doubleInputVref, 1, randomDouble);
+        alltypesInstance.setInteger(intInputVref, 1, randomInt);
+        alltypesInstance.setString(stringInputVref, 1, randomString);
+
+        // #############################
+        // Step the tank
+        // Step the controller
+        // #############################
+        alltypesInstance.doStep(time, STEP_SIZE, true);
+
+        // #############################
+        // Get the valve state from the controller
+        // Get the level from the tank
+        // #############################
+        
+        alltypesInstance.getBoolean(boolOutputVref, 1, boolOutput);
+        alltypesInstance.getReal(doubleOutputVref, 1, doubleOutput);
+        alltypesInstance.getInteger(intOutputVref, 1, intOutput);
+        alltypesInstance.getString(stringOutputVref, 1, stringOutput);
+
+        // #############################
+        // Increase the time with STEP_SIZE
+        // Write the valve state and the water level to the results
+        // #############################
+        time = time + STEP_SIZE;
+
+    }
+    
+    // #############################
+    // Clean up
+    // #############################
+    dataWriter.close();
+    alltypesInstance.terminate();
+    
+    //Return wrapped component
+    alltypesInstance = fi.returnFmuComponentValue(alltypesInstance);
+
+    alltypes.freeInstance(alltypesInstance);
+
+    unload(alltypes);
+    unload(dataWriter);
+}

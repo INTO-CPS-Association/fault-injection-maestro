@@ -2,9 +2,11 @@ package org.intocps.maestro.faultinject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.print.event.PrintEvent;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,6 +23,10 @@ import org.apache.commons.lang.ArrayUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 
 public class Event {
     /**
@@ -42,10 +48,14 @@ public class Event {
     public boolean injected = false;
     public double duration;
     public boolean durationToggle;
+    public List<Expression> expressionForDoubles;
+    public List<Expression> expressionForInts;
+    public List<Expression> expressionForBools;
 
     public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
-            long[] stringValuesRefs, double duration, boolean durationToggle) {
+            long[] stringValuesRefs, double duration, boolean durationToggle, List<Expression> expressionForDoubles,
+            List<Expression> expressionForInts, List<Expression> expressionForBools) {
         this.id = id;
         this.timePoint = timePoint;
         this.doubleValues = doubleValues;
@@ -58,6 +68,9 @@ public class Event {
         this.stringValuesRefs = stringValuesRefs;
         this.duration = duration;
         this.durationToggle = durationToggle; // if set the event is applied to all timesteps, and overrides the effect of duration
+        this.expressionForDoubles = expressionForDoubles;
+        this.expressionForBools = expressionForBools;
+        this.expressionForInts = expressionForInts;
     }
 
     public static void setVerbose(boolean verbose){
@@ -122,6 +135,9 @@ public class Event {
                     double time = Double.parseDouble(eElement.getAttribute("timeStep"));
                     double duration = 1;
                     Boolean durationToggle = false;
+                    List<Expression> ed = new ArrayList<Expression>();
+                    List<Expression> ei = new ArrayList<Expression>();
+                    List<Expression> eb = new ArrayList<Expression>();
                     
                     List<Double> dValues = new ArrayList<Double>();
                     List<Long> dValuesRefs = new ArrayList<Long>();
@@ -143,15 +159,32 @@ public class Event {
                         if(var.getNodeType() == Node.ELEMENT_NODE){
                             Element v = (Element) var;
                             if(v.getAttribute("type").equals("real")){
-                                dValues.add(Double.parseDouble(v.getAttribute("newVal")));
+                                //Get the variables used by this expression
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                //System.out.println(expressionVars);
+                                expressionVars.add("t");
+                                //System.out.println(expressionVars);
+                                ed.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
+                                
                                 dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("bool")){
-                                bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+                                //bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
+
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                expressionVars.add("t");
+                                CustomOperators operators = new CustomOperators();
+                                eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("int")){
-                                iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                //iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                //Get the variables used by this expression
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                //System.out.println(expressionVars);
+                                expressionVars.add("t");
+                                //System.out.println(expressionVars);
+                                ei.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("string")){
@@ -185,7 +218,7 @@ public class Event {
                                             bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             ssValues, 
                                             sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle
+                                            duration, durationToggle, ed, ei, eb
                                         );
                     eIndex++;
                 }
@@ -238,6 +271,9 @@ public class Event {
                     double time = Double.parseDouble(eElement.getAttribute("timeStep"));
                     double duration = 1;
                     Boolean durationToggle = false;
+                    List<Expression> ed = new ArrayList<Expression>();
+                    List<Expression> ei = new ArrayList<Expression>();
+                    List<Expression> eb = new ArrayList<Expression>();
 
                     if(eElement.hasAttribute("duration")){
                         duration = Double.parseDouble(eElement.getAttribute("duration"));
@@ -266,7 +302,11 @@ public class Event {
                         if(var.getNodeType() == Node.ELEMENT_NODE){
                             Element v = (Element) var;
                             if(v.getAttribute("type").equals("real")){
-                                dValues.add(Double.parseDouble(v.getAttribute("newVal")));
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                //System.out.println(expressionVars);
+                                expressionVars.add("t");
+                                ed.add(new ExpressionBuilder(v.getAttribute("newVal")).variables("t").build());
+                                //dValues.add(Double.parseDouble(v.getAttribute("newVal")));
                                 dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("bool")){
@@ -274,7 +314,13 @@ public class Event {
                                 bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("int")){
-                                iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                //iValues.add(Integer.parseInt(v.getAttribute("newVal")));
+                                //Get the variables used by this expression
+                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
+                                //System.out.println(expressionVars);
+                                expressionVars.add("t");
+                                //System.out.println(expressionVars);
+                                ei.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
                             else if(v.getAttribute("type").equals("string")){
@@ -308,7 +354,7 @@ public class Event {
                                             bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             ssValues, 
                                             sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle
+                                            duration, durationToggle, ed, ei, eb
                                         );
                     eIndex++;
                 }

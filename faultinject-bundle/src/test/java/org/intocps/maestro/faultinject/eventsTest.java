@@ -36,4 +36,29 @@ public class eventsTest {
 
 
     }
+
+    @Test
+    public void testfunceval() throws Exception {
+
+        String xmlPath = SimpleTest.class.getClassLoader().getResource("funceval.xml").getPath();
+
+        Event[] simuEvents = {};
+        Event[] simuEventswithDuration = {};
+
+        try {
+            boolean verbose = true;
+            simuEvents = Event.getEvents(xmlPath, verbose);
+            Event.printEvent(simuEvents);
+            
+            simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
+            Event.printEvent(simuEventswithDuration);
+        } catch (NumberFormatException | NullPointerException | SAXException | IOException
+                | ParserConfigurationException e) {
+            logger.error("Something went terribly wrong when creating the events");
+            e.printStackTrace();
+        }
+
+
+    }
+
 }

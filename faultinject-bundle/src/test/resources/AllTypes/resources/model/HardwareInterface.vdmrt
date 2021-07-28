@@ -1,0 +1,27 @@
+
+-- Generated class
+class HardwareInterface
+
+instance variables
+		-- @ interface: type = input, name="doubleInput";
+		public doubleInput : RealPort := new RealPort(0.0);
+		-- @ interface: type = input, name="integerInput";
+		public integerInput : IntPort := new IntPort(0);
+		-- @ interface: type = input, name="boolInput";
+		public boolInput : BoolPort := new BoolPort(false);
+		-- @ interface: type = input, name="stringInput";
+		public stringInput : StringPort := new StringPort("blob");
+	
+	instance variables
+		-- @ interface: type = output, name="doubleOutput";
+		public doubleOutput : RealPort := new RealPort(0.0);
+		-- @ interface: type = output, name="integerOutput";
+		public integerOutput : IntPort := new IntPort(0);	
+		-- @ interface: type = output, name="boolOutput";
+		public boolOutput : BoolPort := new BoolPort(false);
+		-- @ interface: type = output, name="stringOutput";
+		public stringOutput : StringPort := new StringPort("bahamas");
+	
+
+end HardwareInterface
+
