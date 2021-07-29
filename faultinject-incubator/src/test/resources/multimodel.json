@@ -4,20 +4,8 @@
         "{sMonitor}": "safety_monitor_v3.fmu"
     },
     "connections": {
-        "{rbmq}.rbmqInstance.obs_xpos": [
+        "{rbmq}.rbmqInstance.fields.time_t2": [
             "{sMonitor}.sMonitorInstance.obs_xpos_input"
-        ],
-        "{rbmq}.rbmqInstance.obs_ypos": [
-            "{sMonitor}.sMonitorInstance.obs_ypos_input"
-        ],
-        "{rbmq}.rbmqInstance.ypos": [
-            "{sMonitor}.sMonitorInstance.robotti_ypos_input"
-        ],
-        "{rbmq}.rbmqInstance.obstacles": [
-            "{sMonitor}.sMonitorInstance.obstacles_input"
-        ],
-        "{rbmq}.rbmqInstance.xpos": [
-            "{sMonitor}.sMonitorInstance.robotti_xpos_input"
         ],
         "{sMonitor}.sMonitorInstance.command_stop": [
             "{rbmq}.rbmqInstance.command stop"
