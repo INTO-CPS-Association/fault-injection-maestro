@@ -29,28 +29,10 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 The relevant files are in rbmq_example.
 
 #### RMQFMU testing (incubator scenario)
-Run the rabbitmq server from the docker
+Follow the instructions on the incubator to get the simulation running.
+This incudes the startup of the dockerised rabbitmq server.
 
-```bash
-$ cd server
-$ docker-compose up -d
-```
-
-To kill the docker, get the id of the container with docker ps, then issue the kill command
-
-```bash
-$ docker ps
-$ docker kill container_id
-```
-
-To test that the basic co-sim setup works
-
-```bash
-$ cd server/scripts
-$ ./run_py.sh
-```
-
-Then run the test with
+Then from this repo run the test rbmqfmuTest.java
 
 ```bash
 $ cd ../..
