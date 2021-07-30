@@ -4,7 +4,7 @@
 ## it also connects to a custom exchange -- this is not yet configurable on the rmqfmu
 import pika
 import json
-import datetime
+from datetime import datetime, timezone
 import time
 import threading
 import pandas as pd
@@ -31,17 +31,35 @@ def publishToRmqfmu():
         pika.ConnectionParameters(host='localhost', credentials=credentials))
     channel_rmqfmu = connection_rmqfmu.channel()
 
-    channel_rmqfmu.exchange_declare(exchange='fmi_digital_twin', exchange_type='direct')
- 
+    channel_rmqfmu.exchange_declare(exchange='fmi_digital_twin_cd', exchange_type='direct')
+    result = channel_rmqfmu.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+    channel_rmqfmu.queue_bind(exchange='fmi_digital_twin_cd', routing_key='incubator.record.driver.state.data.to_cosim', queue=queue_name)
+    
+    seqno = 1
     try:
         while True:
             if new_data:
                 with lock:
                     flattened = pd.json_normalize(json.loads(data))
-                    channel_rmqfmu.basic_publish(exchange='fmi_digital_twin', routing_key='incubator.record.driver.state', body=json.dumps(flattened.to_json()))
-                    print(flattened)
                     print("")
+                    timet = datetime.fromtimestamp(flattened.iloc[0,1]/pow(10,9)) #turn to sec from nanosec
+                    #flattened.iloc[0,1] = datetime.strftime( timet, "%Y-%m-%dT%H:%M:%S.%f%z").isoformat()
+                    flattened.iloc[0,1] = timet.astimezone().isoformat(timespec='milliseconds')
+                    flattened.iloc[0,4] = flattened.iloc[0,4]/pow(10,9) #turn to sec from nanosec
+                    flattened.iloc[0,6] = flattened.iloc[0,6]/pow(10,9) #turn to sec from nanosec
+                    flattened.iloc[0,8] = flattened.iloc[0,8]/pow(10,9) #turn to sec from nanosec
+                    flattened["seqno"] = seqno
+                    flattened = flattened.reset_index()
+                    del flattened['index']
+                    #remove the first character [ and last ] from the json string
+                    flattened = flattened.to_json(orient='records')[1:-1]
+
+                    channel_rmqfmu.basic_publish(exchange='fmi_digital_twin_cd', routing_key='incubator.record.driver.state.data.to_cosim', body=flattened)
+                    print("[*] Sent")
+                    print(flattened) 
                     new_data = False
+                seqno = seqno + 1
     except KeyboardInterrupt:
         connection_rmqfmu.close()
 

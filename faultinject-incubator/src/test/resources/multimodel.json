@@ -1,23 +1,29 @@
 {
     "fmus": {
-        "{rbmq}": "rabbitmq_v6.fmu",
+        "{rbmq}": "rabbitmq.fmu",
         "{sMonitor}": "safety_monitor_v3.fmu"
     },
     "connections": {
-        "{rbmq}.rbmqInstance.fields.time_t2": [
-            "{sMonitor}.sMonitorInstance.obs_xpos_input"
+        "{rbmq}.rbmqInstance.fields.t1": [
+            "{sMonitor}.sMonitorInstance.obs_xpos_input",
+            "{sMonitor}.sMonitorInstance.obs_ypos_input",
+            "{sMonitor}.sMonitorInstance.robotti_xpos_input",
+            "{sMonitor}.sMonitorInstance.robotti_ypos_input"
+        ],
+        "{rbmq}.rbmqInstance.measurement": [
+            "{sMonitor}.sMonitorInstance.obstacles_input"
         ],
         "{sMonitor}.sMonitorInstance.command_stop": [
-            "{rbmq}.rbmqInstance.command stop"
+            "{rbmq}.rbmqInstance.command_stop"
         ]
     },
     "parameters": {
-        "{rbmq}.rbmqInstance.config.maxage": 2000,
+        "{rbmq}.rbmqInstance.config.maxage": 60000,
         "{rbmq}.rbmqInstance.config.hostname": "localhost",
         "{rbmq}.rbmqInstance.config.precision": 10,
         "{sMonitor}.sMonitorInstance.safety_dist": 10
     },
-    "algorithm":{"type":"fixed-step","size":0.1}, 
+    "algorithm":{"type":"fixed-step","size":3}, 
     "faultInjectConfigurationPath": "target/test-classes/faultEvents.xml",
     "faultInjectInstances": {
         "sMonitorInstance": "id"

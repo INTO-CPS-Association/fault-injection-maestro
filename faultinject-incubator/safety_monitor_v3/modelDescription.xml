@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fmiModelDescription 	fmiVersion="2.0" 
+						modelName="safety_monitor" 
+						guid="{9135211e-e830-4846-b63f-65899e11bf3a}" 
+						description="" 
+						author="" 
+						version="Version 1" 
+						copyright="Copyright Overture tool (Aarhus University)" 
+						license="Some Overture FMI License" 
+						generationTool="Overture Tool FMI Exporter - v0.2.20"
+						generationDateAndTime="2020-12-07T11:15:58" 
+						variableNamingConvention="flat" 
+						numberOfEventIndicators="0">
+
+	<CoSimulation 	modelIdentifier="safety_monitor" 
+					needsExecutionTool="true" 
+					canHandleVariableCommunicationStepSize="true" 
+					canInterpolateInputs="false" 
+					maxOutputDerivativeOrder="0" 
+					canRunAsynchronuously="false" 
+					canBeInstantiatedOnlyOncePerProcess="false"
+					canNotUseMemoryManagementFunctions="true" 
+					canGetAndSetFMUstate="false" 
+					canSerializeFMUstate="false" 
+					providesDirectionalDerivative="false">
+		
+		
+			<SourceFiles>
+				<File name="Controller.vdmrt" />
+				<File name="Fmi.vdmrt" />
+				<File name="HardwareInterface.vdmrt" />
+				<File name="RealInputs.vdmrt" />
+				<File name="RealOutputs.vdmrt" />
+				<File name="System.vdmrt" />
+				<File name="World.vdmrt" />
+				<File name="lib/IO.vdmrt" />
+				<File name="lib/MATH.vdmrt" />
+
+			</SourceFiles>
+		
+		</CoSimulation>
+
+
+
+	<LogCategories>
+		<Category name="logAll" />
+		<Category name="logError" />
+		<Category name="logFmiCall" />
+<!-- Category name="logShm" /-->
+<!-- Category name="logLaunch" /-->
+		<Category name="Protocol" />
+		<Category name="VdmOut" />
+		<Category name="VdmErr" />
+	</LogCategories>
+
+	<VendorAnnotations>
+		<Tool name="Overture">
+			<Overture>
+				<link valueReference="0" name="System.hwi.command_stop.value" />
+				<link valueReference="1" name="System.hwi.dist.value" />
+				<link valueReference="2" name="System.hwi.flag.value" />
+				<link valueReference="3" name="System.hwi.input1.value" />
+				<link valueReference="4" name="System.hwi.input2.value" />
+				<link valueReference="5" name="System.hwi.input3.value" />
+				<link valueReference="6" name="System.hwi.input4.value" />
+				<link valueReference="7" name="System.hwi.input5.value" />
+				<link valueReference="8" name="System.hwi.output1.value" />
+				<link valueReference="9" name="System.hwi.output2.value" />
+				<link valueReference="10" name="System.hwi.output3.value" />
+				<link valueReference="11" name="System.hwi.output4.value" />
+				<link valueReference="12" name="HardwareInterface.safety_dist.value" />
+
+			</Overture>
+		</Tool>
+	</VendorAnnotations>
+
+
+	<ModelVariables>
+
+		<!-- Index 1 -->
+		<ScalarVariable name="command_stop" valueReference="0" causality="output" variability="discrete" initial="approx"><Boolean start="false" /></ScalarVariable>
+		<!-- Index 2 -->
+		<ScalarVariable name="dist" valueReference="1" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 3 -->
+		<ScalarVariable name="flag" valueReference="2" causality="output" variability="discrete" initial="approx"><Boolean start="false" /></ScalarVariable>
+		<!-- Index 4 -->
+		<ScalarVariable name="robotti_xpos_input" valueReference="3" causality="input" variability="discrete"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 5 -->
+		<ScalarVariable name="robotti_ypos_input" valueReference="4" causality="input" variability="discrete"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 6 -->
+		<ScalarVariable name="obs_xpos_input" valueReference="5" causality="input" variability="discrete"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 7 -->
+		<ScalarVariable name="obs_ypos_input" valueReference="6" causality="input" variability="discrete"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 8 -->
+		<ScalarVariable name="obstacles_input" valueReference="7" causality="input" variability="discrete"><String start="0;" /></ScalarVariable>
+		<!-- Index 9 -->
+		<ScalarVariable name="robotti_xpos_output" valueReference="8" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 10 -->
+		<ScalarVariable name="robotti_ypos_output" valueReference="9" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 11 -->
+		<ScalarVariable name="obs_xpos_output" valueReference="10" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 12 -->
+		<ScalarVariable name="obs_ypos_output" valueReference="11" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 13 -->
+		<ScalarVariable name="safety_dist" valueReference="12" causality="parameter" variability="fixed" initial="exact"><Real start="5.0" /></ScalarVariable>
+
+	
+	</ModelVariables>
+
+	<ModelStructure>
+	<Outputs>
+			<Unknown index="1"  dependencies=""/>			<Unknown index="2"  dependencies=""/>			<Unknown index="3"  dependencies=""/>			<Unknown index="9"  dependencies=""/>			<Unknown index="10"  dependencies=""/>			<Unknown index="11"  dependencies=""/>			<Unknown index="12"  dependencies=""/>
+	</Outputs>
+
+
+	</ModelStructure>
+
+</fmiModelDescription>
