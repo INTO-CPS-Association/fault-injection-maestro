@@ -32,7 +32,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.intocps.maestro.Main</mainClass>
+                            <mainClass>org.intocps.maestro.faultinject.incubator.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
