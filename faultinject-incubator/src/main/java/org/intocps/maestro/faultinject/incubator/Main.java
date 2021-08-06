@@ -15,6 +15,10 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) throws IOException {
+        argumentHandler(args);
+    }
+
+    public static boolean argumentHandler(String[] args) throws IOException {
         if(args.length == 3) {
             String initializePath = args[0];
             String simulationJsonPath = args[1];
@@ -33,6 +37,8 @@ public class Main {
         else
         {
             System.out.println("Expected 3 arguments, found " + args.length);
+            return false;
         }
+        return true;
     }
 }

@@ -2,6 +2,7 @@ package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
 import org.intocps.maestro.faultinject.incubator.Main;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,11 +27,12 @@ public class rbmqfmuTest {
     }
 
     @Test
+    @Ignore("Ignored as it has external dependencies")
     public void testMainWithConfig() throws IOException {
         String initializePath = rbmqfmuTest.class.getClassLoader().getResource("multimodel.json").getPath();
         String simulateJson = rbmqfmuTest.class.getClassLoader().getResource("coe.json").getPath();
         String dumpPath = "target/test-classes/rbmq_example/dump";
-        Main.main(new String[]{initializePath, simulateJson, dumpPath});
+        Assert.assertTrue(Main.argumentHandler(new String[]{initializePath, simulateJson, dumpPath}));
 
     }
 }
