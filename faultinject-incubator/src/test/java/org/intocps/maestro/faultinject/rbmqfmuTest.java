@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 
 public class rbmqfmuTest {
     @Test
+    @Ignore("Ignored as it has external dependencies")
     public void testWithConfig() throws Exception {
         String initializePath = rbmqfmuTest.class.getClassLoader().getResource("multimodel.json").getPath();
         String simulateJson = rbmqfmuTest.class.getClassLoader().getResource("coe.json").getPath();
