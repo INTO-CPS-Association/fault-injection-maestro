@@ -74,7 +74,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
             private static double currentStep = 0.0;
             private static double stepSize = 0.1;
 
-            private static Event[] simulationEvents;
+            private static Event[] simulationEvents = {};
             private static Event[] simulationDurationEvents;
 
             //Used by the expression evaluator to take into account the state of the fmu during injection.
@@ -89,26 +89,12 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 this.fmu = fmu;
             }
 
-            public static Event[] createEvents(String faultSpecFile){
-                Event[] simuEvents = {};
-                try {
-                    boolean verbose = true;
-                    simuEvents = Event.getEvents(faultSpecFile, verbose);
-                    Event.printEvent(simuEvents);
-                    return simuEvents;
-                } catch (NumberFormatException | NullPointerException | SAXException | IOException
-                        | ParserConfigurationException e) {
-                    logger.error("Something went terribly wrong when creating the events");
-                    e.printStackTrace();
-                    return simuEvents;
-                }
-            }
-
             public static Event[] createDurationEvents(String faultSpecFile){
                 Event[] simuEvents = {};
                 try {
                     boolean verbose = true;
                     simuEvents = Event.getEventswithDuration(faultSpecFile, verbose);
+                    logger.warn(String.format("length of events: %d", simuEvents.length));
                     Event.printEvent(simuEvents);
                     return simuEvents;
                 } catch (NumberFormatException | NullPointerException | SAXException | IOException
@@ -190,78 +176,129 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 throw new InterpreterException("Value is not an array");
             }
 
+            public static boolean evaluateWhenCondition(Expression e){
+                //System.out.println(e);
+                //System.out.println("EVAL");
+                Set<String> whenVars = e.getVariableNames();
+                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+
+                //if variable in expression set its value
+                if (whenVars.contains("t"))//simulation time
+                {
+                    //System.out.println("EVAL");
+                    e.setVariable("t", currentStep + stepSize);
+                    //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
+                }
+                //Check if any boolean inputs are needed in the expression
+                for (Map.Entry<Long,Boolean> entry : currentInput.booleanValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        if(entry.getValue().booleanValue())
+                        {
+                            e.setVariable(var, 1d);
+                        }
+                        else{
+                            e.setVariable(var, 0d);
+                        }
+                        //logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
+                    }
+                }
+                //Check if any boolean outputs are needed in the expression
+                for (Map.Entry<Long,Boolean> entry : currentOutput.booleanValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        if(entry.getValue().booleanValue())
+                        {
+                            e.setVariable(var, 1d);
+                        }
+                        else{
+                            e.setVariable(var, 0d);
+                        }
+                        //logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
+                    }
+                }
+                
+                //Check if any double inputs are needed in the expression
+                for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        e.setVariable(var, entry.getValue());
+                        logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                    }
+                }
+                //Check if any double outputs are needed in the expression
+                for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        e.setVariable(var, entry.getValue());
+                        logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                    }
+                }
+                
+                //Check if any int inputs are needed in the expression
+                for (Map.Entry<Long,Integer> entry : currentInput.integerValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        e.setVariable(var, entry.getValue());
+                        //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
+                    }
+                }
+                //Check if any int outputs are needed in the expression
+                for (Map.Entry<Long,Integer> entry : currentOutput.integerValues.entrySet())
+                {
+                    String var = "var_"+entry.getKey();
+                    //logger.warn(var);
+                    if (whenVars.contains(var))
+                    {
+                        e.setVariable(var, entry.getValue());
+                        //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
+                    }
+                }
+
+                if(e.evaluate() == 0d)
+                {
+                    
+                    return false;
+                }
+                else
+                {
+                    System.out.println("INJECTING");
+                    return true;
+                }
+            }
+
             public static Pair<double[], long[]> getDoublesFromEvent(){
                 //Check the first event in simulationEvents
                 double[] dv = {};
                 long[] dvr = {};
                 Pair<double[], long[]> result = Pair.of(dv,dvr);
-                //checking for one time events
-                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Looking for One-Time Events");
-                    //Evaluate expression, by checking which variables are contained, and setting them first. 
-                    List<Double> doubleValues = new ArrayList<>(simulationEvents[0].doubleValuesRefs.length);
-
-                    //for(int i = 0; i <simulationEvents[0].doubleValuesRefs.length; i++) 
-                        //logger.warn(String.format("dvr %d", simulationEvents[0].doubleValuesRefs[i]));
-                    for(int vr = 0; vr < simulationEvents[0].doubleValuesRefs.length; vr++)
-                    {
-                            Expression e = simulationEvents[0].expressionForDoubles.get(vr);
-                            System.out.println(e);
-
-                            Set<String> vars = e.getVariableNames();
-                            //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
-
-                            //if variable in expression set its value
-                            if (vars.contains("t"))//simulation time
-                            {
-                                e.setVariable("t", currentStep + stepSize);
-                                //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
-                            }
-                            //Check if any inputs are needed in the expression
-                            for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
-                            {
-                                String var = "var_"+entry.getKey();
-                                logger.warn(var);
-                                if (vars.contains(var))
-                                {
-                                    e.setVariable(var, entry.getValue());
-                                    //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
-                                }
-                            }
-                            //Check if any outputs are needed in the expression
-                            for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
-                            {
-                                String var = "var_"+entry.getKey();
-                                logger.warn(var);
-                                if (vars.contains(var))
-                                {
-                                    e.setVariable(var, entry.getValue());
-                                    //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
-                                }
-                            }
-                            doubleValues.add(e.evaluate());
-                    }
-
-                    result = Pair.of(doubleValues.stream().mapToDouble(Double::doubleValue).toArray(), simulationEvents[0].doubleValuesRefs);
-                }
-                //checking for duration events
                 //loop over duration events
-                int atStartorBigger, atEndorSmaller;
-                boolean equalToStart, equalToEnd, withinDuration;
+                boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
-                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
-                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
-                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
 
-                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
 
-                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                    if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
                         //Evaluate expression, by checking which variables are contained, and setting them first. 
                         List<Double> doubleValues = new ArrayList<>(simulationDurationEvents[i].doubleValuesRefs.length);
 
-                        for(int vr = 0; vr < simulationEvents[i].doubleValuesRefs.length; vr++)
+                        for(int vr = 0; vr < simulationDurationEvents[i].doubleValuesRefs.length; vr++)
                         {
                                 Expression e = simulationDurationEvents[i].expressionForDoubles.get(vr);
                                 System.out.println(e);
@@ -312,69 +349,21 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 int[] dv = {};
                 long[] dvr = {};
                 Pair<int[], long[]> result = Pair.of(dv,dvr);
-                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Injecting One-Time Events");
-                    List<Integer> intValues = new ArrayList<>(simulationEvents[0].intValuesRefs.length);
-
-                    for(int vr = 0; vr < simulationEvents[0].intValuesRefs.length; vr++)
-                    {
-                        Expression e = simulationEvents[0].expressionForInts.get(vr);
-                        System.out.println(e);
-
-                        Set<String> vars = e.getVariableNames();
-                                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
-
-                        //if variable in expression set its value
-                        if (vars.contains("t"))//simulation time
-                        {
-                            e.setVariable("t", currentStep + stepSize);
-                            //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
-                        }
-                        //Check if any inputs are needed in the expression
-                        for (Map.Entry<Long,Integer> entry : currentInput.integerValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
-                            {
-                                e.setVariable(var, entry.getValue());
-                                //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
-                            }
-                        }
-                        //Check if any outputs are needed in the expression
-                        for (Map.Entry<Long,Integer> entry : currentOutput.integerValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
-                            {
-                                e.setVariable(var, entry.getValue());
-                                //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
-                            }
-                        }
-                        intValues.add((int) e.evaluate());
-                    }
-                    result = Pair.of(intValues.stream().mapToInt(Integer::intValue).toArray(), simulationEvents[0].intValuesRefs);
-                }
+                
                 //checking for duration events
                 //loop over duration events
-                int atStartorBigger, atEndorSmaller;
-                boolean equalToStart, equalToEnd, withinDuration;
+                boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
-                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
-                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
-                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
 
-                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
 
-                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
-                        logger.warn("Injecting Duration Events");
+                    if(withinDuration){//comparing doubles...
+                        logger.warn("Looking for Duration Events");
                         List<Integer> intValues = new ArrayList<>(simulationDurationEvents[i].intValuesRefs.length);
 
-                        for(int vr = 0; vr < simulationEvents[i].intValuesRefs.length; vr++)
+                        for(int vr = 0; vr < simulationDurationEvents[i].intValuesRefs.length; vr++)
                         {
-                            Expression e = simulationEvents[i].expressionForInts.get(vr); 
+                            Expression e = simulationDurationEvents[i].expressionForInts.get(vr); 
                             System.out.println(e);
 
                             Set<String> vars = e.getVariableNames();
@@ -421,93 +410,24 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 boolean[] dv = {};
                 long[] dvr = {};
                 Pair<boolean[], long[]> result = Pair.of(dv,dvr);
-                if(simulationEvents.length != 0 && Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Looking for One-Time Events");
-                    List<Boolean> boolValues = new ArrayList<>(simulationEvents[0].boolValuesRefs.length);
-                    
-                    for(int vr = 0; vr < simulationEvents[0].boolValuesRefs.length; vr++)
-                    {
-                        Expression e = simulationEvents[0].expressionForBools.get(vr);
-                        System.out.println(e);
-
-                        Set<String> vars = e.getVariableNames();
-                                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
-
-                        //if variable in expression set its value
-                        if (vars.contains("t"))//simulation time
-                        {
-                            e.setVariable("t", currentStep + stepSize);
-                            //logger.warn(String.format("Set value of t variable %f", currentStep + stepSize));
-                        }
-                        //Check if any inputs are needed in the expression
-                        for (Map.Entry<Long,Boolean> entry : currentInput.booleanValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
-                            {
-                                if(entry.getValue().booleanValue())
-                                {
-                                    e.setVariable(var, 1d);
-                                }
-                                else{
-                                    e.setVariable(var, 0d);
-                                }
-                                //logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
-                            }
-                        }
-                        //Check if any outputs are needed in the expression
-                        for (Map.Entry<Long,Boolean> entry : currentOutput.booleanValues.entrySet())
-                        {
-                            String var = "var_"+entry.getKey();
-                            logger.warn(var);
-                            if (vars.contains(var))
-                            {
-                                if(entry.getValue().booleanValue())
-                                {
-                                    e.setVariable(var, 1d);
-                                }
-                                else{
-                                    e.setVariable(var, 0d);
-                                }
-                                //logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
-                            }
-                        }
-                        if(e.evaluate() == 0d)
-                        {
-                            boolValues.add(false);
-                        }
-                        else
-                        {
-                            boolValues.add(true);
-                        }
-                    }
-                    result = Pair.of(ArrayUtils.toPrimitive(boolValues.toArray(ArrayUtils.EMPTY_BOOLEAN_OBJECT_ARRAY)), simulationEvents[0].boolValuesRefs);
-                
-                }
                 //checking for duration events
                 //loop over duration events
-                int atStartorBigger, atEndorSmaller;
-                boolean equalToStart, equalToEnd, withinDuration;
+                boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
-                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
-                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
-                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
 
-                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
-
-                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
+                    if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
-                        List<Boolean> boolValues = new ArrayList<>(simulationEvents[i].boolValuesRefs.length);
+                        List<Boolean> boolValues = new ArrayList<>(simulationDurationEvents[i].boolValuesRefs.length);
                     
-                        for(int vr = 0; vr < simulationEvents[i].boolValuesRefs.length; vr++)
+                        for(int vr = 0; vr < simulationDurationEvents[i].boolValuesRefs.length; vr++)
                         {
-                            Expression e = simulationEvents[i].expressionForBools.get(vr);
+                            logger.warn("iterating");
+                            Expression e = simulationDurationEvents[i].expressionForBools.get(vr);
                             System.out.println(e);
 
                             Set<String> vars = e.getVariableNames();
-                                    //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+                            //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
 
                             //if variable in expression set its value
                             if (vars.contains("t"))//simulation time
@@ -569,24 +489,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 String[] dv = {};
                 long[] dvr = {};
                 Pair<String[], long[]> result = Pair.of(dv,dvr);
-                if(Math.abs(currentStep + stepSize - simulationEvents[0].timePoint) <= 0.0000001){//comparing doubles...
-                    logger.warn("Injecting One-Time Events");
-                    result = Pair.of(simulationEvents[0].stringValues, simulationEvents[0].stringValuesRefs);
-                }
-                //checking for duration events
-                //loop over duration events
-                int atStartorBigger, atEndorSmaller;
-                boolean equalToStart, equalToEnd, withinDuration;
+                boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    atStartorBigger = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint);
-                    equalToStart = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint) <= 0.0000001;
-                    atEndorSmaller = Double.compare(currentStep + stepSize, simulationDurationEvents[i].timePoint+simulationDurationEvents[i].duration);
-                    equalToEnd = Math.abs(currentStep + stepSize - simulationDurationEvents[i].timePoint-simulationDurationEvents[i].duration) <= 0.0000001;
-
-                    withinDuration = (equalToStart || atStartorBigger > 0) && (equalToEnd || atEndorSmaller < 0);
-
-                    if((withinDuration || simulationDurationEvents[i].durationToggle)){//comparing doubles...
-                        logger.warn("Injecting Duration Events");
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
+                    if(withinDuration){//comparing doubles...
+                        logger.warn("Looking for Duration Events");
                         result = Pair.of(simulationDurationEvents[i].stringValues, simulationDurationEvents[i].stringValuesRefs);
                     }
                 }
@@ -648,12 +555,12 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     double communicationStepSize = getDouble(fcargs.get(1));
                     boolean noSetFMUStatePriorToCurrentPoint = getBool(fcargs.get(2));
                     
-                    logger.warn(String.format("doStep at time %f", currentCommunicationPoint));
+                    logger.warn(String.format("doStep for time %f", currentCommunicationPoint+communicationStepSize));
                     // Keep track of the current timestep in which the fmu is. Needed by the inject functions. 
                     currentStep = currentCommunicationPoint;
                     // Cleanup the events array
-                    simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep, 1);
-                    simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep, 0);
+                    //simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep, 1);
+                    //simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep, 0);
         
                     try {
                         Fmi2Status res = component.getModule().doStep(currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint);
@@ -671,11 +578,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     double[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
                     
-                    logger.warn(String.format("The values to set %s for time %f", Arrays.toString(values), currentStep+stepSize));
+                    //logger.warn(String.format("The values to set %s for time %f", Arrays.toString(values), currentStep+stepSize));
 
-                    logger.warn(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
+                    //logger.warn(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
                     
-                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                    if(simulationDurationEvents.length != 0){
                         //Get data from the next event if any
                         double[] result;
                         long[] newValuesRefs;
@@ -693,7 +600,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         values = ArrayUtils.toPrimitive(injected);
                     }
                     
-                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+                    logger.warn(String.format("The INPUT values %s", Arrays.toString(values)));
 
                     //clear previous double outputs
                     currentInput.doubleValues.clear();
@@ -706,7 +613,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                     try {
                         Fmi2Status res = component.getModule().setReals(scalarValueIndices, values);
-                        logger.warn(String.format("setupReal outcome %d", res.value));
+                        //logger.warn(String.format("setupReal outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (InvalidParameterException | FmiInvalidNativeStateException e) {
                         throw new InterpreterException(e);
@@ -726,7 +633,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                     try {
                         FmuResult<double[]> res = component.getModule().getReal(scalarValueIndices);
-                        logger.warn(String.format("getReal outcome: %d", res.status.value));
+                        //logger.warn(String.format("getReal outcome: %d", res.status.value));
 
                         if (res.status == Fmi2Status.OK) {
                             UpdatableValue ref = (UpdatableValue) fcargs.get(2);
@@ -735,7 +642,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             List<RealValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(d -> new RealValue(d)).collect(Collectors.toList());
         
                             //Inject after getting the values
-                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                            if(simulationDurationEvents.length != 0){
                                 //Get data from the next event if any
                                 double[] result;
                                 long[] newValuesRefs;
@@ -789,7 +696,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     boolean[] values = ArrayUtils.toPrimitive(
                             getArrayValue(fcargs.get(2), Optional.of(elementsToUse), BooleanValue.class).stream().map(BooleanValue::getValue).collect(Collectors.toList())
                                     .toArray(new Boolean[]{}));
-                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                    if(simulationDurationEvents.length != 0){
                         //Get data from the next event if any
                         boolean[] result;
                         long[] newValuesRefs;
@@ -814,7 +721,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         currentInput.booleanValues.put(scalarValueIndices[i], values[i]);
                         //logger.warn(String.format("current input doubles %d, %f", scalarValueIndices[i], values[i]));
                     }
-                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+                    logger.warn(String.format("The INPUT values %s", Arrays.toString(values)));
                     
                     try {
                         Fmi2Status res = component.getModule().setBooleans(scalarValueIndices, values);
@@ -843,7 +750,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             List<BooleanValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(BooleanValue::new).collect(Collectors.toList());
         
                             //Inject after getting the values
-                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                            if(simulationDurationEvents.length != 0){
                                 //Get data from the next event if any
                                 boolean[] result;
                                 long[] newValuesRefs;
@@ -893,7 +800,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
                     int[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
                     
-                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                    if(simulationDurationEvents.length != 0){
                         //Get data from the next event if any data
                         int[] result;
                         long[] newValuesRefs;
@@ -912,7 +819,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         values = ArrayUtils.toPrimitive(injected); 
                     }
 
-                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+                    logger.warn(String.format("The INPUT values %s", Arrays.toString(values)));
                     //clear previous double outputs
                     currentInput.integerValues.clear();
 
@@ -924,7 +831,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                     try {
                         Fmi2Status res = component.getModule().setIntegers(scalarValueIndices, values);
-                        logger.warn(String.format("setupInteger outcome %d", res.value));
+                        //logger.warn(String.format("setupInteger outcome %d", res.value));
                         return new IntegerValue(res.value);
                     } catch (InvalidParameterException | FmiInvalidNativeStateException e) {
                         throw new InterpreterException(e);
@@ -952,7 +859,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                     Arrays.stream(ArrayUtils.toObject(res.result)).map(i -> new IntegerValue(i)).collect(Collectors.toList());
         
                             //Inject after getting the values
-                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                            if(simulationDurationEvents.length != 0){
                                 //Get data from the next event if any
                                 int[] result;
                                 long[] newValuesRefs;
@@ -1004,7 +911,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     String[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), StringValue.class).stream().map(StringValue::getValue).collect(Collectors.toList())
                             .toArray(new String[]{});
 
-                    if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                    if(simulationDurationEvents.length != 0){
                         //Get data from the next event if any data
                         String[] newValues;
                         long[] newValuesRefs;
@@ -1017,7 +924,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         values = inject(values, scalarValueIndices, newValues, newValuesRefs);
                     }
 
-                    logger.warn(String.format("The values %s", Arrays.toString(values)));
+                    logger.warn(String.format("The INPUT values %s", Arrays.toString(values)));
 
                     try {
                         Fmi2Status res = component.getModule().setStrings(scalarValueIndices, values);
@@ -1048,7 +955,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             List<StringValue> values = Arrays.stream(res.result).map(StringValue::new).collect(Collectors.toList());
         
                             //Inject after getting the values
-                            if(simulationEvents.length != 0 || simulationDurationEvents.length != 0){
+                            if(simulationDurationEvents.length != 0){
                                 //Get data from the next event if any
                                 String[] newValues;
                                 long[] newValuesRefs;
@@ -1286,7 +1193,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                 }));
                 
-                simulationEvents = createEvents(faultSpecFile);
                 simulationDurationEvents = createDurationEvents(faultSpecFile);
                 return new WrapperFmuComponentValue(component, wrapperMembers, wrapperID, fmu);
             }

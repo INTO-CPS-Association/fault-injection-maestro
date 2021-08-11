@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.print.event.PrintEvent;
+import javax.swing.text.AbstractDocument.ElementEdit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,6 +52,30 @@ public class Event {
     public List<Expression> expressionForDoubles;
     public List<Expression> expressionForInts;
     public List<Expression> expressionForBools;
+    public Expression when;
+
+    public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
+            long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
+            long[] stringValuesRefs, double duration, boolean durationToggle, List<Expression> expressionForDoubles,
+            List<Expression> expressionForInts, List<Expression> expressionForBools, Expression when) {
+        this.id = id;
+        this.timePoint = timePoint;
+        this.doubleValues = doubleValues;
+        this.doubleValuesRefs = doubleValuesRefs;
+        this.intValues = intValues;
+        this.intValuesRefs = intValuesRefs;
+        this.boolValues = boolValues;
+        this.boolValuesRefs = boolValuesRefs;
+        this.stringValues = stringValues;
+        this.stringValuesRefs = stringValuesRefs;
+        this.duration = duration;
+        this.durationToggle = durationToggle; // if set the event is applied to all timesteps, and overrides the effect of duration
+        this.expressionForDoubles = expressionForDoubles;
+        this.expressionForBools = expressionForBools;
+        this.expressionForInts = expressionForInts;
+        this.when = when;
+        
+    }
 
     public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
@@ -71,7 +96,8 @@ public class Event {
         this.expressionForDoubles = expressionForDoubles;
         this.expressionForBools = expressionForBools;
         this.expressionForInts = expressionForInts;
-    }
+
+}
 
     public static void setVerbose(boolean verbose){
         Event.verbose = verbose;
@@ -93,143 +119,6 @@ public class Event {
         return document.getElementsByTagName("event");
     }
 
-    public static Event[] getEvents(String specificationFileName, boolean verbose)
-            throws SAXException, IOException, ParserConfigurationException, 
-                NullPointerException, NumberFormatException {
-
-        //Parse document
-        NodeList eventsList = parseXMLDom(specificationFileName);
-
-        //find out how many events
-        int nrEvents = eventsList.getLength();
-        logger.warn(String.format("Nr of events %d", nrEvents));
-
-        Event.verbose = verbose;
-        
-        //find how many one time events
-        int nrOneOffEvents = 0;
-        for(int i = 0; i < nrEvents; i++){
-            Node node = eventsList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE)
-            {
-                Element eElement = (Element) node;
-                if(!eElement.hasAttribute("duration") && !eElement.hasAttribute("durationToggle")){
-                    nrOneOffEvents++;
-                }
-            }
-        }
-
-        //create events one by one manually
-        Event[] events = new Event[nrOneOffEvents];
-        //Loop through events
-        //loop all events and keep only those that are one off events
-        int eIndex = 0; // use eIndex to index the events array for one time events.
-        for(int i = 0; i < nrEvents; i++){
-            Node node = eventsList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE)
-            {
-                Element eElement = (Element) node;
-
-                if(!eElement.hasAttribute("duration") && !eElement.hasAttribute("durationToggle")){
-                    int id = Integer.parseInt(eElement.getAttribute("id"));
-                    double time = Double.parseDouble(eElement.getAttribute("timeStep"));
-                    double duration = 1;
-                    Boolean durationToggle = false;
-                    List<Expression> ed = new ArrayList<Expression>();
-                    List<Expression> ei = new ArrayList<Expression>();
-                    List<Expression> eb = new ArrayList<Expression>();
-                    
-                    List<Double> dValues = new ArrayList<Double>();
-                    List<Long> dValuesRefs = new ArrayList<Long>();
-
-                    List<Boolean> bValues = new ArrayList<Boolean>();
-                    List<Long> bValuesRefs = new ArrayList<Long>();
-
-                    List<Integer> iValues = new ArrayList<Integer>();
-                    List<Long> iValuesRefs = new ArrayList<Long>();
-
-                    List<String> sValues = new ArrayList<String>();
-                    List<Long> sValuesRefs = new ArrayList<Long>();
-
-                    NodeList variables = eElement.getElementsByTagName("variable");
-                    //Loop through variables within one event
-                    for(int j = 0; j < variables.getLength(); j++){
-                        Node var = variables.item(j);
-                        //prepare the values which are passed to the event constructor.
-                        if(var.getNodeType() == Node.ELEMENT_NODE){
-                            Element v = (Element) var;
-                            if(v.getAttribute("type").equals("real")){
-                                //Get the variables used by this expression
-                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
-                                //System.out.println(expressionVars);
-                                expressionVars.add("t");
-                                //System.out.println(expressionVars);
-                                ed.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
-                                
-                                dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                            }
-                            else if(v.getAttribute("type").equals("bool")){
-                                //bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
-
-                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
-                                expressionVars.add("t");
-                                CustomOperators operators = new CustomOperators();
-                                eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not, operators.or, operators.and).variables(expressionVars.stream().toArray(String[]::new)).build());
-                                bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                            }
-                            else if(v.getAttribute("type").equals("int")){
-                                //iValues.add(Integer.parseInt(v.getAttribute("newVal")));
-                                //Get the variables used by this expression
-                                List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
-                                //System.out.println(expressionVars);
-                                expressionVars.add("t");
-                                //System.out.println(expressionVars);
-                                ei.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
-                                iValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                            }
-                            else if(v.getAttribute("type").equals("string")){
-                                sValues.add(v.getAttribute("newVal"));
-                                sValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
-                            }
-                            else{
-                                throw new WrapperException(String.format("Unrecognized type: %s, when parsing faultInjectSpecification xml", v.getAttribute("type")));
-                            }
-                        }
-                    }
-
-                    //Convert List<Boolean> to boolean[]
-                    boolean[] bbValues = new boolean[bValues.size()];
-                    for(int k = 0; k< bValues.size(); k++){
-                        bbValues[k] = bValues.get(k);
-                    }
-                    String[] ssValues = new String[sValues.size()];
-                    //Convert List<String> to string[]
-                    for(int k = 0; k< sValues.size(); k++){
-                        ssValues[k] = sValues.get(k);
-                    }
-                    
-                    //Call event i constructor
-                    events[eIndex] = new Event(id, time, 
-                                            dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
-                                            dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            iValues.stream().mapToInt(Integer::intValue).toArray(), 
-                                            iValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            bbValues, 
-                                            bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            ssValues, 
-                                            sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle, ed, ei, eb
-                                        );
-                    eIndex++;
-                }
-
-                
-            }
-        }
-
-        return events;
-    }
-
     public static Event[] getEventswithDuration(String specificationFileName, boolean verbose)throws SAXException, IOException, ParserConfigurationException, 
     NullPointerException, NumberFormatException {
         //Parse document
@@ -241,47 +130,41 @@ public class Event {
 
         Event.verbose = verbose;
 
-        //find how many one time events
-        int nrDurationEvents = 0;
-        for(int i = 0; i < nrEvents; i++){
-            Node node = eventsList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE)
-            {
-                Element eElement = (Element) node;
-                if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle")){
-                    nrDurationEvents++;
-                }
-            }
-        }
 
         //create events one by one manually
-        Event[] events = new Event[nrDurationEvents];
+        Event[] events = new Event[nrEvents];
         //Loop through events
         //loop all events and keep only those that are duration events
-        int eIndex = 0; // use eIndex to index the events array for duration events.
         for(int i = 0; i < nrEvents; i++){
             Node node = eventsList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE)
             {
                 Element eElement = (Element) node;
 
-                if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle"))
+                //if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle"))
+                if(eElement.hasAttribute("when"))
                 {
                     int id = Integer.parseInt(eElement.getAttribute("id"));
-                    double time = Double.parseDouble(eElement.getAttribute("timeStep"));
+                    double time = 0;
+
+                    CustomOperators operators = new CustomOperators();
+                    List<String> whenExpressionVars =  new ArrayList<String>();
+                    
+                    if(eElement.hasAttribute("vars")){
+                        whenExpressionVars.addAll(Arrays.asList(eElement.getAttribute("vars").split(",")));
+                    }
+                    whenExpressionVars.add("t");
+
+                    Expression when = new ExpressionBuilder(eElement.getAttribute("when")).operator(operators.not, operators.or, operators.and, operators.gt, 
+                                                                                                    operators.gteq, operators.lt, operators.lteq, operators.eq)
+                                                                                          .variables(whenExpressionVars.stream().toArray(String[]::new)).build();
+
                     double duration = 1;
                     Boolean durationToggle = false;
                     List<Expression> ed = new ArrayList<Expression>();
                     List<Expression> ei = new ArrayList<Expression>();
                     List<Expression> eb = new ArrayList<Expression>();
 
-                    if(eElement.hasAttribute("duration")){
-                        duration = Double.parseDouble(eElement.getAttribute("duration"));
-                    }
-                    if(eElement.hasAttribute("durationToggle")){
-                        durationToggle = Boolean.parseBoolean(eElement.getAttribute("durationToggle"));
-                    }
-                    
                     List<Double> dValues = new ArrayList<Double>();
                     List<Long> dValuesRefs = new ArrayList<Long>();
 
@@ -305,7 +188,7 @@ public class Event {
                                 List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
                                 //System.out.println(expressionVars);
                                 expressionVars.add("t");
-                                ed.add(new ExpressionBuilder(v.getAttribute("newVal")).variables("t").build());
+                                ed.add(new ExpressionBuilder(v.getAttribute("newVal")).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 //dValues.add(Double.parseDouble(v.getAttribute("newVal")));
                                 dValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
                             }
@@ -313,7 +196,6 @@ public class Event {
                                 //bValues.add(Boolean.parseBoolean(v.getAttribute("newVal")));
                                 List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
                                 expressionVars.add("t");
-                                CustomOperators operators = new CustomOperators();
                                 eb.add(new ExpressionBuilder(v.getAttribute("newVal")).operator(operators.not, operators.or, operators.and).variables(expressionVars.stream().toArray(String[]::new)).build());
                                 
                                 bValuesRefs.add(Long.parseLong(v.getAttribute("valRef")));
@@ -350,7 +232,7 @@ public class Event {
                     }
                     
                     //Call event i constructor
-                    events[eIndex] = new Event(id, time, 
+                    events[i] = new Event(id, time, 
                                             dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
                                             dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             iValues.stream().mapToInt(Integer::intValue).toArray(), 
@@ -359,14 +241,13 @@ public class Event {
                                             bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             ssValues, 
                                             sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle, ed, ei, eb
+                                            duration, durationToggle, ed, ei, eb, when
                                         );
-                    eIndex++;
                 }
 
             }
         }
-
+        logger.warn(String.format("after creation %d", events.length));
         return events;
     }
 
@@ -408,8 +289,7 @@ public class Event {
                                 + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
                                 + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
-                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
-                                + "; duration: " + e.duration + "; durationToggle: " + e.durationToggle;
+                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs);
             logger.warn(printText);
         }
     }

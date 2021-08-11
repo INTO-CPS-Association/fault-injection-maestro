@@ -6,7 +6,7 @@ import Logger;
 import Math;
 {
     real START_TIME = 0.0;
-    real END_TIME = 8.0;
+    real END_TIME = 0.5;
     real STEP_SIZE = 0.1;
 
     // #############################
@@ -25,7 +25,7 @@ import Math;
 
 
     // Create the fault innject wrapper for the controller
-    FaultInject fi = load("FaultInject","src/test/resources/funceval.xml");
+    FaultInject fi = load("FaultInject","src/test/resources/funceval_when.xml");
 	alltypesInstance = fi.faultInject(alltypes, alltypesInstance, "jjj");
 
     // Continue with the setup

@@ -38,17 +38,19 @@ public class eventsTest {
     }
 
     @Test
+
+    @Ignore("Not needed now")
     public void testfunceval() throws Exception {
 
-        String xmlPath = SimpleTest.class.getClassLoader().getResource("funceval.xml").getPath();
+        String xmlPath = SimpleTest.class.getClassLoader().getResource("funceval_when.xml").getPath();
 
         Event[] simuEvents = {};
         Event[] simuEventswithDuration = {};
 
         try {
             boolean verbose = true;
-            simuEvents = Event.getEvents(xmlPath, verbose);
-            Event.printEvent(simuEvents);
+            //simuEvents = Event.getEvents(xmlPath, verbose);
+            //Event.printEvent(simuEvents);
             
             simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
             Event.printEvent(simuEventswithDuration);

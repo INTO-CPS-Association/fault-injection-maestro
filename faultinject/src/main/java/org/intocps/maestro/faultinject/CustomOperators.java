@@ -44,7 +44,9 @@ public class CustomOperators {
     
             @Override
             public double apply(double[] values) {
-                if (values[0] >= values[1]) {
+                int atStartorBigger = Double.compare(values[0], values[1]);
+                boolean equalToStart = Math.abs(values[0] - values[1]) <= 0.0000001;
+                if (atStartorBigger  > 0 || equalToStart) {
                     return 1d;
                 } else {
                     return 0d;
@@ -68,7 +70,9 @@ public class CustomOperators {
     
             @Override
             public double apply(double[] values) {
-                if (values[0] <= values[1]) {
+                int atEndorSmaller = Double.compare(values[0], values[1]);
+                boolean equalToEnd = Math.abs(values[0] - values[1]) <= 0.0000001;
+                if (equalToEnd || atEndorSmaller < 0) {
                     return 1d;
                 } else {
                     return 0d;
@@ -81,6 +85,18 @@ public class CustomOperators {
             @Override
             public double apply(double[] values) {
                 if (values[0] < values[1]) {
+                    return 1d;
+                } else {
+                    return 0d;
+                }
+            }
+        };
+
+        Operator eq = new Operator("=", 2, true, Operator.PRECEDENCE_ADDITION - 1) {
+    
+            @Override
+            public double apply(double[] values) {
+                if (Math.abs(values[0] - values[1]) <= 0.0000001) {
                     return 1d;
                 } else {
                     return 0d;
