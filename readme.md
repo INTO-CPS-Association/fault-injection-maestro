@@ -36,29 +36,28 @@ The relevant files are in rbmq_example.
 #### How to use
 It is possible to define one-time events e.g.
 ```xml
-<event id="2" timeStep="9.0">
+<event id="2" when="t=9.0">
     <variable valRef="3" type="real" newVal="50.0" vars=""/>
 </event>
 ```
-Note that all variables that should be affected at that time-step should be included within the same one-time event.
+Note that all variables that should be affected at that time-step can be included within the same one-time event.
 
 It is also possible to define events with a duration. Different variables might be injected for different periods as such, events with different and overlapping durations
 can be defined, e.g.
 ```xml
-<event id="3" timeStep="21.0" duration="5.0" durationToggle="false">
+<event id="3" timeStep="(t&gt;=0.2) &amp; (t&lt;0.4)">
     <variable valRef="3" type="real" newVal="57.0" vars=""/>
 </event>
-<event id="4" timeStep="25.0" duration="2.0" durationToggle="false">
+<event id="4" timeStep="(t&gt;=0.3) &amp; (t&lt;0.6)">
     <variable valRef="4" type="real" newVal="60.0" vars=""/>
 </event>
 ```
-If the injection should be performed for the whole time, then durationToggle can be set to "true". Note that the attributes duration and durationToggle are optional, if not defined, they will de set to default values, i.e. 1 and false.
 
 Should there be multiple overlapping events with duration that target the same variable, the latter will be injected with the value in the event defined last in the xml file. 
 
 ```newVal``` can also be a mathematical expression, e.g.
 ```xml
-<event id="2" timeStep="9.0">
+<event id="2" when="t=9.0">
     <variable valRef="3" type="real" newVal="50.0 + t" vars=""/>
 </event>
 ```
@@ -67,7 +66,7 @@ where t will be resolved to the simulation step the event applies to.
 It might also be needed to calculate the injected valued based on the inputs or outputs of the fmu. In this case, these can be added as variables following this naming convention:
 ```var_{valueref}```. In addition this has to be added in vars, where the separate variable names are separated by comma ```,```. E.g., assume we want to include an input with value reference 3, and an output with value reference 4, then the event definition would look like:
 ```xml
-<event id="2" timeStep="9.0">
+<event id="2" when="t=9.0">
     <variable valRef="3" type="real" newVal="50.0 + t + var_3 * var_4" vars="var_3,var_4"/>
 </event>
 ```
