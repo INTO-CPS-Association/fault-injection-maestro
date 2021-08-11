@@ -23,9 +23,6 @@ public class eventsTest {
 
         try {
             boolean verbose = true;
-            simuEvents = Event.getEvents(xmlPath, verbose);
-            Event.printEvent(simuEvents);
-            
             simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
             Event.printEvent(simuEventswithDuration);
         } catch (NumberFormatException | NullPointerException | SAXException | IOException
@@ -49,8 +46,6 @@ public class eventsTest {
 
         try {
             boolean verbose = true;
-            //simuEvents = Event.getEvents(xmlPath, verbose);
-            //Event.printEvent(simuEvents);
             
             simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
             Event.printEvent(simuEventswithDuration);
