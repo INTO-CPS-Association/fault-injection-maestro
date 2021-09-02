@@ -45,10 +45,10 @@ Note that all variables that should be affected at that time-step can be include
 It is also possible to define events with a duration. Different variables might be injected for different periods as such, events with different and overlapping durations
 can be defined, e.g.
 ```xml
-<event id="3" timeStep="(t&gt;=0.2) &amp; (t&lt;0.4)">
+<event id="3" when="(t&gt;=0.2) &amp; (t&lt;0.4)">
     <variable valRef="3" type="real" newVal="57.0" vars=""/>
 </event>
-<event id="4" timeStep="(t&gt;=0.3) &amp; (t&lt;0.6)">
+<event id="4" when="(t&gt;=0.3) &amp; (t&lt;0.6)">
     <variable valRef="4" type="real" newVal="60.0" vars=""/>
 </event>
 ```
@@ -76,3 +76,12 @@ Expressions can be defined only for the real, int, and bool types. In case of in
 Injection for type int functions in the same way as for double. Note that double values will be used in the calculation if given as such in the expression, however the final value to which an input/output is set will be rounded to an int.
 
 Expressions for type bool accept the following operators: not -> "~", and -> "&", or -> "|". A boolean expression can be used on all fmu variables, inputs/outputs.
+
+
+Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluation for time step equal to 0.0.
+
+```xml
+<event id="1" when="(t&gt;=0.2) &amp; (t&lt;0.4)" other="var_2 &gt; 0" vars="var_2,">
+    <variable valRef="2" type="real" newVal="t+36" vars="var_2," />
+</event>
+```

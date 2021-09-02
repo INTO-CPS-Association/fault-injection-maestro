@@ -95,7 +95,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     boolean verbose = true;
                     simuEvents = Event.getEventswithDuration(faultSpecFile, verbose);
                     logger.warn(String.format("length of events: %d", simuEvents.length));
-                    Event.printEvent(simuEvents);
+                    Event.printEvents(simuEvents);
                     return simuEvents;
                 } catch (NumberFormatException | NullPointerException | SAXException | IOException
                         | ParserConfigurationException e) {
@@ -176,11 +176,12 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 throw new InterpreterException("Value is not an array");
             }
 
-            public static boolean evaluateWhenCondition(Expression e){
+            public static boolean evaluateWhenCondition(Expression e, Expression o){
                 //System.out.println(e);
                 //System.out.println("EVAL");
                 Set<String> whenVars = e.getVariableNames();
-                //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
+                Set<String> whenOtherVars = o.getVariableNames();
+                logger.warn(String.format("Nr of events %s", Arrays.toString(whenVars.toArray())));
 
                 //if variable in expression set its value
                 if (whenVars.contains("t"))//simulation time
@@ -194,14 +195,14 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
                         if(entry.getValue().booleanValue())
                         {
-                            e.setVariable(var, 1d);
+                            o.setVariable(var, 1d);
                         }
                         else{
-                            e.setVariable(var, 0d);
+                            o.setVariable(var, 0d);
                         }
                         //logger.warn(String.format("Set value of %s input variable %s", var, entry.getValue()));
                     }
@@ -211,14 +212,14 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
                         if(entry.getValue().booleanValue())
                         {
-                            e.setVariable(var, 1d);
+                            o.setVariable(var, 1d);
                         }
                         else{
-                            e.setVariable(var, 0d);
+                            o.setVariable(var, 0d);
                         }
                         //logger.warn(String.format("Set value of %s output variable %s", var, entry.getValue()));
                     }
@@ -229,9 +230,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
-                        e.setVariable(var, entry.getValue());
+                        o.setVariable(var, entry.getValue());
                         logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
                     }
                 }
@@ -240,9 +241,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
-                        e.setVariable(var, entry.getValue());
+                        o.setVariable(var, entry.getValue());
                         logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
                     }
                 }
@@ -252,9 +253,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
-                        e.setVariable(var, entry.getValue());
+                        o.setVariable(var, entry.getValue());
                         //logger.warn(String.format("Set value of %s input variable %f", var, entry.getValue()));
                     }
                 }
@@ -263,22 +264,28 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 {
                     String var = "var_"+entry.getKey();
                     //logger.warn(var);
-                    if (whenVars.contains(var))
+                    if (whenOtherVars.contains(var))
                     {
-                        e.setVariable(var, entry.getValue());
+                        o.setVariable(var, entry.getValue());
                         //logger.warn(String.format("Set value of %s output variable %f", var, entry.getValue()));
                     }
                 }
 
-                if(e.evaluate() == 0d)
+                if(e.evaluate() == 1d)
                 {
-                    
-                    return false;
+                    if((currentStep > 0.0) && o.evaluate() == 1d)
+                    {
+                        System.out.println("INJECTING");
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
-                    System.out.println("INJECTING");
-                    return true;
+                    return false;
                 }
             }
 
@@ -291,7 +298,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
 
-                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when, simulationDurationEvents[i].otherWhenConditions);
 
                     if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
@@ -354,7 +361,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 //loop over duration events
                 boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when, simulationDurationEvents[i].otherWhenConditions);
 
 
                     if(withinDuration){//comparing doubles...
@@ -414,7 +421,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 //loop over duration events
                 boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when,simulationDurationEvents[i].otherWhenConditions);
 
                     if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
@@ -491,7 +498,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 Pair<String[], long[]> result = Pair.of(dv,dvr);
                 boolean withinDuration;
                 for(var i = 0; i < simulationDurationEvents.length; i++){
-                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when);
+                    withinDuration = evaluateWhenCondition(simulationDurationEvents[i].when, simulationDurationEvents[i].otherWhenConditions);
                     if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
                         result = Pair.of(simulationDurationEvents[i].stringValues, simulationDurationEvents[i].stringValuesRefs);
@@ -559,7 +566,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     // Keep track of the current timestep in which the fmu is. Needed by the inject functions. 
                     currentStep = currentCommunicationPoint;
                     // Cleanup the events array
-                    //simulationEvents = Event.cutArrayOfEvents(simulationEvents, currentStep, 1);
                     //simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep, 0);
         
                     try {

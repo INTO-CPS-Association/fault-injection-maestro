@@ -40,6 +40,7 @@ public class WaterTankSimpleTest {
 
     @Test
     //@Ignore("Not needed now")
+    //tests with the alltypes.fmu, with inputs and outputs of each type.
     public void testFuncEval() throws Exception {
 
         final File faultInjectSpec = Paths.get("target", "funcevaltest", "FaultInject.mabl").toFile();

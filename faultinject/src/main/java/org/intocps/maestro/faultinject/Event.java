@@ -53,11 +53,12 @@ public class Event {
     public List<Expression> expressionForInts;
     public List<Expression> expressionForBools;
     public Expression when;
+    public Expression otherWhenConditions;
 
     public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
             long[] stringValuesRefs, double duration, boolean durationToggle, List<Expression> expressionForDoubles,
-            List<Expression> expressionForInts, List<Expression> expressionForBools, Expression when) {
+            List<Expression> expressionForInts, List<Expression> expressionForBools, Expression when, Expression otherWhenConditions) {
         this.id = id;
         this.timePoint = timePoint;
         this.doubleValues = doubleValues;
@@ -74,31 +75,9 @@ public class Event {
         this.expressionForBools = expressionForBools;
         this.expressionForInts = expressionForInts;
         this.when = when;
+        this.otherWhenConditions = otherWhenConditions;
         
     }
-
-    public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
-            long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
-            long[] stringValuesRefs, double duration, boolean durationToggle, List<Expression> expressionForDoubles,
-            List<Expression> expressionForInts, List<Expression> expressionForBools) {
-        this.id = id;
-        this.timePoint = timePoint;
-        this.doubleValues = doubleValues;
-        this.doubleValuesRefs = doubleValuesRefs;
-        this.intValues = intValues;
-        this.intValuesRefs = intValuesRefs;
-        this.boolValues = boolValues;
-        this.boolValuesRefs = boolValuesRefs;
-        this.stringValues = stringValues;
-        this.stringValuesRefs = stringValuesRefs;
-        this.duration = duration;
-        this.durationToggle = durationToggle; // if set the event is applied to all timesteps, and overrides the effect of duration
-        this.expressionForDoubles = expressionForDoubles;
-        this.expressionForBools = expressionForBools;
-        this.expressionForInts = expressionForInts;
-
-}
-
     public static void setVerbose(boolean verbose){
         Event.verbose = verbose;
     }
@@ -148,7 +127,7 @@ public class Event {
                     double time = 0;
 
                     CustomOperators operators = new CustomOperators();
-                    List<String> whenExpressionVars =  new ArrayList<String>();
+                    List<String> whenExpressionVars =  new ArrayList<>();
                     
                     if(eElement.hasAttribute("vars")){
                         whenExpressionVars.addAll(Arrays.asList(eElement.getAttribute("vars").split(",")));
@@ -158,24 +137,37 @@ public class Event {
                     Expression when = new ExpressionBuilder(eElement.getAttribute("when")).operator(operators.not, operators.or, operators.and, operators.gt, 
                                                                                                     operators.gteq, operators.lt, operators.lteq, operators.eq)
                                                                                           .variables(whenExpressionVars.stream().toArray(String[]::new)).build();
+                    Expression otherWhen;
+                    if(eElement.hasAttribute("other"))
+                    {
+                        //for (String model : whenExpressionVars ) {
+                        //    System.out.println(model);
+                        //}
+                        otherWhen = new ExpressionBuilder(eElement.getAttribute("other")).operator(operators.not, operators.or, operators.and, operators.gt, 
+                    operators.gteq, operators.lt, operators.lteq, operators.eq).variables(whenExpressionVars.stream().toArray(String[]::new)).build();
+
+                    }
+                    else{
+                        otherWhen = new ExpressionBuilder("1").build();
+                    }
 
                     double duration = 1;
                     Boolean durationToggle = false;
-                    List<Expression> ed = new ArrayList<Expression>();
-                    List<Expression> ei = new ArrayList<Expression>();
-                    List<Expression> eb = new ArrayList<Expression>();
+                    List<Expression> ed = new ArrayList<>();
+                    List<Expression> ei = new ArrayList<>();
+                    List<Expression> eb = new ArrayList<>();
 
-                    List<Double> dValues = new ArrayList<Double>();
-                    List<Long> dValuesRefs = new ArrayList<Long>();
+                    List<Double> dValues = new ArrayList<>();
+                    List<Long> dValuesRefs = new ArrayList<>();
 
-                    List<Boolean> bValues = new ArrayList<Boolean>();
-                    List<Long> bValuesRefs = new ArrayList<Long>();
+                    List<Boolean> bValues = new ArrayList<>();
+                    List<Long> bValuesRefs = new ArrayList<>();
 
-                    List<Integer> iValues = new ArrayList<Integer>();
-                    List<Long> iValuesRefs = new ArrayList<Long>();
+                    List<Integer> iValues = new ArrayList<>();
+                    List<Long> iValuesRefs = new ArrayList<>();
 
-                    List<String> sValues = new ArrayList<String>();
-                    List<Long> sValuesRefs = new ArrayList<Long>();
+                    List<String> sValues = new ArrayList<>();
+                    List<Long> sValuesRefs = new ArrayList<>();
 
                     NodeList variables = eElement.getElementsByTagName("variable");
                     //Loop through variables within one event
@@ -184,6 +176,11 @@ public class Event {
                         //prepare the values which are passed to the event constructor.
                         if(var.getNodeType() == Node.ELEMENT_NODE){
                             Element v = (Element) var;
+                            if (!v.hasAttribute("type") || !v.hasAttribute("newVal") || !v.hasAttribute("valRef"))
+                            {
+                                throw new WrapperException(String.format("Attributes type, newVal, valRef are mandatory for the definition of events. Please make sure they're all specified for each event."));
+                            }
+
                             if(v.getAttribute("type").equals("real")){
                                 List<String> expressionVars = new ArrayList<>(Arrays.asList(v.getAttribute("vars").split(",")));
                                 //System.out.println(expressionVars);
@@ -241,10 +238,13 @@ public class Event {
                                             bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             ssValues, 
                                             sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle, ed, ei, eb, when
+                                            duration, durationToggle, ed, ei, eb, when, otherWhen
                                         );
                 }
-
+                else
+                {
+                    throw new WrapperException(String.format("No when condition defined for at least one event. Please specify this attribute"));
+                }
             }
         }
         logger.warn(String.format("after creation %d", events.length));
@@ -252,37 +252,12 @@ public class Event {
     }
 
     public static Event[] cutArrayOfEvents(Event[] events, double currentStep, int eventType){
-        if(eventType == 1){
-            if(events.length !=0 && Math.abs(currentStep - events[0].timePoint) <= 0.0000001){
-                
-                events = (Event[]) ArrayUtils.remove(events, 0);
-                if(verbose){
-                    printEvent(events);
-                    if(events.length == 0){
-                        logger.warn("No more on-time events");
-                    }
-                }
-            }
-        }
-        else{
-            for(var i=events.length-1; i >= 0; i--){
-                if(!events[i].durationToggle && Math.abs(currentStep - events[i].timePoint - events[i].duration)<= 0.0000001){
-                    events = (Event[]) ArrayUtils.remove(events, i); //remove elements from the end, not to mess up indexes if multiple events are to be removed.
-                    if(verbose){
-                        printEvent(events);
-                        if(events.length == 0){
-                            logger.warn("No more duration events");
-                        }
-                    }
-                }
-            }
-        }
-            
+        logger.warn(String.format("This method is empty now. Needs to be implemented"));
         return events;
     }
 
     //Print all events
-    public static void printEvent(Event[] events){
+    public static void printEvents(Event[] events){
         logger.warn(String.format("events %d", events.length));
         for(Event e: events){
             String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
@@ -295,7 +270,7 @@ public class Event {
     }
 
     //Print event at given index
-    public static void printEvents(Event[] events, int eventIndex){
+    public static void printEvent(Event[] events, int eventIndex){
         String printText = "Event with id: " + events[eventIndex].id + ", at time: " + events[eventIndex].timePoint
                             + " with doubles: " + Arrays.toString(events[eventIndex].doubleValues) + " with vrefs: " + Arrays.toString(events[eventIndex].doubleValuesRefs)
                             + "; with ints: " + Arrays.toString(events[eventIndex].intValues) + " with vrefs: " + Arrays.toString(events[eventIndex].intValuesRefs)
