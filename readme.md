@@ -31,7 +31,7 @@ The relevant files are in rbmq_example.
 
 #### Development Notes
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
-* change the evaluation of the timestep when to inject to a boolean expression.
+* implement a function than cleans up the events array.
 
 #### How to use
 It is possible to define one-time events e.g.
