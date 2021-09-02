@@ -1,6 +1,6 @@
-time,boolout,realout,intout,stringout
-0.1,false,0.0,0,bahamas
-0.2,false,0.0,0,bahamas
-0.30000000000000004,false,0.0,0,bahamas
-0.4,false,0.0,0,bahamas
-0.5,false,0.0,0,bahamas
+time,boolout,realout,intout,stringout,boolin,realin,intin,stringin
+0.1,false,0.0,0,bahamas,false,3.0,1,blahh
+0.2,false,0.0,0,bahamas,false,3.0,1,blahh
+0.30000000000000004,false,0.0,0,bahamas,false,3.0,1,blahh
+0.4,false,0.0,0,bahamas,false,3.0,1,blahh
+0.5,false,0.0,0,bahamas,false,3.0,1,blahh
