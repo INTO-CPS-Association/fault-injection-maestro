@@ -48,7 +48,7 @@ public class eventsTest {
             boolean verbose = true;
             
             simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
-            Event.printEvent(simuEventswithDuration);
+            Event.printEvents(simuEventswithDuration);
         } catch (NumberFormatException | NullPointerException | SAXException | IOException
                 | ParserConfigurationException e) {
             logger.error("Something went terribly wrong when creating the events");
