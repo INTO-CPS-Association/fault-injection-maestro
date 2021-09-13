@@ -1,5 +1,5 @@
 <events>
-    <event id="1" timeStep="10.0" durationToggle="true">
-        <variable valRef="4" type="bool" newVal="true" />
+    <event id="1" when="10.0">
+        <variable valRef="4" type="bool" newVal="1" />
     </event>
 </events>

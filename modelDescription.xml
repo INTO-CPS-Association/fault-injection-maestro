@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fmiModelDescription 	fmiVersion="2.0" 
+						modelName="AllTypes" 
+						guid="{a433c2b9-5929-4d29-a5fd-75f2e9961b13}" 
+						description="" 
+						author="" 
+						version="Version 1" 
+						copyright="Copyright Overture tool (Aarhus University)" 
+						license="Some Overture FMI License" 
+						generationTool="Overture Tool FMI Exporter - v0.2.20"
+						generationDateAndTime="2021-07-28T16:01:37" 
+						variableNamingConvention="flat" 
+						numberOfEventIndicators="0">
+
+	<CoSimulation 	modelIdentifier="AllTypes" 
+					needsExecutionTool="true" 
+					canHandleVariableCommunicationStepSize="true" 
+					canInterpolateInputs="false" 
+					maxOutputDerivativeOrder="0" 
+					canRunAsynchronuously="false" 
+					canBeInstantiatedOnlyOncePerProcess="false"
+					canNotUseMemoryManagementFunctions="true" 
+					canGetAndSetFMUstate="false" 
+					canSerializeFMUstate="false" 
+					providesDirectionalDerivative="false">
+		
+		
+			<SourceFiles>
+				<File name="Controller.vdmrt" />
+				<File name="Fmi.vdmrt" />
+				<File name="HardwareInterface.vdmrt" />
+				<File name="RealInputs.vdmrt" />
+				<File name="RealOutputs.vdmrt" />
+				<File name="System.vdmrt" />
+				<File name="World.vdmrt" />
+				<File name="lib\IO.vdmrt" />
+				<File name="lib\MATH.vdmrt" />
+
+			</SourceFiles>
+		
+		</CoSimulation>
+
+
+
+	<LogCategories>
+		<Category name="logAll" />
+		<Category name="logError" />
+		<Category name="logFmiCall" />
+<!-- Category name="logShm" /-->
+<!-- Category name="logLaunch" /-->
+		<Category name="Protocol" />
+		<Category name="VdmOut" />
+		<Category name="VdmErr" />
+	</LogCategories>
+
+	<VendorAnnotations>
+		<Tool name="Overture">
+			<Overture>
+				<link valueReference="0" name="System.hwi.boolInput.value" />
+				<link valueReference="1" name="System.hwi.boolOutput.value" />
+				<link valueReference="2" name="System.hwi.doubleInput.value" />
+				<link valueReference="3" name="System.hwi.doubleOutput.value" />
+				<link valueReference="4" name="System.hwi.integerInput.value" />
+				<link valueReference="5" name="System.hwi.integerOutput.value" />
+				<link valueReference="6" name="System.hwi.stringInput.value" />
+				<link valueReference="7" name="System.hwi.stringOutput.value" />
+
+			</Overture>
+		</Tool>
+	</VendorAnnotations>
+
+
+	<ModelVariables>
+
+		<!-- Index 1 -->
+		<ScalarVariable name="boolInput" valueReference="0" causality="input" variability="discrete"><Boolean start="false" /></ScalarVariable>
+		<!-- Index 2 -->
+		<ScalarVariable name="boolOutput" valueReference="1" causality="output" variability="discrete" initial="approx"><Boolean start="false" /></ScalarVariable>
+		<!-- Index 3 -->
+		<ScalarVariable name="doubleInput" valueReference="2" causality="input" variability="discrete"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 4 -->
+		<ScalarVariable name="doubleOutput" valueReference="3" causality="output" variability="discrete" initial="approx"><Real start="0.0" /></ScalarVariable>
+		<!-- Index 5 -->
+		<ScalarVariable name="integerInput" valueReference="4" causality="input" variability="discrete"><Integer start="0" /></ScalarVariable>
+		<!-- Index 6 -->
+		<ScalarVariable name="integerOutput" valueReference="5" causality="output" variability="discrete" initial="approx"><Integer start="0" /></ScalarVariable>
+		<!-- Index 7 -->
+		<ScalarVariable name="stringInput" valueReference="6" causality="input" variability="discrete"><String start="blob" /></ScalarVariable>
+		<!-- Index 8 -->
+		<ScalarVariable name="stringOutput" valueReference="7" causality="output" variability="discrete" initial="approx"><String start="bahamas" /></ScalarVariable>
+
+	
+	</ModelVariables>
+
+	<ModelStructure>
+	<Outputs>
+			<Unknown index="2"  dependencies=""/>			<Unknown index="4"  dependencies=""/>			<Unknown index="6"  dependencies=""/>			<Unknown index="8"  dependencies=""/>
+	</Outputs>
+
+
+	</ModelStructure>
+
+</fmiModelDescription>

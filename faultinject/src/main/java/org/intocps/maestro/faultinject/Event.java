@@ -264,7 +264,8 @@ public class Event {
                                 + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
                                 + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
-                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs);
+                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
+                                + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
             logger.warn(printText);
         }
     }
@@ -276,7 +277,7 @@ public class Event {
                             + "; with ints: " + Arrays.toString(events[eventIndex].intValues) + " with vrefs: " + Arrays.toString(events[eventIndex].intValuesRefs)
                             + "; with bools: " + Arrays.toString(events[eventIndex].boolValues) + " with vrefs: " + Arrays.toString(events[eventIndex].boolValuesRefs)
                             + "; with strings: " + Arrays.toString(events[eventIndex].stringValues) + " with vrefs: " + Arrays.toString(events[eventIndex].stringValuesRefs)
-                            + "; duration: " + events[eventIndex].duration + "; durationToggle: " + events[eventIndex].durationToggle;
+                            + "; when " + events[eventIndex].when + "; other when conditions: " + events[eventIndex].otherWhenConditions;
         logger.warn(printText);
     }
 

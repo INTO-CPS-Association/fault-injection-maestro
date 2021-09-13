@@ -1,0 +1,17 @@
+<events>
+    <event id="1" when="(t&gt;=0.2) &amp; (t&lt;0.5)" >
+        <variable valRef="3" type="real" newVal="t+2*var_3" vars="var_3," />
+    </event>
+
+    <event id="2" when="t=8.0" >
+        <variable valRef="1" type="bool" newVal="~var_1" vars="var_1," />
+    </event>
+
+    <event id="3" when="t&gt;=10.0" >
+        <variable valRef="5" type="int" newVal="var_5+35" vars="var_5," />
+    </event>
+
+    <event id="4" when="t=12.0" >
+        <variable valRef="7" type="string" newVal="halløj"  />
+    </event>
+</events>

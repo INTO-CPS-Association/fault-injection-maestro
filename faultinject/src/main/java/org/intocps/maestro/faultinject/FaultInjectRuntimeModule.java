@@ -26,7 +26,7 @@ import org.intocps.fmi.FmuResult;
 import org.intocps.fmi.IFmiComponent;
 import org.intocps.fmi.IFmiComponentState;
 import org.intocps.fmi.InvalidParameterException;
-
+import org.apache.commons.compress.archivers.EntryStreamOffsets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -342,8 +342,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 }
                                 doubleValues.add(e.evaluate());
                         }
-
-                        result = Pair.of(doubleValues.stream().mapToDouble(Double::doubleValue).toArray(), simulationDurationEvents[i].doubleValuesRefs);
+                        if(simulationDurationEvents[i].doubleValuesRefs.length > 0)
+                        {
+                            result = Pair.of(doubleValues.stream().mapToDouble(Double::doubleValue).toArray(), simulationDurationEvents[i].doubleValuesRefs);
+                        }
+                        
                     }
                 }
                 
@@ -366,11 +369,15 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if(withinDuration){//comparing doubles...
                         logger.warn("Looking for Duration Events");
                         List<Integer> intValues = new ArrayList<>(simulationDurationEvents[i].intValuesRefs.length);
-
+                        Event.printEvents(simulationDurationEvents);
                         for(int vr = 0; vr < simulationDurationEvents[i].intValuesRefs.length; vr++)
                         {
+
+                            logger.warn(String.format("intvrefs %d", simulationDurationEvents[i].intValuesRefs.length));
+                            Event.printEvent(simulationDurationEvents, i);
                             Expression e = simulationDurationEvents[i].expressionForInts.get(vr); 
-                            System.out.println(e);
+                            String eString = "" + e;
+                            logger.warn(eString);
 
                             Set<String> vars = e.getVariableNames();
                                     //logger.warn(String.format("Nr of events %s", Arrays.toString(vars.toArray())));
@@ -405,7 +412,10 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             }
                             intValues.add((int) e.evaluate());
                         }
-                        result = Pair.of(intValues.stream().mapToInt(Integer::intValue).toArray(), simulationDurationEvents[i].intValuesRefs);
+                        if(simulationDurationEvents[i].intValuesRefs.length > 0)
+                        {
+                            result = Pair.of(intValues.stream().mapToInt(Integer::intValue).toArray(), simulationDurationEvents[i].intValuesRefs);
+                        }
                     }
                 }
                 return result;
@@ -484,7 +494,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 boolValues.add(true);
                             }
                         }
-                        result = Pair.of(ArrayUtils.toPrimitive(boolValues.toArray(ArrayUtils.EMPTY_BOOLEAN_OBJECT_ARRAY)), simulationDurationEvents[i].boolValuesRefs);
+                        if(simulationDurationEvents[i].boolValuesRefs.length > 0)
+                        {
+                            result = Pair.of(ArrayUtils.toPrimitive(boolValues.toArray(ArrayUtils.EMPTY_BOOLEAN_OBJECT_ARRAY)), simulationDurationEvents[i].boolValuesRefs);
+                        }
+                        
                     }
                 }
                 return result;
@@ -525,7 +539,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     if(idx!=-1){
                         int idy = ArrayUtils.indexOf(valueRefs, vr);
                         if(idy!=-1){
-                            logger.warn(String.format("Injecting vref: %d", vr));
+                            String v = "" + values[idy];
+                            String nv = "" + newValues[idy];
+                            logger.warn(String.format("Injecting vref: %d, old value: %s, new value: %s", vr, v, nv));
                             values[idy] = newValues[idx];
                         }
                     }
