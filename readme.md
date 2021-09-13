@@ -24,6 +24,3 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 
 </events>
 ```
-
-#### RBMQ Co-simulation Case-Study
-The relevant files are in rbmq_example.
