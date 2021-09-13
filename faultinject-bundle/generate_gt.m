@@ -25,6 +25,6 @@ for i=100:199
 end
 
 % inject string t=12.0 to halløj
-stringout(120) = 'halløj';
+stringout(120) = 'halloj';
 
 writematrix([time', boolout, realout, intout, stringout],'output_ground_truth.csv')

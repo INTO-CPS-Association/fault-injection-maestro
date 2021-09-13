@@ -12,6 +12,6 @@
     </event>
 
     <event id="4" when="t=12.0" >
-        <variable valRef="7" type="string" newVal="halløj"  />
+        <variable valRef="7" type="string" newVal="halloj"  />
     </event>
 </events>
