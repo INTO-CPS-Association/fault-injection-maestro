@@ -78,7 +78,7 @@ Injection for type int functions in the same way as for double. Note that double
 Expressions for type bool accept the following operators: not -> "~", and -> "&", or -> "|". A boolean expression can be used on all fmu variables, inputs/outputs.
 
 
-Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluation for time step equal to 0.0.
+Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluated for time step equal to 0.0.
 
 ```xml
 <event id="1" when="(t&gt;=0.2) &amp; (t&lt;0.4)" other="var_2 &gt; 0" vars="var_2,">
