@@ -28,4 +28,22 @@ jobs:
         run: mvn -B package --file pom.xml -DskipTests
       - name: Maven Test
         run: mvn test
+  
+      - name: check folder structure.
+        if: matrix.os == 'ubuntu-latest'
+        run:
+          ls
+        
+      - name: Upload Artifact 1
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: faultinject-bundle-1.0.0-SNAPSHOT.jar
+          path: target/faultinject-bundle-1.0.0-SNAPSHOT.jar
 
+      - name: Upload Artifact 2
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+          path: target/faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
