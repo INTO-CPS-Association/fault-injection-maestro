@@ -10,7 +10,7 @@ mvn test
 MaBL file for the SimpleTest.java: SmallFaultInjectTest.mabl
 
 #### Water-tank Co-simulation Case-Study
-*NOTE: Download the code at the wrapperFmuComponent branch.
+*NOTE: Download the code with tag icsrs21
 
 The co-simulation for the watertank, with and w/o fault injection (FI), can be performed by running the test: WaterTankTest.java
 The corresponding MaBL file: watertank-casestudy.mabl
@@ -26,6 +26,8 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 ```
 
 #### RBMQ Co-simulation Case-Study
+*NOTE: Download the code with tag icsrs21
+
 The relevant files are in rbmq_example.
 
 
