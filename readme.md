@@ -9,8 +9,16 @@ mvn test
 
 MaBL file for the SimpleTest.java: SmallFaultInjectTest.mabl
 
+To run only one test: mvn test -Dtest=TestClassName#testMethod -DfailIfNoTests=false, e.g.
+
+```bash
+$ mvn test -Dtest=injectCorrectnessTest#test -DfailIfNoTests=false
+```
+
+The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in faultinject folder.
+
 #### Water-tank Co-simulation Case-Study
-*NOTE: Download the code at the wrapperFmuComponent branch.
+*NOTE: Download the code with tag icsrs21
 
 The co-simulation for the watertank, with and w/o fault injection (FI), can be performed by running the test: WaterTankTest.java
 The corresponding MaBL file: watertank-casestudy.mabl
@@ -26,6 +34,8 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 ```
 
 #### RBMQ Co-simulation Case-Study
+*NOTE: Download the code with tag icsrs21
+
 The relevant files are in rbmq_example.
 
 
@@ -78,7 +88,7 @@ Injection for type int functions in the same way as for double. Note that double
 Expressions for type bool accept the following operators: not -> "~", and -> "&", or -> "|". A boolean expression can be used on all fmu variables, inputs/outputs.
 
 
-Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluation for time step equal to 0.0.
+Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluated for time step equal to 0.0.
 
 ```xml
 <event id="1" when="(t&gt;=0.2) &amp; (t&lt;0.4)" other="var_2 &gt; 0" vars="var_2,">
