@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 public class eventsTest {
     static final Logger logger = LoggerFactory.getLogger(FaultInjectRuntimeModule.class);
     @Test
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     public void testReadXml() throws Exception {
 
         String xmlPath = SimpleTest.class.getClassLoader().getResource("Catalog.xml").getPath();
@@ -36,7 +36,7 @@ public class eventsTest {
 
     @Test
 
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     public void testfunceval() throws Exception {
 
         String xmlPath = SimpleTest.class.getClassLoader().getResource("funceval_when.xml").getPath();

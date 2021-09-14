@@ -582,7 +582,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     stepSize = communicationStepSize;
                     currentStep = currentCommunicationPoint + stepSize;
                     // Cleanup the events array
-                    //simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep, 0);
+                    //simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep);
+                    //logger.warn(String.format("length of events: %d", simulationDurationEvents.length));
+                    //Event.printEvents(simulationDurationEvents);
         
                     try {
                         Fmi2Status res = component.getModule().doStep(currentCommunicationPoint, communicationStepSize, noSetFMUStatePriorToCurrentPoint);

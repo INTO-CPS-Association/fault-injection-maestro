@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 public class rbmqMonitorTest {
     @Test
-    @Ignore("Not needed now")
+    @Ignore("This test cannot be run on its own, but needs the scripts that publish to the rabbitmq server. Look into rbmq_example")
     public void testWithConfig() throws Exception {
         String initializePath = SimpleTest.class.getClassLoader().getResource("rbmq_example/multimodel.json").getPath();
         String simulateJson = SimpleTest.class.getClassLoader().getResource("rbmq_example/coe.json").getPath();

@@ -13,8 +13,6 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 
 import java.io.*;  
-import java.util.Scanner;  
-
 public class injectCorrectnessTest {
     @Test
     //@Ignore("Not needed now")

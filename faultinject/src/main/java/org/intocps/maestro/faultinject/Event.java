@@ -251,8 +251,17 @@ public class Event {
         return events;
     }
 
-    public static Event[] cutArrayOfEvents(Event[] events, double currentStep, int eventType){
+    public static Event[] cutArrayOfEvents(Event[] events, double currentStep){
         logger.warn(String.format("This method is empty now. Needs to be implemented"));
+        for(Event e: events){
+            String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
+                                + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
+                                + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
+                                + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
+                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
+                                + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
+            logger.warn(printText);
+        }
         return events;
     }
 

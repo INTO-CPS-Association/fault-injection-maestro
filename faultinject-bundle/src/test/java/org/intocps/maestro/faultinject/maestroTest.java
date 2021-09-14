@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class maestroTest {
     @Test
     //test for maestro compatibility
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     public void test() throws Exception {
 
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();

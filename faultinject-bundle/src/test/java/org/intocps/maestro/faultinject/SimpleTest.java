@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class SimpleTest {
     @Test
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     public void test() throws Exception {
 
         final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
@@ -39,7 +39,7 @@ public class SimpleTest {
     }
 
     @Test
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     public void testWithConfig() throws Exception {
         String initializePath = SimpleTest.class.getClassLoader().getResource("config_example/initialize.json").getPath();
         String simulateJson = SimpleTest.class.getClassLoader().getResource("config_example/simulate.json").getPath();

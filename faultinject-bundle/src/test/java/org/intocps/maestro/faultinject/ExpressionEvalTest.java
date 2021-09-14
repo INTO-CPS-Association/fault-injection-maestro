@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class ExpressionEvalTest {
     @Test
-    @Ignore("Not needed now")
+    //@Ignore("Not needed now")
     //tests with the alltypes.fmu, with inputs and outputs of each type.
     public void testFuncEval() throws Exception {
 
