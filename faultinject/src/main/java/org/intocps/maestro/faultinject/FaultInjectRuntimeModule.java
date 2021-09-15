@@ -180,7 +180,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 //System.out.println(e);
                 Set<String> whenVars = e.getVariableNames();
                 Set<String> whenOtherVars = o.getVariableNames();
-                logger.warn(String.format("EVAL at time %f",simtime));
+                //logger.warn(String.format("EVAL at time %f",simtime));
 
                 //if variable in expression set its value
                 if (whenVars.contains("t"))//simulation time

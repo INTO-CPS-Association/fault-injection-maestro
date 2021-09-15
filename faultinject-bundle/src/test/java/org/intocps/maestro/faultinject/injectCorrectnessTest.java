@@ -66,5 +66,7 @@ public class injectCorrectnessTest {
                 assertEquals(cols2[2], Double.toString(val));
             }
         }
+        br.close();
+        br2.close();
     }
 }
