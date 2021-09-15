@@ -3,15 +3,19 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 public class eventsTest {
-    static final Logger logger = LoggerFactory.getLogger(FaultInjectRuntimeModule.class);
+    static final Logger logger = LoggerFactory.getLogger(eventsTest.class);
     @Test
     //@Ignore("Not needed now")
     public void testReadXml() throws Exception {

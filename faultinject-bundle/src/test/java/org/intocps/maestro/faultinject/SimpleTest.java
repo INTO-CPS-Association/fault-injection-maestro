@@ -1,17 +1,28 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
 import org.intocps.maestro.typechecker.TypeChecker;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import org.junit.Before;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.core.config.Configurator;
+
 public class SimpleTest {
     @Test
+    @Before
+    public void setup(){
+        Configurator.setLevel(LogManager.getLogger(FaultInjectRuntimeModule.class).getName(), Level.DEBUG);
+        Configurator.setLevel(LogManager.getLogger(Event.class).getName(), Level.ERROR);
+
+    }
     //@Ignore("Not needed now")
     public void test() throws Exception {
 

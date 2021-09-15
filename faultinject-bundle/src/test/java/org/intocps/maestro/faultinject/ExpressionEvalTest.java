@@ -1,7 +1,11 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.intocps.maestro.typechecker.TypeChecker;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 

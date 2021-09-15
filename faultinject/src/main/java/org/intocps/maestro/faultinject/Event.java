@@ -105,7 +105,7 @@ public class Event {
 
         //find out how many events
         int nrEvents = eventsList.getLength();
-        logger.warn(String.format("Nr of events %d", nrEvents));
+        logger.info(String.format("Nr of events %d", nrEvents));
 
         Event.verbose = verbose;
 
@@ -247,7 +247,7 @@ public class Event {
                 }
             }
         }
-        logger.warn(String.format("after creation %d", events.length));
+        logger.info(String.format("after creation %d", events.length));
         return events;
     }
 
@@ -267,7 +267,7 @@ public class Event {
 
     //Print all events
     public static void printEvents(Event[] events){
-        logger.warn(String.format("events %d", events.length));
+        logger.debug(String.format("events %d", events.length));
         for(Event e: events){
             String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
                                 + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
@@ -275,7 +275,7 @@ public class Event {
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
                                 + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
                                 + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
-            logger.warn(printText);
+            logger.info(printText);
         }
     }
 
@@ -287,7 +287,7 @@ public class Event {
                             + "; with bools: " + Arrays.toString(events[eventIndex].boolValues) + " with vrefs: " + Arrays.toString(events[eventIndex].boolValuesRefs)
                             + "; with strings: " + Arrays.toString(events[eventIndex].stringValues) + " with vrefs: " + Arrays.toString(events[eventIndex].stringValuesRefs)
                             + "; when " + events[eventIndex].when + "; other when conditions: " + events[eventIndex].otherWhenConditions;
-        logger.warn(printText);
+        logger.info(printText);
     }
 
 }

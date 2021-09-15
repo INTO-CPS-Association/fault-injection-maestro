@@ -1,7 +1,10 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.LogManager;
+import org.apache.logging.log4j.Level;
 import org.intocps.maestro.typechecker.TypeChecker;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -10,9 +13,12 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.core.config.Configurator;
 import static org.junit.Assert.assertEquals;
 
 import java.io.*;  
+
+
 public class injectCorrectnessTest {
     @Test
     //@Ignore("Not needed now")
