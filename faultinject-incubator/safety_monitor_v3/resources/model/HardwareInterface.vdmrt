@@ -1,0 +1,42 @@
+--##	EXPORT	88b32ec6d731b0be7044ef7a550efe836ed863be	safety_monitor.fmu	2020-07-12 11:13:40	tool-wrapper	{"name":"fmu-import-export","version":"0.2.20"}
+--##	EXPORT	31eaa23a56649d429bc2ca21d9ae805ab555f8c8	safety_monitor.fmu	2020-03-11 16:32:42	tool-wrapper	{"name":"fmu-import-export","version":"0.2.20"}
+--##	EXPORT	9843e61901245f1ea0a603c60f4b4266e73b7821	safety_monitor.fmu	2020-22-10 13:38:32	tool-wrapper	{"name":"fmu-import-export","version":"0.2.20"}
+
+-- Generated class
+class HardwareInterface
+
+values
+	-- @ interface: type = parameter, name="safety_dist";
+	public safety_dist : RealPort = new RealPort(5.0);
+
+instance variables
+	-- @ interface: type = input, name="robotti_xpos_input";
+	public input1 : RealPort := new RealPort(0.0);
+	-- @ interface: type = input, name="robotti_ypos_input";
+	public input2 : RealPort := new RealPort(0.0);
+	-- @ interface: type = input, name="obs_xpos_input";
+	public input3 : RealPort := new RealPort(0.0);
+	-- @ interface: type = input, name="obs_ypos_input";
+	public input4 : RealPort := new RealPort(0.0);
+	-- @ interface: type = input, name="obstacles_input";
+	public input5 : StringPort := new StringPort("0;");
+
+instance variables
+	-- @ interface: type = output, name="robotti_xpos_output";
+	public output1 : RealPort := new RealPort(0.0);
+	-- @ interface: type = output, name="robotti_ypos_output";
+	public output2 : RealPort := new RealPort(0.0);	
+	-- @ interface: type = output, name="obs_xpos_output";
+	public output3 : RealPort := new RealPort(0.0);
+	-- @ interface: type = output, name="obs_ypos_output";
+	public output4 : RealPort := new RealPort(0.0);
+	-- @ interface: type = output, name="dist";
+	public dist : RealPort := new RealPort(0.0);
+	-- @ interface: type = output, name="flag";
+	public flag : BoolPort := new BoolPort(false);
+	-- @ interface: type = output, name="command_stop";
+	public command_stop : BoolPort := new BoolPort(false);
+
+
+end HardwareInterface
+

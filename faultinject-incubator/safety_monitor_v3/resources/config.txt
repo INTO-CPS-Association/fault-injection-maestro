@@ -1,0 +1,6 @@
+false
+java
+-cp
+*
+org.crescendo.fmi.ShmServer
+-p

@@ -1,0 +1,479 @@
+simulation 
+import BooleanLogic;
+import DataWriter;
+import DataWriterConfig;
+import FMI2;
+import FMI2Component;
+import FaultInject;
+import Logger;
+import Math;
+{
+ 	bool global_execution_continue = true;
+	int status = 0;
+	Math math = load("Math");
+	Logger logger = load("Logger");
+	DataWriter dataWriter = load("DataWriter");
+	BooleanLogic booleanLogic = load("BooleanLogic");
+	FaultInject faultInject = load("FaultInject", "target/test-classes/faultEvents.xml");
+	FMI2 sMonitor = load("FMI2", "{9135211e-e830-4846-b63f-65899e11bf3a}", "/Users/au674354/Desktop/development/fault-injection-maestro/faultinject-incubator/safety_monitor_v3.fmu");
+	if( ((sMonitor == null)) )
+	{
+		global_execution_continue = false;
+	}
+	FMI2 rbmq = load("FMI2", "{cfc65592-ffff-4563-9705-1581b6e7071c}", "/Users/au674354/Desktop/development/fault-injection-maestro/faultinject-incubator/rabbitmq.fmu");
+	if( ((rbmq == null)) )
+	{
+		global_execution_continue = false;
+	}
+	@map sMonitorInstance_original -> "sMonitorInstance";
+	FMI2Component sMonitorInstance_original = null;
+	if( ((global_execution_continue)) )
+	{
+			sMonitorInstance_original = sMonitor.instantiate("sMonitorInstance", false, false);
+			if( ((sMonitorInstance_original == null)) )
+			{
+				global_execution_continue = false;
+			}
+	}
+	FMI2Component sMonitorInstance = null;
+	if( ((global_execution_continue)) )
+	{
+			sMonitorInstance = faultInject.faultInject(sMonitor, sMonitorInstance_original, "id");
+			if( ((sMonitorInstance == null)) )
+			{
+				global_execution_continue = false;
+			}
+	}
+	@map rbmqInstance -> "rbmqInstance";
+	FMI2Component rbmqInstance = null;
+	if( ((global_execution_continue)) )
+	{
+			rbmqInstance = rbmq.instantiate("rbmqInstance", false, false);
+			if( ((rbmqInstance == null)) )
+			{
+				global_execution_continue = false;
+			}
+	}
+	real STEP_SIZE = 3.0;
+	real START_TIME = 0.0;
+	real END_TIME = 30.0;
+	while( (global_execution_continue) )
+	{
+		real fixed_end_time = 0.0;
+		fixed_end_time = END_TIME;
+		string smonitorinstanceStringIo[13];
+		string rbmqinstanceStringShare[1];
+		real rbmqinstanceRealShare[1];
+		real rbmqinstanceRealIo[26];
+		bool rbmqinstanceBoolIo[26];
+		bool smonitorinstanceBoolShare[1];
+		int rbmqinstanceIntIo[26];
+		string rbmqinstanceStringIo[26];
+		uint rbmqinstanceUintVref[26];
+		real smonitorinstanceRealIo[13];
+		bool smonitorinstanceBoolIo[13];
+		uint smonitorinstanceUintVref[13];
+		status = sMonitorInstance.setupExperiment(true, 0.1, START_TIME, true, END_TIME);
+		status = rbmqInstance.setupExperiment(true, 0.1, START_TIME, true, END_TIME);
+		smonitorinstanceUintVref[0] = 0;
+		smonitorinstanceBoolIo[0] = false;
+		status = sMonitorInstance.setBoolean(smonitorinstanceUintVref, 1, smonitorinstanceBoolIo);
+		smonitorinstanceUintVref[0] = 1;
+		smonitorinstanceRealIo[0] = 0.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		smonitorinstanceUintVref[0] = 2;
+		smonitorinstanceBoolIo[0] = false;
+		status = sMonitorInstance.setBoolean(smonitorinstanceUintVref, 1, smonitorinstanceBoolIo);
+		smonitorinstanceUintVref[0] = 8;
+		smonitorinstanceRealIo[0] = 0.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		smonitorinstanceUintVref[0] = 9;
+		smonitorinstanceRealIo[0] = 0.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		smonitorinstanceUintVref[0] = 10;
+		smonitorinstanceRealIo[0] = 0.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		smonitorinstanceUintVref[0] = 11;
+		smonitorinstanceRealIo[0] = 0.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		smonitorinstanceUintVref[0] = 12;
+		smonitorinstanceRealIo[0] = 10.0;
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		rbmqinstanceUintVref[0] = 0;
+		rbmqinstanceStringIo[0] = "localhost";
+		status = rbmqInstance.setString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		rbmqinstanceUintVref[0] = 1;
+		rbmqinstanceIntIo[0] = 5672;
+		status = rbmqInstance.setInteger(rbmqinstanceUintVref, 1, rbmqinstanceIntIo);
+		rbmqinstanceUintVref[0] = 2;
+		rbmqinstanceStringIo[0] = "incubator";
+		status = rbmqInstance.setString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		rbmqinstanceUintVref[0] = 3;
+		rbmqinstanceStringIo[0] = "incubator";
+		status = rbmqInstance.setString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		rbmqinstanceUintVref[0] = 4;
+		rbmqinstanceStringIo[0] = "incubator.record.driver.state";
+		status = rbmqInstance.setString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		rbmqinstanceUintVref[0] = 5;
+		rbmqinstanceIntIo[0] = 60;
+		status = rbmqInstance.setInteger(rbmqinstanceUintVref, 1, rbmqinstanceIntIo);
+		rbmqinstanceUintVref[0] = 6;
+		rbmqinstanceIntIo[0] = 10;
+		status = rbmqInstance.setInteger(rbmqinstanceUintVref, 1, rbmqinstanceIntIo);
+		rbmqinstanceUintVref[0] = 7;
+		rbmqinstanceIntIo[0] = 60000;
+		status = rbmqInstance.setInteger(rbmqinstanceUintVref, 1, rbmqinstanceIntIo);
+		rbmqinstanceUintVref[0] = 8;
+		rbmqinstanceIntIo[0] = 1;
+		status = rbmqInstance.setInteger(rbmqinstanceUintVref, 1, rbmqinstanceIntIo);
+		status = sMonitorInstance.enterInitializationMode();
+		status = rbmqInstance.enterInitializationMode();
+		smonitorinstanceUintVref[0] = 0;
+		status = sMonitorInstance.getBoolean(smonitorinstanceUintVref, 1, smonitorinstanceBoolIo);
+		smonitorinstanceBoolShare[0] = smonitorinstanceBoolIo[0];
+		rbmqinstanceUintVref[0] = 35;
+		rbmqinstanceBoolIo[0] = smonitorinstanceBoolShare[0];
+		status = rbmqInstance.setBoolean(rbmqinstanceUintVref, 1, rbmqinstanceBoolIo);
+		rbmqinstanceUintVref[0] = 22;
+		status = rbmqInstance.getReal(rbmqinstanceUintVref, 1, rbmqinstanceRealIo);
+		rbmqinstanceRealShare[0] = rbmqinstanceRealIo[0];
+		smonitorinstanceUintVref[0] = 4;
+		smonitorinstanceRealIo[0] = rbmqinstanceRealShare[0];
+		status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+		rbmqinstanceUintVref[0] = 20;
+		status = rbmqInstance.getString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		rbmqinstanceStringShare[0] = rbmqinstanceStringIo[0];
+		smonitorinstanceUintVref[0] = 7;
+		smonitorinstanceStringIo[0] = rbmqinstanceStringShare[0];
+		status = sMonitorInstance.setString(smonitorinstanceUintVref, 1, smonitorinstanceStringIo);
+		status = sMonitorInstance.exitInitializationMode();
+		status = rbmqInstance.exitInitializationMode();
+		break;
+	}
+	int fmi_ok = 0;
+	int fmi_discard = 2;
+	int fmi_error = 3;
+	int fmi_fatal = 4;
+	while( (global_execution_continue) )
+	{
+		BooleanLogic booleanlogic = load("BooleanLogic");
+		real jac_current_step_size = 0.0;
+		jac_current_step_size = STEP_SIZE;
+		real jac_step_size = 0.0;
+		jac_step_size = STEP_SIZE;
+		real jac_current_communication_point = 0.0;
+		jac_current_communication_point = START_TIME;
+		real jac_end_time = 0.0;
+		jac_end_time = END_TIME;
+		bool smonitorinstanceCurrentTimeFullStep = true;
+		real smonitorinstanceCurrentTime = 0.0;
+		bool rbmqinstanceCurrentTimeFullStep = true;
+		real rbmqinstanceCurrentTime = 0.0;
+		bool rbmqinstanceBoolIo[26];
+		real smonitorinstanceRealIo[13];
+		string smonitorinstanceStringIo[13];
+		real rbmqinstanceRealShare[1];
+		string rbmqinstanceStringShare[1];
+		real rbmqinstanceRealIo[26];
+		string rbmqinstanceStringIo[26];
+		uint rbmqinstanceUintVref[26];
+		bool smonitorinstanceBoolShare[1];
+		bool smonitorinstanceBoolIo[13];
+		uint smonitorinstanceUintVref[13];
+		DataWriter datawriter = load("DataWriter");
+		string datawriter_headers[3] = { "{sMonitor}.sMonitorInstance.command_stop" , "{rbmq}.rbmqInstance.measurement" , "{rbmq}.rbmqInstance.fields.t1" };
+		DataWriterConfig datawriter_configuration = datawriter.writeHeader(datawriter_headers);
+		smonitorinstanceUintVref[0] = 0;
+		status = sMonitorInstance.getBoolean(smonitorinstanceUintVref, 1, smonitorinstanceBoolIo);
+		if( ((status == fmi_error) || (status == fmi_fatal)) )
+		{
+				global_execution_continue = false;
+				if( (status == fmi_error) )
+				{
+					logger.log(4, "GetBoolean failed on '%s' with status: FMI_ERROR", "sMonitorInstance");
+				}
+				if( (status == fmi_fatal) )
+				{
+					logger.log(4, "GetBoolean failed on '%s' with status: FMI_FATAL", "sMonitorInstance");
+				}
+				unload(datawriter);
+				datawriter = null;
+				unload(booleanlogic);
+				booleanlogic = null;
+				break;
+		}
+		smonitorinstanceBoolShare[0] = smonitorinstanceBoolIo[0];
+		rbmqinstanceUintVref[0] = 20;
+		status = rbmqInstance.getString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+		if( ((status == fmi_error) || (status == fmi_fatal)) )
+		{
+				global_execution_continue = false;
+				if( (status == fmi_error) )
+				{
+					logger.log(4, "GetString failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+				}
+				if( (status == fmi_fatal) )
+				{
+					logger.log(4, "GetString failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+				}
+				unload(datawriter);
+				datawriter = null;
+				unload(booleanlogic);
+				booleanlogic = null;
+				break;
+		}
+		rbmqinstanceUintVref[0] = 22;
+		status = rbmqInstance.getReal(rbmqinstanceUintVref, 1, rbmqinstanceRealIo);
+		if( ((status == fmi_error) || (status == fmi_fatal)) )
+		{
+				global_execution_continue = false;
+				if( (status == fmi_error) )
+				{
+					logger.log(4, "GetReal failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+				}
+				if( (status == fmi_fatal) )
+				{
+					logger.log(4, "GetReal failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+				}
+				unload(datawriter);
+				datawriter = null;
+				unload(booleanlogic);
+				booleanlogic = null;
+				break;
+		}
+		rbmqinstanceStringShare[0] = rbmqinstanceStringIo[0];
+		rbmqinstanceRealShare[0] = rbmqinstanceRealIo[0];
+		real fmu_communicationpoints[2];
+		bool any_discards = false;
+		datawriter.writeDataPoint(datawriter_configuration, jac_current_communication_point, smonitorinstanceBoolShare[0], rbmqinstanceStringShare[0], rbmqinstanceRealShare[0]);
+		while( ((jac_current_communication_point + jac_current_step_size) < jac_end_time) )
+		{
+			smonitorinstanceUintVref[0] = 7;
+			smonitorinstanceStringIo[0] = rbmqinstanceStringShare[0];
+			status = sMonitorInstance.setString(smonitorinstanceUintVref, 1, smonitorinstanceStringIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "SetReal failed on '%s' with status: FMI_ERROR", "sMonitorInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "SetReal failed on '%s' with status: FMI_FATAL", "sMonitorInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			smonitorinstanceUintVref[0] = 4;
+			smonitorinstanceRealIo[0] = rbmqinstanceRealShare[0];
+			status = sMonitorInstance.setReal(smonitorinstanceUintVref, 1, smonitorinstanceRealIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "SetReal failed on '%s' with status: FMI_ERROR", "sMonitorInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "SetReal failed on '%s' with status: FMI_FATAL", "sMonitorInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			rbmqinstanceUintVref[0] = 35;
+			rbmqinstanceBoolIo[0] = smonitorinstanceBoolShare[0];
+			status = rbmqInstance.setBoolean(rbmqinstanceUintVref, 1, rbmqinstanceBoolIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "SetBoolean failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "SetBoolean failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			any_discards = false;
+			status = rbmqInstance.doStep(jac_current_communication_point, jac_current_step_size, false);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "DoStep failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "DoStep failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			if( (status != fmi_ok) )
+			{
+				if( (status == fmi_discard) )
+				{
+						status = rbmqInstance.getRealStatus(2, ref rbmqinstanceCurrentTime);
+						rbmqinstanceCurrentTimeFullStep = false;
+				}
+			}
+			else
+			{
+					rbmqinstanceCurrentTime = jac_current_communication_point + jac_current_step_size;
+					rbmqinstanceCurrentTimeFullStep = true;
+			}
+			fmu_communicationpoints[1] = rbmqinstanceCurrentTime;
+			if( (!rbmqinstanceCurrentTimeFullStep) )
+			{
+					logger.log(1, "## FMU: '%s' DISCARDED step at sim-time: %f for step-size: %f and proposed sim-time: %.15f", "rbmqInstance", jac_current_communication_point, jac_current_step_size, rbmqinstanceCurrentTime);
+					any_discards = any_discards || !rbmqinstanceCurrentTimeFullStep;
+			}
+			status = sMonitorInstance.doStep(jac_current_communication_point, jac_current_step_size, false);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "DoStep failed on '%s' with status: FMI_ERROR", "sMonitorInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "DoStep failed on '%s' with status: FMI_FATAL", "sMonitorInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			if( (status != fmi_ok) )
+			{
+				if( (status == fmi_discard) )
+				{
+						status = sMonitorInstance.getRealStatus(2, ref smonitorinstanceCurrentTime);
+						smonitorinstanceCurrentTimeFullStep = false;
+				}
+			}
+			else
+			{
+					smonitorinstanceCurrentTime = jac_current_communication_point + jac_current_step_size;
+					smonitorinstanceCurrentTimeFullStep = true;
+			}
+			fmu_communicationpoints[0] = smonitorinstanceCurrentTime;
+			if( (!smonitorinstanceCurrentTimeFullStep) )
+			{
+					logger.log(1, "## FMU: '%s' DISCARDED step at sim-time: %f for step-size: %f and proposed sim-time: %.15f", "sMonitorInstance", jac_current_communication_point, jac_current_step_size, smonitorinstanceCurrentTime);
+					any_discards = any_discards || !smonitorinstanceCurrentTimeFullStep;
+			}
+			rbmqinstanceUintVref[0] = 20;
+			status = rbmqInstance.getString(rbmqinstanceUintVref, 1, rbmqinstanceStringIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "GetString failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "GetString failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			rbmqinstanceUintVref[0] = 22;
+			status = rbmqInstance.getReal(rbmqinstanceUintVref, 1, rbmqinstanceRealIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "GetReal failed on '%s' with status: FMI_ERROR", "rbmqInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "GetReal failed on '%s' with status: FMI_FATAL", "rbmqInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			smonitorinstanceUintVref[0] = 0;
+			status = sMonitorInstance.getBoolean(smonitorinstanceUintVref, 1, smonitorinstanceBoolIo);
+			if( ((status == fmi_error) || (status == fmi_fatal)) )
+			{
+					global_execution_continue = false;
+					if( (status == fmi_error) )
+					{
+						logger.log(4, "GetBoolean failed on '%s' with status: FMI_ERROR", "sMonitorInstance");
+					}
+					if( (status == fmi_fatal) )
+					{
+						logger.log(4, "GetBoolean failed on '%s' with status: FMI_FATAL", "sMonitorInstance");
+					}
+					unload(datawriter);
+					datawriter = null;
+					unload(booleanlogic);
+					booleanlogic = null;
+					break;
+			}
+			rbmqinstanceStringShare[0] = rbmqinstanceStringIo[0];
+			rbmqinstanceRealShare[0] = rbmqinstanceRealIo[0];
+			smonitorinstanceBoolShare[0] = smonitorinstanceBoolIo[0];
+			if( (!any_discards) )
+			{
+					jac_current_communication_point = jac_current_communication_point + jac_current_step_size;
+					datawriter.writeDataPoint(datawriter_configuration, jac_current_communication_point, smonitorinstanceBoolShare[0], rbmqinstanceStringShare[0], rbmqinstanceRealShare[0]);
+					jac_current_step_size = jac_step_size;
+			}
+		}
+		if( (!global_execution_continue) )
+		{
+			break;
+		}
+		datawriter.close();
+		if( (booleanlogic != null) )
+		{
+			unload(booleanlogic);
+		}
+		if( (datawriter != null) )
+		{
+			unload(datawriter);
+		}
+		break;
+	}
+	sMonitorInstance_original.terminate();
+	rbmqInstance.terminate();
+	sMonitor.freeInstance(sMonitorInstance_original);
+	rbmq.freeInstance(rbmqInstance);
+	unload(sMonitor);
+	unload(rbmq);
+	unload(math);
+	unload(logger);
+	unload(dataWriter);
+	unload(booleanLogic);
+	unload(faultInject);
+}

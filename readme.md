@@ -38,6 +38,22 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 
 The relevant files are in rbmq_example.
 
+#### RMQFMU testing (incubator scenario)
+Follow the instructions on the incubator to get the simulation running.
+This incudes the startup of the dockerised rabbitmq server.
+
+Then from this repo run 
+
+```bash
+$ python3 rmqfmu_incubator_interface.py
+```
+
+and then test rbmqfmuTest.java
+
+```bash
+$ cd ../..
+$ mvn test
+```
 
 #### Development Notes
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
