@@ -60,7 +60,8 @@ public class SimpleTest {
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
-        org.intocps.maestro.Main.argumentHandler(new String[]{"-i","-sg1",initializePath, simulateJson,"-d",dumpPath,faultInjectSpec.getPath()} );
+        org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath()});
+
     }
 }
 
