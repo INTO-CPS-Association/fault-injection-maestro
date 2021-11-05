@@ -1,0 +1,20 @@
+{
+  "fmus": {
+    "{crtl}": "target/test-classes/watertankController-c.fmu",
+    "{wt}": "target/test-classes/singlewatertank-20sim.fmu"
+  },
+  "connections": {
+    "{crtl}.crtlInstance.valve": ["{wt}.wtInstance.valvecontrol"],
+    "{wt}.wtInstance.level": ["{crtl}.crtlInstance.level"]
+  },
+  "parameters": {
+    "{crtl}.crtlInstance.maxlevel": 2,
+    "{crtl}.crtlInstance.minlevel": 1
+  },
+  "algorithm":{"type":"fixed-step","size":0.1},
+
+  "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness.xml",
+  "faultInjectInstances": {
+    "crtlInstance": "id"
+  }
+}

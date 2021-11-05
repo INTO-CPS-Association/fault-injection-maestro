@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.print.event.PrintEvent;
 import javax.swing.text.AbstractDocument.ElementEdit;
@@ -134,6 +136,9 @@ public class Event {
                     }
                     whenExpressionVars.add("t");
 
+                    String testit = eElement.getAttribute("when");
+                    
+
                     Expression when = new ExpressionBuilder(eElement.getAttribute("when")).operator(operators.not, operators.or, operators.and, operators.gt, 
                                                                                                     operators.gteq, operators.lt, operators.lteq, operators.eq)
                                                                                           .variables(whenExpressionVars.stream().toArray(String[]::new)).build();
@@ -249,6 +254,49 @@ public class Event {
         }
         logger.info(String.format("after creation %d", events.length));
         return events;
+    }
+
+    public static boolean isEventRemovable(String expression)
+    {
+        Pattern pattern = Pattern.compile("(?<=\\().*?(?=\\))");
+        Matcher matcher = pattern.matcher(expression);
+        boolean eventCanBeDropped = false;
+        System.out.println(expression);
+        if(expression.contains(">") && expression.contains("<"))
+        {
+            System.out.println("HERE");
+            String exprs;
+            float val = -1;
+            boolean greater = false;
+            while(matcher.find()){
+                exprs = matcher.group();
+                System.out.println(exprs);
+                float temp = Float.parseFloat(exprs.replaceAll("[^\\d.]", ""));
+                if(temp > val)
+                {
+                    val = temp;
+
+                    System.out.println(val);
+                    if(exprs.contains(">"))
+                    {
+                        greater = true;
+
+                        System.out.println("greater");
+                    }
+                    else
+                    {
+                        greater = false;
+                    }
+                }
+            }
+            if(!greater){
+                eventCanBeDropped = true;
+            }
+
+            System.out.println(eventCanBeDropped);
+
+        }//TODO add condition for when > not present, make sure test cases pass
+        return eventCanBeDropped;
     }
 
     public static Event[] cutArrayOfEvents(Event[] events, double currentStep){

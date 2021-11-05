@@ -1,4 +1,7 @@
 package org.intocps.maestro.faultinject;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,7 +23,7 @@ public class eventsTest {
     //@Ignore("Not needed now")
     public void testReadXml() throws Exception {
 
-        String xmlPath = SimpleTest.class.getClassLoader().getResource("Catalog.xml").getPath();
+        String xmlPath = eventsTest.class.getClassLoader().getResource("Catalog.xml").getPath();
 
         Event[] simuEvents = {};
         Event[] simuEventswithDuration = {};
@@ -39,11 +42,10 @@ public class eventsTest {
     }
 
     @Test
-
     //@Ignore("Not needed now")
     public void testfunceval() throws Exception {
 
-        String xmlPath = SimpleTest.class.getClassLoader().getResource("funceval_when.xml").getPath();
+        String xmlPath = eventsTest.class.getClassLoader().getResource("funceval_when.xml").getPath();
 
         Event[] simuEvents = {};
         Event[] simuEventswithDuration = {};
@@ -62,4 +64,32 @@ public class eventsTest {
 
     }
 
+    @Test 
+    public void expressionEvaluation() throws Exception {
+
+        String xmlPath = eventsTest.class.getClassLoader().getResource("check_when.xml").getPath();
+
+        Event[] simuEvents = {};
+        Event[] simuEventswithDuration = {};
+
+        try {
+            boolean verbose = true;
+            
+            String a = "(t>=0.2) & (t<0.4)";
+            String b = "(t>=0.7) | (t<0.6)";
+            String c = "((t>=0.2) & (t<0.4)) | (t>=0.7) | (t<0.6)";
+
+            Event.isEventRemovable(a);
+            Event.isEventRemovable(b);
+            assertTrue("Expected to be true", Event.isEventRemovable(a));
+            assertTrue("Expected to be false",!Event.isEventRemovable(b));
+            assertTrue("Expected to be false",!Event.isEventRemovable(c));
+            //assertTrue("Expected to be true",Event.isEventRemovable("(t==0.2) | (t<0.4)"));
+            assertTrue("Expected to be false",!Event.isEventRemovable("(t==0.2) | (t>0.4)"));
+
+        } catch (NumberFormatException | NullPointerException e) {
+            logger.error("Something went terribly wrong when creating the events");
+            e.printStackTrace();
+        }
+    }
 }

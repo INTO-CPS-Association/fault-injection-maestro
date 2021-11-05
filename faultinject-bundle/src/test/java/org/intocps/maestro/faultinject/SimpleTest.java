@@ -20,7 +20,7 @@ public class SimpleTest {
     @Before
     public void setup(){
         Configurator.setLevel(LogManager.getLogger(FaultInjectRuntimeModule.class).getName(), Level.DEBUG);
-        Configurator.setLevel(LogManager.getLogger(Event.class).getName(), Level.ERROR);
+        Configurator.setLevel(LogManager.getLogger(Event.class).getName(), Level.DEBUG);
 
     }
     //@Ignore("Not needed now")
