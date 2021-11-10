@@ -59,11 +59,11 @@ public class maestroTest {
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
-        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
-
+//        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
+        org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
         
         //csv file containing data
-        BufferedReader br = new BufferedReader(new FileReader("outputs.csv"));
+        BufferedReader br = new BufferedReader(new FileReader(new File(dumpPath,"outputs.csv")));
         String line;
 
         BufferedReader br2 = new BufferedReader(new FileReader("output_ground_truth.csv"));
