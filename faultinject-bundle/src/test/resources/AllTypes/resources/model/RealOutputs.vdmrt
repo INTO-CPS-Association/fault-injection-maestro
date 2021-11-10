@@ -1,0 +1,33 @@
+class Outputs
+
+
+instance variables
+
+outputReal : RealPort;
+outputInt : IntPort;
+outputBool : BoolPort;
+outputString : StringPort;
+
+operations
+
+public Outputs: RealPort * IntPort * BoolPort * StringPort ==> Outputs
+Outputs(o1, o2, o3, o4) == 
+	(outputReal := o1;
+	outputInt := o2;
+	outputBool := o3;
+	outputString := o4;);
+
+public setOutput1 : real ==> ()
+setOutput1(value) == outputReal.setValue(value);
+
+public setOutput2 : int ==> ()
+setOutput2(value) == outputInt.setValue(value);
+
+public setOutput3 : bool ==> ()
+setOutput3(value) == outputBool.setValue(value);
+
+public setOutput4 : Port`String ==> ()
+setOutput4(value) == outputString.setValue(value);
+
+
+end Outputs

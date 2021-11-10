@@ -1,8 +1,20 @@
 {
   "fmus": {
-    "{alltypes}": "target/test-classes/AllTypes.fmu"
+    "{alltypes}": "target/test-classes/AllTypes.fmu",
+
+    "{alltypesB}": "target/test-classes/AllTypesB.fmu"
   },
   "connections": {
+
+    "{alltypes}.alltypesA.boolOutput": ["{alltypesB}.alltypesB.boolInput"],
+    "{alltypes}.alltypesA.integerOutput": ["{alltypesB}.alltypesB.integerInput"],
+    "{alltypes}.alltypesA.doubleOutput": ["{alltypesB}.alltypesB.doubleInput"],
+    "{alltypes}.alltypesA.stringOutput": ["{alltypesB}.alltypesB.stringInput"],
+
+    "{alltypes}.alltypesB.boolOutput": ["{alltypesB}.alltypesA.boolInput"],
+    "{alltypes}.alltypesB.integerOutput": ["{alltypesB}.alltypesA.integerInput"],
+    "{alltypes}.alltypesB.doubleOutput": ["{alltypesB}.alltypesA.doubleInput"],
+    "{alltypes}.alltypesB.stringOutput": ["{alltypesB}.alltypesA.stringInput"]
   },
   "parameters": {
   },
@@ -10,6 +22,6 @@
 
   "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness.xml",
   "faultInjectInstances": {
-    "crtlInstance": "id"
+    "alltypesA": "id"
   }
 }
