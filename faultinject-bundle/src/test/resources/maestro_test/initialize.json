@@ -11,10 +11,10 @@
     "{alltypes}.alltypesA.doubleOutput": ["{alltypesB}.alltypesB.doubleInput"],
     "{alltypes}.alltypesA.stringOutput": ["{alltypesB}.alltypesB.stringInput"],
 
-    "{alltypes}.alltypesB.boolOutput": ["{alltypesB}.alltypesA.boolInput"],
-    "{alltypes}.alltypesB.integerOutput": ["{alltypesB}.alltypesA.integerInput"],
-    "{alltypes}.alltypesB.doubleOutput": ["{alltypesB}.alltypesA.doubleInput"],
-    "{alltypes}.alltypesB.stringOutput": ["{alltypesB}.alltypesA.stringInput"]
+    "{alltypesB}.alltypesB.boolOutput": ["{alltypes}.alltypesA.boolInput"],
+    "{alltypesB}.alltypesB.integerOutput": ["{alltypes}.alltypesA.integerInput"],
+    "{alltypesB}.alltypesB.doubleOutput": ["{alltypes}.alltypesA.doubleInput"],
+    "{alltypesB}.alltypesB.stringOutput": ["{alltypes}.alltypesA.stringInput"]
   },
   "parameters": {
   },
