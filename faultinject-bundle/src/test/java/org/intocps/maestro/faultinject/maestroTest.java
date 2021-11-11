@@ -25,7 +25,7 @@ public class maestroTest {
     //test for maestro compatibility
     //@Ignore("Not needed now")
     public void basicCompatibilityTest() throws Exception {
-
+        String dumpPath = "target/maestro_test/basic/dump";
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
@@ -45,7 +45,7 @@ public class maestroTest {
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"interpret", "--verbose", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"interpret", "--verbose", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath(),"-output",dumpPath});
 
     }
 

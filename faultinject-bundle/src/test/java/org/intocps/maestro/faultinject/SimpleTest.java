@@ -45,7 +45,7 @@ public class SimpleTest {
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"--verbose", "--interpret", "-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"--verbose", "interpret", "-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
 
