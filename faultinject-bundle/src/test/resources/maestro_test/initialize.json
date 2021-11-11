@@ -6,10 +6,6 @@
   },
   "connections": {
 
-    "{alltypes}.alltypesA.boolOutput": ["{alltypesB}.alltypesB.boolInput"],
-    "{alltypes}.alltypesA.integerOutput": ["{alltypesB}.alltypesB.integerInput"],
-    "{alltypes}.alltypesA.doubleOutput": ["{alltypesB}.alltypesB.doubleInput"],
-    "{alltypes}.alltypesA.stringOutput": ["{alltypesB}.alltypesB.stringInput"],
 
     "{alltypesB}.alltypesB.boolOutput": ["{alltypes}.alltypesA.boolInput"],
     "{alltypesB}.alltypesB.integerOutput": ["{alltypes}.alltypesA.integerInput"],
@@ -18,7 +14,7 @@
   },
   "parameters": {
   },
-  "algorithm":{"type":"fixed-step","size":0.1},
+  "algorithm":{"type":"fixed-step","size":0.1}, 
 
   "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness.xml",
   "faultInjectInstances": {
