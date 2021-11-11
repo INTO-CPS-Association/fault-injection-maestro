@@ -5,16 +5,22 @@
     "{alltypesB}": "target/test-classes/AllTypesB.fmu"
   },
   "connections": {
-
-
     "{alltypesB}.alltypesB.boolOutput": ["{alltypes}.alltypesA.boolInput"],
     "{alltypesB}.alltypesB.integerOutput": ["{alltypes}.alltypesA.integerInput"],
     "{alltypesB}.alltypesB.doubleOutput": ["{alltypes}.alltypesA.doubleInput"],
-    "{alltypesB}.alltypesB.stringOutput": ["{alltypes}.alltypesA.stringInput"]
+    "{alltypesB}.alltypesB.stringOutput": ["{alltypes}.alltypesA.stringInput"], 
+    "{alltypesA}.alltypesA.boolOutput": ["{alltypes}.alltypesB.boolInput"],
+    "{alltypesA}.alltypesA.integerOutput": ["{alltypes}.alltypesB.integerInput"],
+    "{alltypesA}.alltypesA.doubleOutput": ["{alltypes}.alltypesB.doubleInput"],
+    "{alltypesA}.alltypesA.stringOutput": ["{alltypes}.alltypesB.stringInput"]
+
   },
   "parameters": {
   },
-  "algorithm":{"type":"fixed-step","size":0.1}, 
+  "logVariables": {
+    "{alltypes}.alltypesA":["doubleOutput", "boolOutput", "integerOutput", "stringOutput"]
+  },
+  "algorithm":{"type":"fixed-step","size":0.1},
 
   "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness.xml",
   "faultInjectInstances": {
