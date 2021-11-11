@@ -85,7 +85,7 @@ public class maestroTest {
                 String[] colsGroundTruth = lineGroundTruth.split(",");
 
                 assertEquals(colsGroundTruth[1], cols[ib]);
-                assertEquals(colsGroundTruth[3], cols[id]);
+                assertEquals(colsGroundTruth[3], cols[ii]);
                 assertEquals(colsGroundTruth[4], cols[is]);
                 //before comparing the reals, turn 0 to 0.0
                 if(colsGroundTruth[2].compareTo("0")==0){

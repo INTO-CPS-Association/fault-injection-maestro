@@ -24,30 +24,30 @@ public class injectCorrectnessTest {
     //@Ignore("Not needed now")
     //tests with the alltypes.fmu, with inputs and outputs of each type.
     public void testOutputs() throws Exception {
-
-        final File faultInjectSpec = Paths.get("target", "funcevaltest", "FaultInject.mabl").toFile();
+        String dumpPath = "target/funcevaltestcorrect/dump";
+        final File faultInjectSpec = Paths.get("target", "funcevaltestcorrect", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
-        final File spec = Paths.get("target", "funcevaltest", "funceval_output_correctness_test.mabl").toFile();
+        final File spec = Paths.get("target", "funcevaltestcorrect", "funceval_output_correctness_test.mabl").toFile();
         try (final FileWriter writer = new FileWriter(spec)) {
             IOUtils.copy(this.getClass().getResourceAsStream("/funceval_output_correctness_test.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         //TODO: the FMI2 copying and addition to the parse path can be skipped once mable is updated - next release
-        final File fmi2 = Paths.get("target", "funcevaltest", "FMI2.mabl").toFile();
+        final File fmi2 = Paths.get("target", "funcevaltestcorrect", "FMI2.mabl").toFile();
         try (final FileWriter writer = new FileWriter(fmi2)) {
             IOUtils.copy(TypeChecker.class.getResourceAsStream("FMI2.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"interpret", "--verbose", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"interpret", "--verbose","-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
         //csv file containing data
-        BufferedReader br = new BufferedReader(new FileReader("outputs.csv"));
+        BufferedReader br = new BufferedReader(new FileReader(new File(dumpPath,"outputs.csv")));
         String line;
 
         BufferedReader br2 = new BufferedReader(new FileReader("output_ground_truth.csv"));

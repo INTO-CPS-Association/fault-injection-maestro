@@ -90,6 +90,8 @@ import Math;
     // #############################
 
     real time = START_TIME;
+    dataWriter.writeDataPoint(dataWriterConfiguration, time, boolOutput[0],  doubleOutput[0], intOutput[0], "bahamas",  randomDouble[0], randomInt[0], randomString[0]);
+
     // #############################
     // Simulation Loop until END_TIME
     // #############################

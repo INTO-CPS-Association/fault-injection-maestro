@@ -18,7 +18,7 @@ public class WaterTankSimpleTest {
     @Test
     //@Ignore("Not needed now")
     public void test() throws Exception {
-
+        String dumpPath = "target/watertanksimpletest/dump";
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
@@ -38,7 +38,7 @@ public class WaterTankSimpleTest {
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"interpret", "--verbose", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"interpret", "--verbose","-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
 }

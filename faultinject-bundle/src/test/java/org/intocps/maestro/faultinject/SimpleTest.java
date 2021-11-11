@@ -25,7 +25,7 @@ public class SimpleTest {
     }
     //@Ignore("Not needed now")
     public void test() throws Exception {
-
+        String dumpPath = "target/simpletest/test/dump";
         final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
@@ -45,7 +45,7 @@ public class SimpleTest {
 
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
-                new String[]{"--verbose", "--interpret", fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
+                new String[]{"--verbose", "--interpret", "-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});
 
     }
 
@@ -54,7 +54,7 @@ public class SimpleTest {
     public void testWithConfig() throws Exception {
         String initializePath = SimpleTest.class.getClassLoader().getResource("config_example/initialize.json").getPath();
         String simulateJson = SimpleTest.class.getClassLoader().getResource("config_example/simulate.json").getPath();
-        String dumpPath = "target/test-classes/config_example/dump";
+        String dumpPath = "target/simpletest/testtwithconfig/dump";
         final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
