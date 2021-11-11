@@ -2,6 +2,7 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -63,33 +64,40 @@ public class maestroTest {
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
         
         //csv file containing data
-        BufferedReader br = new BufferedReader(new FileReader(new File(dumpPath,"outputs.csv")));
+        BufferedReader bufferReader = new BufferedReader(new FileReader(new File(dumpPath,"outputs.csv")));
         String line;
+        line = bufferReader.readLine(); // get rid of first header line
+        //get index of column that contains result
+        int id = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.doubleOutput");
+        int ii = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.integerOutput");
+        int ib = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.boolOutput");
+        int is = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.stringOutput");
 
-        BufferedReader br2 = new BufferedReader(new FileReader("output_ground_truth.csv"));
-        String line2;
-        line = br.readLine(); // get rid of first header line
-        while ((line = br.readLine()) != null) {
+
+        BufferedReader bufferReaderGroundTruth = new BufferedReader(new FileReader("output_ground_truth.csv"));
+        String lineGroundTruth;
+
+        while ((line = bufferReader.readLine()) != null) {
             // use comma as separator
             String[] cols = line.split(",");
-            if((line2 = br2.readLine()) != null){
+            if((lineGroundTruth = bufferReaderGroundTruth.readLine()) != null){
 
-                String[] cols2 = line2.split(",");
+                String[] colsGroundTruth = lineGroundTruth.split(",");
 
-                assertEquals(cols2[1], cols[1]);
-                assertEquals(cols2[3], cols[3]);
-                assertEquals(cols2[4], cols[4]);
+                assertEquals(colsGroundTruth[1], cols[ib]);
+                assertEquals(colsGroundTruth[3], cols[id]);
+                assertEquals(colsGroundTruth[4], cols[is]);
                 //before comparing the reals, turn 0 to 0.0
-                if(cols2[2].compareTo("0")==0){
-                    cols2[2] = "0.0";
+                if(colsGroundTruth[2].compareTo("0")==0){
+                    colsGroundTruth[2] = "0.0";
                 }
-                Double val = Double.parseDouble(cols[2]);
+                Double val = Double.parseDouble(cols[id]);
                 val = Math.round(val * 10.0) / 10.0;
-                assertEquals(cols2[2], Double.toString(val));
+                assertEquals(colsGroundTruth[2], Double.toString(val));
             }
         }
-        br.close();
-        br2.close();
+        bufferReader.close();
+        bufferReaderGroundTruth.close();
         
     }
     
