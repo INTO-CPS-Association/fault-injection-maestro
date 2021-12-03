@@ -2,16 +2,10 @@ package org.intocps.maestro.faultinject;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.print.event.PrintEvent;
-import javax.swing.text.AbstractDocument.ElementEdit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,8 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.apache.commons.lang.ArrayUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +41,7 @@ public class Event {
     public String[] stringValues;
     public long[] stringValuesRefs;
     public boolean injected = false;
-    public double duration;
-    public boolean durationToggle;
+    public float keepAliveUntilTime;
     public List<Expression> expressionForDoubles;
     public List<Expression> expressionForInts;
     public List<Expression> expressionForBools;
@@ -59,7 +50,7 @@ public class Event {
 
     public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
-            long[] stringValuesRefs, double duration, boolean durationToggle, List<Expression> expressionForDoubles,
+            long[] stringValuesRefs, float keepAlive, List<Expression> expressionForDoubles,
             List<Expression> expressionForInts, List<Expression> expressionForBools, Expression when, Expression otherWhenConditions) {
         this.id = id;
         this.timePoint = timePoint;
@@ -71,8 +62,7 @@ public class Event {
         this.boolValuesRefs = boolValuesRefs;
         this.stringValues = stringValues;
         this.stringValuesRefs = stringValuesRefs;
-        this.duration = duration;
-        this.durationToggle = durationToggle; // if set the event is applied to all timesteps, and overrides the effect of duration
+        this.keepAliveUntilTime = keepAlive; // if positive gives the time when the event can be safely removed. If negative, the event cannot be removed
         this.expressionForDoubles = expressionForDoubles;
         this.expressionForBools = expressionForBools;
         this.expressionForInts = expressionForInts;
@@ -143,6 +133,8 @@ public class Event {
                                                                                                     operators.gteq, operators.lt, operators.lteq, operators.eq)
                                                                                           .variables(whenExpressionVars.stream().toArray(String[]::new)).build();
                     Expression otherWhen;
+
+                    float keepAlive = (float) -1.0;
                     if(eElement.hasAttribute("other"))
                     {
                         //for (String model : whenExpressionVars ) {
@@ -154,10 +146,13 @@ public class Event {
                     }
                     else{
                         otherWhen = new ExpressionBuilder("1").build();
+                        //we check here whether after some point in time t this expression can never again evaluate to true
+                        //we do this only if the when condition depends only on the time variable
+                        //we don't check for the whole simulation time, instead we find the biggest value in the expression and check whether
+                        //the expression can be true for that value plus some delta (positive small number)
+                        keepAlive = isEventRemovable(testit, when);
                     }
 
-                    double duration = 1;
-                    Boolean durationToggle = false;
                     List<Expression> ed = new ArrayList<>();
                     List<Expression> ei = new ArrayList<>();
                     List<Expression> eb = new ArrayList<>();
@@ -243,7 +238,7 @@ public class Event {
                                             bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
                                             ssValues, 
                                             sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            duration, durationToggle, ed, ei, eb, when, otherWhen
+                                            keepAlive, ed, ei, eb, when, otherWhen
                                         );
                 }
                 else
@@ -256,74 +251,66 @@ public class Event {
         return events;
     }
 
-    public static boolean isEventRemovable(String expression)
+    public static float isEventRemovable(String expressionString, Expression expression)
     {
-        Pattern pattern = Pattern.compile("(?<=\\().*?(?=\\))");
-        Matcher matcher = pattern.matcher(expression);
+        int delta = 1;
         boolean eventCanBeDropped = false;
-        System.out.println(expression);
-        if(expression.contains(">") && expression.contains("<"))
-        {
-            System.out.println("HERE");
-            String exprs;
-            float val = -1;
-            boolean greater = false;
-            while(matcher.find()){
-                exprs = matcher.group();
-                System.out.println(exprs);
-                float temp = Float.parseFloat(exprs.replaceAll("[^\\d.]", ""));
-                if(temp > val)
-                {
-                    val = temp;
+        Pattern pattern = Pattern.compile("(?<=\\().*?(?=\\))");
+        Matcher matcher = pattern.matcher(expressionString);
 
-                    System.out.println(val);
-                    if(exprs.contains(">"))
-                    {
-                        greater = true;
+        logger.warn(String.format("temp: %s", expressionString));
+        float timeToStop = (float) -1.0;
+        while(matcher.find()){
+            String exprs = matcher.group();
 
-                        System.out.println("greater");
-                    }
-                    else
-                    {
-                        greater = false;
-                    }
-                }
-            }
-            if(!greater){
-                eventCanBeDropped = true;
+            float temp = Float.parseFloat(exprs.replaceAll("[^\\d.]", ""));
+            if (temp >  timeToStop){
+                timeToStop = temp;
             }
 
-            System.out.println(eventCanBeDropped);
+        }
+        expression.setVariable("t", timeToStop+delta);
 
-        }//TODO add condition for when > not present, make sure test cases pass
-        return eventCanBeDropped;
+        if(expression.evaluate() == 1d){
+            logger.warn(String.format("Event cannot be dropped at time %f", timeToStop+delta));
+            return (float) -1.0; //event cannot be dropped
+        }
+        else{
+            logger.warn(String.format("Event can be dropped at time %f", timeToStop+delta));
+            return timeToStop+delta; //event can be dropped
+        }
+
     }
 
     public static Event[] cutArrayOfEvents(Event[] events, double currentStep){
-        logger.warn(String.format("This method is empty now. Needs to be implemented"));
+        ArrayList<Event> eventsLeft = new ArrayList<Event>();
         for(Event e: events){
-            String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
+            if(e.keepAliveUntilTime > 0 && currentStep > e.keepAliveUntilTime){
+                String printText = "[DELETED] Event with id: " + e.id + "; when " + e.when +  " keepAlive: " + e.keepAliveUntilTime;
+
+                logger.warn(printText);
+            }
+            else{
+                eventsLeft.add(e);
+            }
+        }
+
+        printEvents(eventsLeft.toArray(Event[]::new));
+        return eventsLeft.toArray(Event[]::new);
+    }
+
+    //Print all events
+    public static void printEvents(Event[] events){
+        logger.warn(String.format("events %d", events.length));
+        String printText;
+        for(Event e: events){
+            printText = "Event with id: " + e.id + ", at time: " + e.timePoint
                                 + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
                                 + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
                                 + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
                                 + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
             logger.warn(printText);
-        }
-        return events;
-    }
-
-    //Print all events
-    public static void printEvents(Event[] events){
-        logger.debug(String.format("events %d", events.length));
-        for(Event e: events){
-            String printText = "Event with id: " + e.id + ", at time: " + e.timePoint
-                                + " with doubles: " + Arrays.toString(e.doubleValues) + " with vrefs: " + Arrays.toString(e.doubleValuesRefs)
-                                + "; with ints: " + Arrays.toString(e.intValues) + " with vrefs: " + Arrays.toString(e.intValuesRefs)
-                                + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
-                                + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
-                                + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
-            logger.info(printText);
         }
     }
 

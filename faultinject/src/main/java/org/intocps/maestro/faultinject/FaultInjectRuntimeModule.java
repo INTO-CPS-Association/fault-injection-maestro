@@ -582,7 +582,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     stepSize = communicationStepSize;
                     currentStep = currentCommunicationPoint + stepSize;
                     // Cleanup the events array
-                    //simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep);
+                    simulationDurationEvents = Event.cutArrayOfEvents(simulationDurationEvents, currentStep);
                     //logger.debug(String.format("length of events: %d", simulationDurationEvents.length));
                     //Event.printEvents(simulationDurationEvents);
         
