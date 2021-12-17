@@ -26,6 +26,8 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Maven Build
         run: mvn -B package --file pom.xml -DskipTests
+      - name: ls output
+        run: ls
       - name: Maven Test
         run: mvn test
   
@@ -47,3 +49,10 @@ jobs:
         with:
           name: faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
           path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+
+      - name: Upload Artifact 3
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: faultinject-1.0.0-SNAPSHOT.jar
+          path: faultinject/target/faultinject-1.0.0-SNAPSHOT.jar

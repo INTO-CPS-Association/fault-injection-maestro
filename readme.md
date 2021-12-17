@@ -1,5 +1,5 @@
 #### Development Environment
-You need Java 11 and maven 3.6 to build the project (??).
+You need Java 11 and maven 3.6 to build the project.
 The project can be built from CLI using the maven commands.
 ```bash
 mvn clean
@@ -20,12 +20,12 @@ The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in fau
 #### Water-tank Co-simulation Case-Study
 *NOTE: Download the code with tag icsrs21
 
-The co-simulation for the watertank, with and w/o fault injection (FI), can be performed by running the test: WaterTankTest.java
-The corresponding MaBL file: watertank-casestudy.mabl
-Events can be changed at faultInjectSpecificationWaterTank.xml
+The co-simulation for the watertank, with and w/o fault injection (FI), can be performed by running the test: ```WaterTankTest.java```
+The corresponding MaBL file: ```watertank-casestudy.mabl```
+Events can be changed at ```faultInjectSpecificationWaterTank.xml```
 
-To run with FI leave faultInjectSpecificationWaterTank.xml as is.
-To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The file should look like:
+To run with FI leave ```faultInjectSpecificationWaterTank.xml``` as is.
+To run w/o FI remove the events in ```faultInjectSpecificationWaterTank.xml```. The file should look like:
 
 ```xml
 <events>
@@ -36,13 +36,12 @@ To run w/o FI remove the events in faultInjectSpecificationWaterTank.xml. The fi
 #### RBMQ Co-simulation Case-Study
 *NOTE: Download the code with tag icsrs21
 
-The relevant files are in rbmq_example.
+The relevant files are in rbmq_example. Run test ````rbmqMonitorTest````
 
 
 #### Development Notes
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
-* implement a function than cleans up the events array.
-
+* Support for FI of multiple instances, each with its xml file needs to be added.
 #### How to use
 It is possible to define one-time events e.g.
 ```xml
@@ -95,3 +94,5 @@ Additionally, the when condition can be expanded to include conditions on other 
     <variable valRef="2" type="real" newVal="t+36" vars="var_2," />
 </event>
 ```
+
+Finally, a cleanup function is added that removes events that cannot be executed after a time-point has passed.
