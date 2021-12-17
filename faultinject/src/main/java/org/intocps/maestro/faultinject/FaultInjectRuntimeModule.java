@@ -136,7 +136,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     e.printStackTrace();
                 }
                 DOMSource source = new DOMSource(doc);
-                StreamResult result = new StreamResult(new File(System.getProperty("user.dir")+"/events_xml_log.xml"));
+                StreamResult result = new StreamResult(new File("/events_xml_log.xml"));
                 try {
                     transformer.transform(source, result);
                 } catch (TransformerException e) {
