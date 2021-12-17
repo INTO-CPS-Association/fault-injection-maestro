@@ -1,17 +1,17 @@
 <events>
     <event id="1" when="(t&gt;=0.2) &amp; (t&lt;0.4)">
-        <variable valRef="4" type="bool" newVal="1" />
+        <variable valRef="3" type="bool" newVal="1" />
     </event>
     <event id="2" when="(t&gt;=1.7) | (t&lt;1.6)">
-        <variable valRef="5" type="bool" newVal="1" />
+        <variable valRef="4" type="bool" newVal="1" />
     </event>
     <event id="3" when="((t&gt;=0.2) &amp; (t&lt;0.4)) | (t&gt;=0.7) | (t&lt;0.6)">
-        <variable valRef="6" type="bool" newVal="1" />
+        <variable valRef="5" type="bool" newVal="1" />
     </event>
     <event id="4" when="(t=0.2) | (t&lt;0.8)">
-        <variable valRef="7" type="bool" newVal="1" />
+        <variable valRef="6" type="bool" newVal="1" />
     </event>
     <event id="5" when="(t=0.2) | (t&gt;0.4)">
-        <variable valRef="8" type="bool" newVal="1" />
+        <variable valRef="7" type="bool" newVal="1" />
     </event>
 </events>

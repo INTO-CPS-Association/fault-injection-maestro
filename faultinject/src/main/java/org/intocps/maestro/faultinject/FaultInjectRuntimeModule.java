@@ -30,6 +30,7 @@ import org.apache.commons.compress.archivers.EntryStreamOffsets;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger.Level;
@@ -48,10 +49,21 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import javax.xml.crypto.Data;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import net.objecthunter.exp4j.Expression;
@@ -89,6 +101,49 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 this.wrapperID = wrapperID;
                 this.fmu = fmu;
             }
+
+            public static void dumpXmlFile(){
+                DocumentBuilderFactory dbFactory =
+                        DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = null;
+                try {
+                    dBuilder = dbFactory.newDocumentBuilder();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
+                Document doc = dBuilder.newDocument();
+
+                // root element
+                Element rootElement = doc.createElement("events");
+                doc.appendChild(rootElement);
+                for (Event e: simulationDurationEvents){
+                    // supercars element
+                    Element supercar = doc.createElement("event");
+                    rootElement.appendChild(supercar);
+
+                    // setting attribute to element
+                    Attr attr = doc.createAttribute("id");
+                    attr.setValue(String.valueOf(e.id));
+                    supercar.setAttributeNode(attr);
+                }
+
+                // write the content into xml file
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = null;
+                try {
+                    transformer = transformerFactory.newTransformer();
+                } catch (TransformerConfigurationException e) {
+                    e.printStackTrace();
+                }
+                DOMSource source = new DOMSource(doc);
+                StreamResult result = new StreamResult(new File(System.getProperty("user.dir")+"/events_xml_log.xml"));
+                try {
+                    transformer.transform(source, result);
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                }
+            }
+
             public static Event[] createDurationEvents(String faultSpecFile){
                 Event[] simuEvents = {};
                 try {
@@ -1057,6 +1112,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }));
                 wrapperMembers.put("terminate", new FunctionValue.ExternalFunctionValue(fcargs -> {
                     checkArgLength(fcargs, 0);
+                    // Dump the contents of the events array (only the id) into an xml -- for test purposes
+                    dumpXmlFile();
+
                     try {
                         Fmi2Status res = component.getModule().terminate();
                         return new IntegerValue(res.value);

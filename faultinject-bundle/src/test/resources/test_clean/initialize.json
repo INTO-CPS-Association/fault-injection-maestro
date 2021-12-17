@@ -1,0 +1,30 @@
+{
+  "fmus": {
+    "{alltypes}": "target/test-classes/AllTypes.fmu",
+
+    "{alltypesB}": "target/test-classes/AllTypesB.fmu"
+  },
+  "connections": {
+    "{alltypesB}.alltypesB.boolOutput": ["{alltypes}.alltypesA.boolInput"],
+    "{alltypesB}.alltypesB.integerOutput": ["{alltypes}.alltypesA.integerInput"],
+    "{alltypesB}.alltypesB.doubleOutput": ["{alltypes}.alltypesA.doubleInput"],
+    "{alltypesB}.alltypesB.stringOutput": ["{alltypes}.alltypesA.stringInput"], 
+
+    "{alltypes}.alltypesA.boolOutput": ["{alltypes}.alltypesB.boolInput"],
+    "{alltypes}.alltypesA.integerOutput": ["{alltypes}.alltypesB.integerInput"],
+    "{alltypes}.alltypesA.doubleOutput": ["{alltypes}.alltypesB.doubleInput"],
+    "{alltypes}.alltypesA.stringOutput": ["{alltypes}.alltypesB.stringInput"]
+
+  },
+  "parameters": {
+  },
+  "logVariables": {
+    "{alltypes}.alltypesA":["doubleOutput", "boolOutput", "integerOutput", "stringOutput"]
+  },
+  "algorithm":{"type":"fixed-step","size":0.1},
+
+  "faultInjectConfigurationPath": "target/test-classes/testClean.xml",
+  "faultInjectInstances": {
+    "alltypesA": "id"
+  }
+}
