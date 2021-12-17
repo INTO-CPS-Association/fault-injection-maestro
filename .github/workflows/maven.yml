@@ -36,9 +36,7 @@ jobs:
       - name: check folder structure.
         if: matrix.os == 'ubuntu-latest'
         run: |
-          
-          ls faultinject-bundle/target/test_clean
-          tail faultinject-bundle/maestro.log
+          ls
         
       - name: Upload Artifact 1
         if: matrix.os == 'ubuntu-latest'
