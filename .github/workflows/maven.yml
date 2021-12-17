@@ -38,6 +38,7 @@ jobs:
         run:
           
           ls faultinject-bundle/target/test_clean
+          tail faultinject-bundle/maestro.log
         
       - name: Upload Artifact 1
         if: matrix.os == 'ubuntu-latest'

@@ -194,7 +194,7 @@ public class eventsTest {
             {
                 Element eElement = (Element) node;
                 remaining_events_outputted[i] = Integer.parseInt(eElement.getAttribute("id"));
-                //logger.error(String.format("Id: %d", remaining_events_outputted[i]));
+                logger.error(String.format("Id: %d", remaining_events_outputted[i]));
             }
         }
 
