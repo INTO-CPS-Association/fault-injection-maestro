@@ -29,8 +29,8 @@ jobs:
       - name: ls output
         run: |
           ls faultinject-bundle
-          ls target
-          ls test_clean
+          ls faultinject-bundle/target
+          ls faultinject-bundle/target/test_clean
       - name: Maven Test
         run: mvn test
   
