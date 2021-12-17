@@ -30,14 +30,14 @@ jobs:
         run: |
           ls faultinject-bundle
           ls faultinject-bundle/target
-          ls faultinject-bundle/target/test_clean
       - name: Maven Test
         run: mvn test
   
       - name: check folder structure.
         if: matrix.os == 'ubuntu-latest'
         run:
-          ls
+          
+          ls faultinject-bundle/target/test_clean
         
       - name: Upload Artifact 1
         if: matrix.os == 'ubuntu-latest'
