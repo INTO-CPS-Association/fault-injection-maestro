@@ -35,7 +35,7 @@ jobs:
   
       - name: check folder structure.
         if: matrix.os == 'ubuntu-latest'
-        run:
+        run: |
           
           ls faultinject-bundle/target/test_clean
           tail faultinject-bundle/maestro.log
