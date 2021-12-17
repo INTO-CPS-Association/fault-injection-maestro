@@ -31,7 +31,7 @@ jobs:
           ls faultinject-bundle
           ls faultinject-bundle/target
       - name: Maven Test
-        run: mvn test -Dmaven.test.failure.ignore=true
+        run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
   
       - name: check folder structure.
         if: matrix.os == 'ubuntu-latest'
