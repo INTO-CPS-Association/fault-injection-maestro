@@ -28,7 +28,6 @@ jobs:
         run: mvn -B package --file pom.xml -DskipTests
       - name: ls output
         run: |
-          ls
           ls faultinject-bundle
       - name: Maven Test
         run: mvn test
