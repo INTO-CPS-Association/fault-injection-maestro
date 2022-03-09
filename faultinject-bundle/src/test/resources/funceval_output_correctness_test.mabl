@@ -13,7 +13,7 @@ import Math;
     // DataWriter for results
     // #############################
     DataWriter dataWriter = load("DataWriter");
-    string data_headers[8] = {"boolout", "realout", "intout", "stringout", "boolin", "realin", "intin", "stringin"};
+    string data_headers[7] = {"boolout", "realout", "intout", "stringout", "realin", "intin", "stringin"};
     DataWriterConfig dataWriterConfiguration = dataWriter.writeHeader(data_headers);
 
 
@@ -129,7 +129,7 @@ import Math;
         // #############################
         time = time + STEP_SIZE;
 
-        dataWriter.writeDataPoint(dataWriterConfiguration, time, boolOutput[0],  doubleOutput[0], intOutput[0], stringOutput[0], randomBool[0],  randomDouble[0], randomInt[0], randomString[0]);
+        dataWriter.writeDataPoint(dataWriterConfiguration, time, boolOutput[0],  doubleOutput[0], intOutput[0], stringOutput[0], randomDouble[0], randomInt[0], randomString[0]);
 
     }
     

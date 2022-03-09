@@ -35,7 +35,10 @@ public class WaterTankSimpleTest {
         try (final FileWriter writer = new FileWriter(fmi2)) {
             IOUtils.copy(TypeChecker.class.getResourceAsStream("FMI2.mabl"), writer, StandardCharsets.UTF_8);
         }
-
+        System.out.println(dumpPath);
+        System.out.println(fmi2.getAbsolutePath());
+        System.out.println(faultInjectSpec.getAbsolutePath());
+        System.out.println(spec.getAbsolutePath());
         //we just want to call main but that doesnt work with surfire as main calls .exit which is not allowed
         org.intocps.maestro.Main.argumentHandler(
                 new String[]{"interpret", "--verbose","-output",dumpPath, fmi2.getAbsolutePath(), faultInjectSpec.getAbsolutePath(), spec.getAbsolutePath()});

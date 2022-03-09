@@ -42,6 +42,12 @@ The relevant files are in rbmq_example. Run test ````rbmqMonitorTest````
 #### Development Notes
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
 * Support for FI of multiple instances, each with its xml file needs to be added.
+* Using a particular version of maestro: clone desired version and install in the .m2 folder with
+```bash
+$ mvn install -Dmaven.test.skip=true -U
+```
+Should the build break after that, it means that some new version of maestro has been pushed by someone else and retrieved currently by mvn, therefore it is necessary
+to reinstall the desired version again.
 #### How to use
 It is possible to define one-time events e.g.
 ```xml
