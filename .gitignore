@@ -19,7 +19,6 @@
 *.dmg
 *.gz
 *.iso
-*.jar
 !plantuml.jar
 *.rar
 *.tar

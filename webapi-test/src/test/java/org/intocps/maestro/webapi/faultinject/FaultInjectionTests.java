@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("main")
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@SpringBootTest(classes = org.intocps.maestro.webapi.Application.class)
+@SpringBootTest(classes = org.intocps.maestro.webapi.Application.class, value={"loader.path=target/test-classes/faultinject-1.0.0.jar"})
 public class FaultInjectionTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
