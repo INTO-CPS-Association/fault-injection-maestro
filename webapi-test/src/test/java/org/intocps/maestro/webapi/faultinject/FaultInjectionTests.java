@@ -143,14 +143,14 @@ public class FaultInjectionTests {
 
                 String[] cols2 = line2.split(",");
 
-                assertEquals(cols2[1], cols[1]);
-                assertEquals(cols2[3], cols[3]);
-                assertEquals(cols2[4], cols[4]);
+                assertEquals(cols2[1], cols[5]);
+                assertEquals(cols2[3], cols[7]);
+                assertEquals(cols2[4], cols[8]);
                 //before comparing the reals, turn 0 to 0.0
                 if(cols2[2].compareTo("0")==0){
                     cols2[2] = "0.0";
                 }
-                Double val = Double.parseDouble(cols[2]);
+                Double val = Double.parseDouble(cols[6]);
                 val = Math.round(val * 10.0) / 10.0;
                 assertEquals(cols2[2], Double.toString(val));
             }
