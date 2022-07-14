@@ -55,7 +55,7 @@ public class maestroTest {
         String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize.json").getPath();
         String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
         String dumpPath = "target/maestro_test/dump";
-        final File faultInjectSpec = Paths.get("target", "maestro_test", "FaultInject.mabl").toFile();
+        final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);

@@ -160,10 +160,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     logger.info(String.format("length of events: %d", simuEvents.length));
                     Event.printEvents(simuEvents);
                     return simuEvents;
-                } catch (NumberFormatException | NullPointerException | SAXException | IOException
-                        | ParserConfigurationException e) {
+                } catch (NumberFormatException | NullPointerException | SAXException | IOException | ParserConfigurationException | InvalidFIConfigurationException e) {
                     logger.error("Something went terribly wrong when creating the events");
-                    e.printStackTrace();
+                    logger.error(e.toString());
                     return simuEvents;
                 }
             }

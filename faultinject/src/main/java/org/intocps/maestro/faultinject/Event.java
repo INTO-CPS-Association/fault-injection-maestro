@@ -90,8 +90,7 @@ public class Event {
         return document.getElementsByTagName("event");
     }
 
-    public static Event[] getEventswithDuration(String specificationFileName, boolean verbose)throws SAXException, IOException, ParserConfigurationException, 
-    NullPointerException, NumberFormatException {
+    public static Event[] getEventswithDuration(String specificationFileName, boolean verbose) throws InvalidFIConfigurationException, IOException, ParserConfigurationException, SAXException {
         //Parse document
         NodeList eventsList = parseXMLDom(specificationFileName);
 
@@ -120,10 +119,22 @@ public class Event {
 
                     CustomOperators operators = new CustomOperators();
                     List<String> whenExpressionVars =  new ArrayList<>();
-                    
-                    if(eElement.hasAttribute("vars")){
-                        whenExpressionVars.addAll(Arrays.asList(eElement.getAttribute("vars").split(",")));
+
+                    if(eElement.hasAttribute("vars") ^ eElement.hasAttribute("other") ){
+                        throw new InvalidFIConfigurationException("The vars and other fields of the when conditional have to be both or neither defined.");
                     }
+
+                    if(eElement.hasAttribute("vars") ){
+                        String place_holder = eElement.getAttribute("vars");
+                        if(!place_holder.isEmpty())
+                        {
+                            whenExpressionVars.addAll(Arrays.asList(place_holder.split(",")));
+                        }
+                        else{
+                            logger.warn(String.format("vars attribute in when conditional is empty"));
+                        }
+                    }
+
                     whenExpressionVars.add("t");
 
                     String testit = eElement.getAttribute("when");
@@ -140,8 +151,17 @@ public class Event {
                         //for (String model : whenExpressionVars ) {
                         //    System.out.println(model);
                         //}
-                        otherWhen = new ExpressionBuilder(eElement.getAttribute("other")).operator(operators.not, operators.or, operators.and, operators.gt, 
-                    operators.gteq, operators.lt, operators.lteq, operators.eq).variables(whenExpressionVars.stream().toArray(String[]::new)).build();
+
+                        String place_holder = eElement.getAttribute("other");
+                        if(!place_holder.isEmpty()){
+                            otherWhen = new ExpressionBuilder(place_holder).operator(operators.not, operators.or, operators.and, operators.gt,
+                                    operators.gteq, operators.lt, operators.lteq, operators.eq).variables(whenExpressionVars.stream().toArray(String[]::new)).build();
+                        }
+                        else{
+                            logger.warn(String.format("other attribute in when conditional is empty"));
+                            otherWhen = new ExpressionBuilder("1").build();
+                            keepAlive = isEventRemovable(testit, when);
+                        }
 
                     }
                     else{
