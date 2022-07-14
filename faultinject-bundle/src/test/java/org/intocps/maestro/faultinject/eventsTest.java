@@ -164,7 +164,7 @@ public class eventsTest {
         String initializePath = eventsTest.class.getClassLoader().getResource("test_clean/initialize.json").getPath();
         String simulateJson = eventsTest.class.getClassLoader().getResource("test_clean/simulate.json").getPath();
         String dumpPath = "target/test_clean/dump";
-        final File faultInjectSpec = Paths.get("target", "maestro_test", "FaultInject.mabl").toFile();
+        final File faultInjectSpec = Paths.get("target", "test-classes/test_clean", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
             IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
@@ -199,5 +199,6 @@ public class eventsTest {
         }
 
         assertArrayEquals(remaining_events_expected, remaining_events_outputted);
+
     }
 }

@@ -23,7 +23,7 @@
   },
   "algorithm":{"type":"fixed-step","size":0.1},
 
-  "faultInjectConfigurationPath": "target/test-classes/testClean.xml",
+  "faultInjectConfigurationPath": "target/test-classes/test_clean/testClean.xml",
   "faultInjectInstances": {
     "alltypesA": "id"
   }

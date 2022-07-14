@@ -102,7 +102,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 this.fmu = fmu;
             }
 
-            public static void dumpXmlFile(){
+            public static void dumpXmlFile() throws IOException {
                 DocumentBuilderFactory dbFactory =
                         DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = null;
@@ -117,6 +117,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 Element rootElement = doc.createElement("events");
                 doc.appendChild(rootElement);
                 for (Event e: simulationDurationEvents){
+                    System.out.println(String.format("length of events: %d", e.id));
+                    logger.info(String.format("length of events: %d", e.id));
                     // supercars element
                     Element supercar = doc.createElement("event");
                     rootElement.appendChild(supercar);
@@ -136,7 +138,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     e.printStackTrace();
                 }
                 DOMSource source = new DOMSource(doc);
-                StreamResult result = new StreamResult(new File(System.getProperty("user.dir")+"/events_xml_log.xml"));
+                System.out.println(System.getProperty("user.dir")+"/events_xml_log.xml");
+                File logFile = new File(System.getProperty("user.dir")+"/events_xml_log.xml");
+                logFile.createNewFile(); // if file already exists will do nothing
+
+                StreamResult result = new StreamResult(logFile);
                 try {
                     transformer.transform(source, result);
                 } catch (TransformerException e) {
@@ -1113,7 +1119,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 wrapperMembers.put("terminate", new FunctionValue.ExternalFunctionValue(fcargs -> {
                     checkArgLength(fcargs, 0);
                     // Dump the contents of the events array (only the id) into an xml -- for test purposes
-                    dumpXmlFile();
+                    try {
+                        dumpXmlFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         Fmi2Status res = component.getModule().terminate();
