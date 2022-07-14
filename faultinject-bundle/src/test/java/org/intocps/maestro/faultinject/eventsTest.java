@@ -153,7 +153,7 @@ public class eventsTest {
             }
         } catch (NumberFormatException | NullPointerException | SAXException | IOException
                 | ParserConfigurationException e) {
-            logger.error("Something went terribly wrong when creating the events");
+            logger.error("Ooops! Something went terribly wrong when creating the events");
             e.printStackTrace();
         }
 
