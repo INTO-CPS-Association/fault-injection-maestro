@@ -84,15 +84,14 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
             String wrapperID;
             FmuValue fmu;
             String eventsSpecificationFile;
-            private static double currentStep = 0.0;
-            private static double stepSize = 0.1;
+            private double currentStep = 0.0;
+            private double stepSize = 0.1;
 
-            private static Event[] simulationEvents = {};
-            private static Event[] simulationDurationEvents;
+            private Event[] simulationDurationEvents;
 
             //Used by the expression evaluator to take into account the state of the fmu during injection.
-            private static Datapoint currentInput = new Datapoint();
-            private static Datapoint currentOutput = new Datapoint();
+            private Datapoint currentInput = new Datapoint();
+            private Datapoint currentOutput = new Datapoint();
 
             public WrapperFmuComponentValue(FmuComponentValue component, Map<String, Value> wrapperMembers,
                     String wrapperID, FmuValue fmu) {
@@ -102,7 +101,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 this.fmu = fmu;
             }
 
-            public static void dumpXmlFile() throws IOException {
+            public void dumpXmlFile() throws IOException {
                 DocumentBuilderFactory dbFactory =
                         DocumentBuilderFactory.newInstance();
                 DocumentBuilder dBuilder = null;
@@ -152,11 +151,11 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }
             }
 
-            public static Event[] createDurationEvents(String faultSpecFile){
+            public static Event[] createDurationEvents(String faultSpecFile, String componentID){
                 Event[] simuEvents = {};
                 try {
                     boolean verbose = true;
-                    simuEvents = Event.getEventswithDuration(faultSpecFile, verbose);
+                    simuEvents = Event.getEventswithDuration(faultSpecFile, componentID, verbose);
                     logger.info(String.format("length of events: %d", simuEvents.length));
                     Event.printEvents(simuEvents);
                     return simuEvents;
@@ -238,7 +237,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 throw new InterpreterException("Value is not an array");
             }
 
-            public static boolean evaluateWhenCondition(Expression e, Expression o, double simtime){
+            public boolean evaluateWhenCondition(Expression e, Expression o, double simtime){
                 //System.out.println(e);
                 Set<String> whenVars = e.getVariableNames();
                 Set<String> whenOtherVars = o.getVariableNames();
@@ -350,7 +349,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 }
             }
 
-            public static Pair<double[], long[]> getDoublesFromEvent(double simtime){
+            public Pair<double[], long[]> getDoublesFromEvent(double simtime){
                 //Check the first event in simulationEvents
                 double[] dv = {};
                 long[] dvr = {};
@@ -415,7 +414,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return result;
             }
 
-            public static Pair<int[], long[]> getIntsFromEvent(double simtime){
+            public Pair<int[], long[]> getIntsFromEvent(double simtime){
                 //Check the first event in simulationEvents
                 int[] dv = {};
                 long[] dvr = {};
@@ -483,7 +482,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return result;
             }
 
-            public static Pair<boolean[], long[]> getBooleansFromEvent(double simtime){
+            public Pair<boolean[], long[]> getBooleansFromEvent(double simtime){
                 //Check the first event in simulationEvents
                 boolean[] dv = {};
                 long[] dvr = {};
@@ -566,7 +565,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return result;
             }
 
-            public static Pair<String[], long[]> getStringsFromEvent(double simtime){
+            public Pair<String[], long[]> getStringsFromEvent(double simtime){
                 //Check the first event in simulationEvents
                 String[] dv = {};
                 long[] dvr = {};
@@ -611,7 +610,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 return values;
             }
 
-            private static WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID, FmuValue fmu, String faultSpecFile) {
+            private WrapperFmuComponentValue getWrapperComponent(FmuComponentValue component, String wrapperID, FmuValue fmu, String faultSpecFile) {
                 logger.info("creating members");
                 Map<String, Value> wrapperMembers = new HashMap<>();
 
@@ -1286,7 +1285,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                 }));
                 
-                simulationDurationEvents = createDurationEvents(faultSpecFile);
+                simulationDurationEvents = createDurationEvents(faultSpecFile, wrapperID);
                 return new WrapperFmuComponentValue(component, wrapperMembers, wrapperID, fmu);
             }
         }
@@ -1317,6 +1316,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 FmuValue fmu = (FmuValue) fmuVal; // What about this?
                 FmuComponentValue comp = (FmuComponentValue) compVal;
                 String id = ((StringValue) idVal).getValue();
+                logger.info("Creating wrapper with id: %s", id);
                 
                 // TODO create wrapper and configure it using the constraints and the id. Its
                 // comp that needs to be wrapped and returned but for now
@@ -1325,8 +1325,9 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 // locally and allow it access to the other wrappers data
 
                 //To make the wrapper look at FmiInterpreter
-                // Create and return wrapper 
-                return WrapperFmuComponentValue.getWrapperComponent(comp, id, fmu, faultSpecFile);
+                // Create and return wrapper
+                WrapperFmuComponentValue wrapper = new WrapperFmuComponentValue(comp, null , id, fmu);
+                return wrapper.getWrapperComponent(comp, id, fmu, faultSpecFile);
           
             }));
 

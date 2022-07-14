@@ -23,8 +23,9 @@
   },
   "algorithm":{"type":"fixed-step","size":0.1},
 
-  "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness.xml",
+  "faultInjectConfigurationPath": "target/test-classes/funceval_output_correctness-2.xml",
   "faultInjectInstances": {
-    "alltypesA": "id-A"
+    "alltypesA": "id-A",
+    "alltypesB": "id-B"
   }
 }

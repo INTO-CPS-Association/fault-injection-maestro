@@ -100,5 +100,56 @@ public class maestroTest {
         bufferReaderGroundTruth.close();
         
     }
-    
+
+    @Test
+    public void testWithConfigMultipleFI() throws Exception {
+        String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize-2.json").getPath();
+        String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
+        String dumpPath = "target/maestro_test/dump-2";
+        final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
+        faultInjectSpec.getParentFile().mkdirs();
+        try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
+            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+        }
+//        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
+        org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
+
+        //csv file containing data
+        BufferedReader bufferReader = new BufferedReader(new FileReader(new File(dumpPath,"outputs.csv")));
+        String line;
+        line = bufferReader.readLine(); // get rid of first header line
+        //get index of column that contains result
+        int id = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.doubleOutput");
+        int ii = ArrayUtils.indexOf(line.split(","), "{alltypesB}.alltypesB.integerOutput");
+        int ib = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.boolOutput");
+        int is = ArrayUtils.indexOf(line.split(","), "{alltypesB}.alltypesB.stringOutput");
+
+
+        BufferedReader bufferReaderGroundTruth = new BufferedReader(new FileReader("output_ground_truth.csv"));
+        String lineGroundTruth;
+
+        while ((line = bufferReader.readLine()) != null) {
+            // use comma as separator
+            String[] cols = line.split(",");
+            if((lineGroundTruth = bufferReaderGroundTruth.readLine()) != null){
+
+                String[] colsGroundTruth = lineGroundTruth.split(",");
+
+                assertEquals(colsGroundTruth[1], cols[ib]);
+                assertEquals(colsGroundTruth[3], cols[ii]);
+                assertEquals(colsGroundTruth[4], cols[is]);
+                //before comparing the reals, turn 0 to 0.0
+                if(colsGroundTruth[2].compareTo("0")==0){
+                    colsGroundTruth[2] = "0.0";
+                }
+                Double val = Double.parseDouble(cols[id]);
+                val = Math.round(val * 10.0) / 10.0;
+                assertEquals(colsGroundTruth[2], Double.toString(val));
+            }
+        }
+        bufferReader.close();
+        bufferReaderGroundTruth.close();
+
+    }
+
 }

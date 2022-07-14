@@ -30,7 +30,7 @@ public class Event {
      */
     static final Logger logger = LoggerFactory.getLogger(Event.class);
     public static boolean verbose = false;
-    public int id;
+    public String id;
     public double timePoint;
     public double[] doubleValues;
     public long[] doubleValuesRefs;
@@ -48,7 +48,7 @@ public class Event {
     public Expression when;
     public Expression otherWhenConditions;
 
-    public Event(int id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
+    public Event(String id, double timePoint, double[] doubleValues, long[] doubleValuesRefs, int[] intValues,
             long[] intValuesRefs, boolean[] boolValues, long[] boolValuesRefs, String[] stringValues,
             long[] stringValuesRefs, float keepAlive, List<Expression> expressionForDoubles,
             List<Expression> expressionForInts, List<Expression> expressionForBools, Expression when, Expression otherWhenConditions) {
@@ -90,19 +90,18 @@ public class Event {
         return document.getElementsByTagName("event");
     }
 
-    public static Event[] getEventswithDuration(String specificationFileName, boolean verbose) throws InvalidFIConfigurationException, IOException, ParserConfigurationException, SAXException {
+    public static Event[] getEventswithDuration(String specificationFileName, String wrapperID, boolean verbose) throws InvalidFIConfigurationException, IOException, ParserConfigurationException, SAXException {
         //Parse document
         NodeList eventsList = parseXMLDom(specificationFileName);
 
         //find out how many events
         int nrEvents = eventsList.getLength();
-        logger.info(String.format("Nr of events %d", nrEvents));
+        logger.info(String.format("Nr of events shared among instances %d", nrEvents));
 
         Event.verbose = verbose;
 
-
         //create events one by one manually
-        Event[] events = new Event[nrEvents];
+        ArrayList<Event> events = new ArrayList<>();
         //Loop through events
         //loop all events and keep only those that are duration events
         for(int i = 0; i < nrEvents; i++){
@@ -114,7 +113,13 @@ public class Event {
                 //if(eElement.hasAttribute("duration") || eElement.hasAttribute("durationToggle"))
                 if(eElement.hasAttribute("when"))
                 {
-                    int id = Integer.parseInt(eElement.getAttribute("id"));
+                    String id = eElement.getAttribute("id");
+
+                    if(!wrapperID.equals(id)){
+                        logger.warn("wrapper id doesn't match event id");
+                        continue;
+                    }
+
                     double time = 0;
 
                     CustomOperators operators = new CustomOperators();
@@ -249,17 +254,15 @@ public class Event {
                     }
                     
                     //Call event i constructor
-                    events[i] = new Event(id, time, 
-                                            dValues.stream().mapToDouble(Double::doubleValue).toArray(), 
-                                            dValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            iValues.stream().mapToInt(Integer::intValue).toArray(), 
-                                            iValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            bbValues, 
-                                            bValuesRefs.stream().mapToLong(Long::longValue).toArray(), 
-                                            ssValues, 
-                                            sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
-                                            keepAlive, ed, ei, eb, when, otherWhen
-                                        );
+                    events.add(new Event(id, time, dValues.stream().mapToDouble(Double::doubleValue).toArray(),
+                            dValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                            iValues.stream().mapToInt(Integer::intValue).toArray(),
+                            iValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                            bbValues,
+                            bValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                            ssValues,
+                            sValuesRefs.stream().mapToLong(Long::longValue).toArray(),
+                            keepAlive, ed, ei, eb, when, otherWhen));
                 }
                 else
                 {
@@ -267,8 +270,8 @@ public class Event {
                 }
             }
         }
-        logger.info(String.format("after creation %d", events.length));
-        return events;
+        logger.info(String.format("after creation %d", events.size()));
+        return events.toArray(new Event[0]);
     }
 
     public static float isEventRemovable(String expressionString, Expression expression)

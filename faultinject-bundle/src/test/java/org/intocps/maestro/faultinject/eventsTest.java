@@ -45,7 +45,7 @@ public class eventsTest {
 
         try {
             boolean verbose = true;
-            simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
+            simuEventswithDuration = Event.getEventswithDuration(xmlPath, "id", verbose);
             Event.printEvents(simuEventswithDuration);
         } catch (NumberFormatException | NullPointerException | SAXException | IOException
                 | ParserConfigurationException e) {
@@ -68,7 +68,7 @@ public class eventsTest {
         try {
             boolean verbose = true;
             
-            simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
+            simuEventswithDuration = Event.getEventswithDuration(xmlPath, "id", verbose);
             Event.printEvents(simuEventswithDuration);
         } catch (NumberFormatException | NullPointerException | SAXException | IOException
                 | ParserConfigurationException e) {
@@ -130,7 +130,7 @@ public class eventsTest {
 
         try {
             boolean verbose = true;
-            simuEventswithDuration = Event.getEventswithDuration(xmlPath, verbose);
+            simuEventswithDuration = Event.getEventswithDuration(xmlPath, "id", verbose);
             Event.printEvents(simuEventswithDuration);
             double simtime = 0.0;
             double endtime = 3.0;
