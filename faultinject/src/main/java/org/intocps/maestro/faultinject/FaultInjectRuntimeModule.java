@@ -138,11 +138,13 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     e.printStackTrace();
                 }
                 DOMSource source = new DOMSource(doc);
+
                 System.out.println(System.getProperty("user.dir")+"/events_xml_log.xml");
                 File logFile = new File(System.getProperty("user.dir")+"/events_xml_log.xml");
                 logFile.createNewFile(); // if file already exists will do nothing
 
                 StreamResult result = new StreamResult(logFile);
+
                 try {
                     transformer.transform(source, result);
                 } catch (TransformerException e) {

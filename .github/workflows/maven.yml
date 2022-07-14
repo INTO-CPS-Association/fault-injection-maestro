@@ -26,12 +26,16 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Maven Build
         run: mvn -B package --file pom.xml -DskipTests
+      - name: ls output
+        run: |
+          ls faultinject-bundle
+          ls faultinject-bundle/target
       - name: Maven Test
-        run: mvn test
+        run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
   
       - name: check folder structure.
         if: matrix.os == 'ubuntu-latest'
-        run:
+        run: |
           ls
         
       - name: Upload Artifact 1
@@ -47,3 +51,10 @@ jobs:
         with:
           name: faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
           path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+
+      - name: Upload Artifact 3
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: faultinject-1.0.0-SNAPSHOT.jar
+          path: faultinject/target/faultinject-1.0.0-SNAPSHOT.jar
