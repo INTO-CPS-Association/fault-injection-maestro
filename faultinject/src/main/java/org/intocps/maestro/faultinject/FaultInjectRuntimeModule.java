@@ -116,8 +116,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 Element rootElement = doc.createElement("events");
                 doc.appendChild(rootElement);
                 for (Event e: simulationDurationEvents){
-                    System.out.println(String.format("length of events: %d", e.id));
-                    logger.info(String.format("length of events: %d", e.id));
+                    logger.info(String.format("[dumpXmmlFle] event: %s", e.id));
                     // supercars element
                     Element supercar = doc.createElement("event");
                     rootElement.appendChild(supercar);
@@ -139,6 +138,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 DOMSource source = new DOMSource(doc);
 
                 System.out.println(System.getProperty("user.dir")+"/events_xml_log.xml");
+                logger.info(System.getProperty("user.dir")+"/events_xml_log.xml");
                 File logFile = new File(System.getProperty("user.dir")+"/events_xml_log.xml");
                 logFile.createNewFile(); // if file already exists will do nothing
 

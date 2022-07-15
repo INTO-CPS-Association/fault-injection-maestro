@@ -130,7 +130,7 @@ public class eventsTest {
 
         try {
             boolean verbose = true;
-            simuEventswithDuration = Event.getEventswithDuration(xmlPath, "id", verbose);
+            simuEventswithDuration = Event.getEventswithDuration(xmlPath, "id-A", verbose);
             Event.printEvents(simuEventswithDuration);
             double simtime = 0.0;
             double endtime = 3.0;
@@ -161,7 +161,6 @@ public class eventsTest {
     }
 
     @Test
-    @Ignore("Not working on actions")
     public void testCleanArrayIntegration() throws Exception{
         String initializePath = eventsTest.class.getClassLoader().getResource("test_clean/initialize.json").getPath();
         String simulateJson = eventsTest.class.getClassLoader().getResource("test_clean/simulate.json").getPath();
@@ -174,8 +173,8 @@ public class eventsTest {
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
 
-        int[] remaining_events_expected = {2, 3, 5};
-        int[] remaining_events_outputted = new int[3];
+        String[] remaining_events_expected = {"id-A.2", "id-A.3", "id-A.5"};
+        String[] remaining_events_outputted = new String[3];
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -195,8 +194,8 @@ public class eventsTest {
             if (node.getNodeType() == Node.ELEMENT_NODE)
             {
                 Element eElement = (Element) node;
-                remaining_events_outputted[i] = Integer.parseInt(eElement.getAttribute("id"));
-                logger.error(String.format("Id: %d", remaining_events_outputted[i]));
+                remaining_events_outputted[i] = eElement.getAttribute("id");
+                logger.error(String.format("Id: %s", remaining_events_outputted[i]));
             }
         }
 

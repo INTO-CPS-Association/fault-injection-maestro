@@ -115,8 +115,8 @@ public class Event {
                 {
                     String id = eElement.getAttribute("id");
 
-                    if(!wrapperID.equals(id)){
-                        logger.warn("wrapper id doesn't match event id");
+                    if(!id.contains(wrapperID)){
+                        logger.warn("[skipping] wrapper id %s is not contained in event id %s", wrapperID, id);
                         continue;
                     }
 

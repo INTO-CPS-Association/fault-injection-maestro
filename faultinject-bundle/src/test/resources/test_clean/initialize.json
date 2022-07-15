@@ -25,6 +25,6 @@
 
   "faultInjectConfigurationPath": "target/test-classes/test_clean/testClean.xml",
   "faultInjectInstances": {
-    "alltypesA": "id"
+    "alltypesA": "id-A"
   }
 }
