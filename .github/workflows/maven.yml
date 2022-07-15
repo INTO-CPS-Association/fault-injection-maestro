@@ -60,8 +60,8 @@ jobs:
           path: faultinject/target/faultinject-1.0.0-SNAPSHOT.jar
 
       - name: Upload Artifact 4
-          if: matrix.os == 'ubuntu-latest'
-          uses: actions/upload-artifact@v2
-          with:
-            name: FaultInject.mabl
-            path: faultinject/src/main/resources/org/intocps/maestro/faultinject/FaultInject.mabl
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: FaultInject.mabl
+          path: faultinject/src/main/resources/org/intocps/maestro/faultinject/FaultInject.mabl
