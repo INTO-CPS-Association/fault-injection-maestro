@@ -725,6 +725,15 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             //logger.debug(String.format("getReal outcome %d", res.status.value));
         
                             List<RealValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(d -> new RealValue(d)).collect(Collectors.toList());
+
+                            //clear previous double outputs
+                            currentOutput.doubleValues.clear();
+                            double[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Double[]::new));
+                            //put new values, this has to be done before the injection such that the wrapper can track the state of the fmu, not of itself
+                            for(int i=0; i < vals.length; i++){
+                                currentOutput.doubleValues.put(scalarValueIndices[i], vals[i]);
+                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
+                            }
         
                             //Inject after getting the values
                             if(simulationDurationEvents.length != 0){
@@ -750,14 +759,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                                 logger.debug(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
                                 
-                            }
-                            //clear previous double outputs
-                            currentOutput.doubleValues.clear();
-                            double[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Double[]::new));
-                            //put new values
-                            for(int i=0; i < vals.length; i++){
-                                currentOutput.doubleValues.put(scalarValueIndices[i], vals[i]);
-                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
                             }
 
                             ref.setValue(new ArrayValue<>(values));
@@ -833,6 +834,14 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                             UpdatableValue ref = (UpdatableValue) fcargs.get(2);
         
                             List<BooleanValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).map(BooleanValue::new).collect(Collectors.toList());
+                            //clear previous boolean outputs
+                            currentOutput.booleanValues.clear();
+                            boolean[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Boolean[]::new));
+                            //put new values
+                            for(int i=0; i < vals.length; i++){
+                                currentOutput.booleanValues.put(scalarValueIndices[i], vals[i]);
+                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
+                            }
         
                             //Inject after getting the values
                             if(simulationDurationEvents.length != 0){
@@ -858,14 +867,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                                 logger.debug(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
                                 
-                            }
-                            //clear previous boolean outputs
-                            currentOutput.booleanValues.clear();
-                            boolean[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Boolean[]::new));
-                            //put new values
-                            for(int i=0; i < vals.length; i++){
-                                currentOutput.booleanValues.put(scalarValueIndices[i], vals[i]);
-                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
                             }
                             ref.setValue(new ArrayValue<>(values));
                         }
@@ -942,7 +943,14 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
         
                             List<IntegerValue> values =
                                     Arrays.stream(ArrayUtils.toObject(res.result)).map(i -> new IntegerValue(i)).collect(Collectors.toList());
-        
+
+                            currentOutput.integerValues.clear();
+                            int[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Integer[]::new));
+                            //put new values
+                            for(int i=0; i < vals.length; i++){
+                                currentOutput.integerValues.put(scalarValueIndices[i], vals[i]);
+                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
+                            }
                             //Inject after getting the values
                             if(simulationDurationEvents.length != 0){
                                 //Get data from the next event if any
@@ -967,13 +975,6 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
 
                                 logger.debug(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
                                 
-                            }
-                            currentOutput.integerValues.clear();
-                            int[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Integer[]::new));
-                            //put new values
-                            for(int i=0; i < vals.length; i++){
-                                currentOutput.integerValues.put(scalarValueIndices[i], vals[i]);
-                                //logger.debug(String.format("current output doubles %d, %f", scalarValueIndices[i], vals[i]));
                             }
                             ref.setValue(new ArrayValue<>(values));
                         }
