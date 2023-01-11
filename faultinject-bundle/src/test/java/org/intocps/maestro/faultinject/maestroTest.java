@@ -74,7 +74,7 @@ public class maestroTest {
         int is = ArrayUtils.indexOf(line.split(","), "{alltypes}.alltypesA.stringOutput");
 
 
-        BufferedReader bufferReaderGroundTruth = new BufferedReader(new FileReader("output_ground_truth.csv"));
+        BufferedReader bufferReaderGroundTruth = new BufferedReader(new FileReader("output_ground_truth-2.csv"));
         String lineGroundTruth;
 
         while ((line = bufferReader.readLine()) != null) {

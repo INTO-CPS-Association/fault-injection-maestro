@@ -187,6 +187,9 @@ public class eventsTest {
 
         NodeList nodes = document.getElementsByTagName("event");
 
+        logger.info(String.format("Expected length %d", remaining_events_expected.length));
+        logger.info(String.format("Output length %d", nodes.getLength()));
+
         assertEquals(remaining_events_expected.length, nodes.getLength());
 
         for(int i = 0; i < nodes.getLength(); i++){
