@@ -10,9 +10,9 @@ and download the following files ```FaultInject.mabl``` and ```
 faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar.zip```.
 Unzip the jar and place in the ```fi-example``` folder.
 
-Follow the instructions in [fi-example/README.md] to run FI experiments with the watertank and the incubator.
+Follow the [fi-example/README.md](instructions) to run FI experiments with the watertank and the incubator.
 
-### Other Examples
+### Case-study for the ICSRS21 paper
 
 #### Water-tank Co-simulation Case-Study
 *NOTE: Download the code with tag icsrs21
@@ -245,7 +245,7 @@ $ mvn test -Dtest=injectCorrectnessTest#test -DfailIfNoTests=false
 
 The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in the faultinject folder.
 
-### Development Notes
+### To be added
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
 
 
