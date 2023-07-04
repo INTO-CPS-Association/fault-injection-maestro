@@ -37,7 +37,7 @@ the results in both cases and save the figures both for FI and without FI.
 Note how the level in the tank increases in the FI case.
 
 ### The incubator example
-This example applies FI to an [incubator](https://github.com/INTO-CPS-Association/example_digital-twin_incubator), and is adapted from the example used [here](https://github.com/INTO-CPS-Association/fm_dt_tutorial_2021).
+This example applies FI to an [incubator](https://github.com/INTO-CPS-Association/example_digital-twin_incubator), and is adapted from the example used in the [tutorial for FM21](https://github.com/INTO-CPS-Association/fm_dt_tutorial_2021).
 
 Install dependencies:
 ```bash
