@@ -27,7 +27,7 @@ import org.intocps.fmi.IFmiComponent;
 import org.intocps.fmi.IFmiComponentState;
 import org.intocps.fmi.InvalidParameterException;
 import org.apache.commons.compress.archivers.EntryStreamOffsets;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
