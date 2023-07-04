@@ -37,10 +37,8 @@ Note how the level in the tank increases in the FI case.
 
 ### The incubator example - TBD
 
-To clean up the generated files (not the figures) run in the ```fi-example``` folder:
+To clean up the generated files (not the figures) run in the ```fi_example``` folder:
 
 ```bash
-
 $ ./clean.sh
-
 ```
