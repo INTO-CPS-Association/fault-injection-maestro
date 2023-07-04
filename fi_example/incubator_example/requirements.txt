@@ -10,3 +10,4 @@ zmq
 google-api-python-client
 sympy
 wheel
+wxPython

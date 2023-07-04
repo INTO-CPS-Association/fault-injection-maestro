@@ -39,14 +39,19 @@ Note how the level in the tank increases in the FI case.
 ### The incubator example
 This example applies FI to an [incubator](https://github.com/INTO-CPS-Association/example_digital-twin_incubator), and is adapted from the example used in the [tutorial for FM21](https://github.com/INTO-CPS-Association/fm_dt_tutorial_2021).
 
+It is suggested to create a python virtual environment with python3.10, as there have been issues with the installation of ```wxPython```
+on a Mac with a lower version.
+
+```bash
+$ python3.10 -m venv venv   
+$ source venv/bin/activate #activate the venv
+```
+
 Install dependencies:
 ```bash
 $ apt-get install openjdk-17-jre
-$ pip install -r requirements.txt
-$ pip install -U wxPython
+$ pip install -U -r requirements.txt
 ```
-
-wxPython takes a looong time to build so be patient. If you're on Mac, and the build fails, try this [workaround](https://discuss.wxpython.org/t/failed-building-wheel-for-wxpython-macos-12-0-1/35700/4).
 
 As in the water-tank two experiments, with and without FI are run:
 
