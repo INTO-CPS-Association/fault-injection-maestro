@@ -1,0 +1,55 @@
+{
+  "fmus": {
+    "{Controller}": "../fmus/Controller.fmu",
+    "{KalmanFilter}": "../fmus/KalmanFilter.fmu",
+    "{Plant}": "../fmus/Plant.fmu",
+    "{Room}": "../fmus/Room.fmu",
+    "{Supervisor}": "../fmus/Supervisor.fmu"
+  },
+  "connections": {
+    "{Controller}.c.heater_on_out": [
+      "{KalmanFilter}.k.heater_on_in",
+      "{Plant}.p.heater_on_in",
+      "{Supervisor}.s.heater_on_in"
+    ],
+    "{Supervisor}.s.LL_out": [
+      "{Controller}.c.LL_in"
+    ],
+    "{Supervisor}.s.UL_out": [
+      "{Controller}.c.UL_in"
+    ],
+    "{Supervisor}.s.H_out": [
+      "{Controller}.c.H_in"
+    ],
+    "{Supervisor}.s.C_out": [
+      "{Controller}.c.C_in"
+    ],
+    "{Plant}.p.T_bair_out": [
+      "{Controller}.c.T_bair_in",
+      "{KalmanFilter}.k.T_bair_in",
+      "{Supervisor}.s.T_bair_plant_in"
+    ],
+    "{Room}.r.T_room_out": [
+      "{Plant}.p.T_room_in",
+      "{KalmanFilter}.k.T_room_in",
+      "{Supervisor}.s.T_room_in"
+    ],
+    "{KalmanFilter}.k.T_heater_out": [
+      "{Supervisor}.s.T_heater_in"
+    ],
+    "{KalmanFilter}.k.T_bair_out": [
+      "{Supervisor}.s.T_bair_in"
+    ]
+  },
+  "parameters": {
+    "{Plant}.p.delay": 1.0
+  },
+  "algorithm": {
+    "type": "fixed-step",
+    "size": 3
+  },
+  "faultInjectConfigurationPath": "./FaultEventsNoFI.xml",
+  "faultInjectInstances": {
+    "p": "id"
+  }
+}

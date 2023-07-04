@@ -1,0 +1,5 @@
+<events>
+    <event id="1" when="(t&gt;=300) &amp; (t&lt;400)">
+        <variable valRef="2" type="real" newVal="e^(-var_2)" vars="var_2"/>
+    </event>
+</events>
