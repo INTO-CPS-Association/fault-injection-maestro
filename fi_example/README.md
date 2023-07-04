@@ -46,7 +46,7 @@ $ pip install -r requirements.txt
 $ pip install -U wxPython
 ```
 
-wxPython takes a looong time to build so be patient.
+wxPython takes a looong time to build so be patient. If you're on Mac, and the build fails, try this [workaround](https://discuss.wxpython.org/t/failed-building-wheel-for-wxpython-macos-12-0-1/35700/4).
 
 As in the water-tank two experiments, with and without FI are run:
 
