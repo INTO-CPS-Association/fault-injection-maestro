@@ -10,7 +10,7 @@ and download the following files ```FaultInject.mabl``` and ```
 faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar.zip```.
 Unzip the jar and place in the ```fi-example``` folder.
 
-Follow the [fi-example/README.md](instructions) to run FI experiments with the watertank and the incubator.
+Follow the [fi_example/README.md](instructions) to run FI experiments with the watertank and the incubator.
 
 ### Case-study for the ICSRS21 paper
 
