@@ -54,6 +54,8 @@ As in the water-tank two experiments, with and without FI are run:
 $ ./run_fi_example.sh
 ```
 
+In this case the fault is injected in the Plant, and affects its output, the air temperature.
+The new value is calculated such that it is lower than the real value, using an exponential function.
 As before the plots and generated figures can be inspected.
 
 ## Cleaning up
