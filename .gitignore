@@ -104,6 +104,6 @@ docs/build
 .vscode
 /plugins/prologverifier/example/ExampleGraph.png
 
-
+fi_example/FaultInject.mabl
 
 .java-version
