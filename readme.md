@@ -1,21 +1,18 @@
-#### Development Environment
-You need Java 11 and maven 3.6 to build the project.
-The project can be built from CLI using the maven commands.
-```bash
-mvn clean
-mvn compile
-mvn test
-```
+# Fault injection plugin for Maestro2
 
-MaBL file for the SimpleTest.java: SmallFaultInjectTest.mabl
+## Dependencies
+You need Java 11.
 
-To run only one test: mvn test -Dtest=TestClassName#testMethod -DfailIfNoTests=false, e.g.
+## Running examples
 
-```bash
-$ mvn test -Dtest=injectCorrectnessTest#test -DfailIfNoTests=false
-```
+Go to the release page of the [plugin](https://github.com/INTO-CPS-Association/fault-injection-maestro/releases/tag/v1.0.1)
+and download the following files ```FaultInject.mabl``` and ```
+faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar.zip```.
+Unzip the jar and place in the ```fi-example``` folder.
 
-The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in the faultinject folder.
+Follow the instructions in [fi-example/README.md] to run FI experiments with the watertank and the incubator.
+
+### Other Examples
 
 #### Water-tank Co-simulation Case-Study
 *NOTE: Download the code with tag icsrs21
@@ -38,11 +35,11 @@ To run w/o FI remove the events in ```faultInjectSpecificationWaterTank.xml```. 
 
 The relevant files are in rbmq_example. Run test ````rbmqMonitorTest````
 
+## Configuring the plugin
 
-#### Development Notes
-* Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
+### XML file and definition of faults
+The faults are defined in a ```xml``` file.
 
-#### How to use
 It is possible to define one-time events e.g.
 ```xml
 <event id="wrapper_id_#no" when="t=9.0">
@@ -64,7 +61,7 @@ can be defined, e.g.
 </events>
 ```
 
-Should there be multiple overlapping events with duration that target the same variable, the latter will be injected with the value in the event defined last in the xml file. 
+Should there be multiple overlapping events with duration that target the same variable, the latter will be injected with the value in the event defined last in the xml file.
 
 ```newVal``` can also be a mathematical expression, e.g.
 ```xml
@@ -81,7 +78,7 @@ It might also be needed to calculate the injected valued based on the inputs or 
     <variable valRef="3" type="real" newVal="50.0 + t + var_3 * var_4" vars="var_3,var_4"/>
 </event>
 ```
-In the same way these expressions can be defined for duration events. 
+In the same way these expressions can be defined for duration events.
 
 Expressions can be defined only for the real, int, and bool types. In case of injection of strings, the value assigned to ```newVal``` is going to be copied directly to the input/output.
 Injection for type int functions in the same way as for double. Note that double values will be used in the calculation if given as such in the expression, however the final value to which an input/output is set will be rounded to an int.
@@ -99,7 +96,7 @@ Additionally, the when condition can be expanded to include conditions on other 
 
 Finally, a cleanup function is added that removes events that cannot be executed after a time-point has passed.
 
-##### Configuration at the co-simulation level
+### Configuration at the co-simulation level
 It is possible to specify the FI in the json file used to specify a co-simulation, example is given below:
 
 ```json
@@ -135,7 +132,7 @@ It is possible to specify the FI in the json file used to specify a co-simulatio
 }
 ```
 
-Note that, one should specify a path to the xml configuration file where all the events are, as well as the instances that need to be injected. 
+Note that, one should specify a path to the xml configuration file where all the events are, as well as the instances that need to be injected.
 In the above example, instance ```alltypesA``` is injected. The value of the field, i.e. ```id-A``` is important when specifying the events, and
 has to be part of the string field ```id``` specified for each event, otherwise the event will be ignored. Consider the following as a working example:
 
@@ -219,12 +216,42 @@ Events for both can be specified in the same xml file as below:
 
 The first two listed events will be injected to ```alltypesA```, whereas the last two will be injected to ```alltypesB```
 
-#### Running from commandline with a maestro jar
+## Running from commandline with a maestro jar
 
-Run the following on a terminal:
-
+If you have defined a co-simulation (with the json files), the maestro and the faultinject jars, you can run the 
+scenario with FI with the command below:
 ```bash
 java -cp ./maestro-2.2.0-jar-with-dependencies.jar:./faultinject-1.0.0-SNAPSHOT-jar-with-dependencies.jar org.intocps.maestro.Main import sg1 --interpret --inline-framework-config -output ./out simulation-config.json config.json ./FaultInject.mabl
 ```
 
 where the ```simulation-config.json``` and ```config.json``` are configuration files for the co-simulation.
+
+##  Development Notes 
+You need Java 11 and maven 3.6 to build the project.
+The project can be built from CLI using the maven commands.
+```bash
+mvn clean
+mvn compile
+mvn test
+```
+
+MaBL file for the SimpleTest.java: SmallFaultInjectTest.mabl
+
+To run only one test: mvn test -Dtest=TestClassName#testMethod -DfailIfNoTests=false, e.g.
+
+```bash
+$ mvn test -Dtest=injectCorrectnessTest#test -DfailIfNoTests=false
+```
+
+The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in the faultinject folder.
+
+### Development Notes
+* Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
+
+
+
+
+
+
+
+
