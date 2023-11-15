@@ -1,5 +1,19 @@
 # Fault injection plugin for Maestro2
 
+This plugin is an extension to the Maestro co-orchestration engine for FMI-based co-simulation, which enables a user to inject faults at the input and outputs of FMUs.
+It is possible to inject more than one FMU in a given co-simulation, and as many of the inputs and outputs that a user wishes to tamper with.
+For reals, bools, and ints, it is possible to define formulas with which the injected values can be calculated, which can be based on the state of the other inputs and outputs.
+The conditions on which faults can be injected can be defined through time, and also the state of the other inputs and outputs. 
+For string types it is only possible to define a new string with which to replace old one, no other operation on strings are supported.
+Note that the injection of one FMU can only depend on its inputs and outputs, and not on those of other FMUs.
+
+The rest of this README is organised as follows:
+* Dependencies
+* A running example
+* Notes for replicating the experiments for the ICSRS21 paper
+* Configuration details and how to perform injection
+* Development notes
+
 ## Dependencies
 You need Java 11.
 
@@ -47,15 +61,19 @@ It is possible to define one-time events e.g.
 </event>
 ```
 Note that all variables that should be affected at that time-step can be included within the same one-time event.
+How the user should set the ```ìd``` field, will be covered in the next section of this guide.
+Nevertheless, the following rule should be kept in mind. There is a fixed part, here ```wrapper_id```, which connects the event to the FMU instance
+where it should be applied, and the changeable part, here ```_#no```, that can be anything, as long as it uniquely refers to events corresponding to the same 
+FMU instance.
 
 It is also possible to define events with a duration. Different variables might be injected for different periods as such, events with different and overlapping durations
 can be defined, e.g.
 ```xml
 <events>
-    <event id="wrapper_id_#no" when="(t&gt;=0.2) &amp; (t&lt;0.4)">
+    <event id="wrapper_id_1" when="(t&gt;=0.2) &amp; (t&lt;0.4)">
         <variable valRef="3" type="real" newVal="57.0" vars=""/>
     </event>
-    <event id="wrapper_id_#no" when="(t&gt;=0.3) &amp; (t&lt;0.6)">
+    <event id="wrapper_id_2" when="(t&gt;=0.3) &amp; (t&lt;0.6)">
         <variable valRef="4" type="real" newVal="60.0" vars=""/>
     </event>
 </events>
@@ -65,7 +83,7 @@ Should there be multiple overlapping events with duration that target the same v
 
 ```newVal``` can also be a mathematical expression, e.g.
 ```xml
-<event id="wrapper_id_#no" when="t=9.0">
+<event id="wrapper_id_1" when="t=9.0">
     <variable valRef="3" type="real" newVal="50.0 + t" vars=""/>
 </event>
 ```
@@ -74,17 +92,26 @@ where t will be resolved to the simulation step the event applies to.
 It might also be needed to calculate the injected valued based on the inputs or outputs of the fmu. In this case, these can be added as variables following this naming convention:
 ```var_{valueref}```. In addition this has to be added in vars, where the separate variable names are separated by comma ```,```. E.g., assume we want to include an input with value reference 3, and an output with value reference 4, then the event definition would look like:
 ```xml
-<event id="wrapper_id_#no" when="t=9.0">
+<event id="wrapper_id_1" when="t=9.0">
     <variable valRef="3" type="real" newVal="50.0 + t + var_3 * var_4" vars="var_3,var_4"/>
 </event>
 ```
+This is done such that the plugin is able to recognize ```var_{valueref}``` as a variable when parsing ```newVal```, and assign it the proper value based on the ```{valueref}```.
+
 In the same way these expressions can be defined for duration events.
 
-Expressions can be defined only for the real, int, and bool types. In case of injection of strings, the value assigned to ```newVal``` is going to be copied directly to the input/output.
-Injection for type int functions in the same way as for double. Note that double values will be used in the calculation if given as such in the expression, however the final value to which an input/output is set will be rounded to an int.
+Complex expressions can be defined only for the real, int, and bool types. Note here that the usual precedence rules would apply, that is, multiplication and division have precedence over
+addition and subtraction, operations in brackets have precedence etc.
+
+Injection for type int functions in the same way as for double, however the following should be kept in mind.
+Double values will be used in the calculation if given as such in the expression, however as the input/output is defined as int, 
+the final value to which it is set will be rounded to an int.
+
+In case of injection of strings, the value assigned to ```newVal``` is going to be copied directly to the input/output. No other operations
+can be applied to strings.
 
 Expressions for type bool accept the following operators: not -> "~", and -> "&", or -> "|". A boolean expression can be used on all fmu variables, inputs/outputs.
-
+Complex expressions can be built up, brackets must be used to define precedence.
 
 Additionally, the when condition can be expanded to include conditions on other inputs/outputs of the fmu. These can be included in other, and the variables need to be specified in vars as well. The expression in other will not be evaluated for time step equal to 0.0.
 
@@ -94,7 +121,6 @@ Additionally, the when condition can be expanded to include conditions on other 
 </event>
 ```
 
-Finally, a cleanup function is added that removes events that cannot be executed after a time-point has passed.
 
 ### Configuration at the co-simulation level
 It is possible to specify the FI in the json file used to specify a co-simulation, example is given below:
@@ -133,7 +159,8 @@ It is possible to specify the FI in the json file used to specify a co-simulatio
 ```
 
 Note that, one should specify a path to the xml configuration file where all the events are, as well as the instances that need to be injected.
-In the above example, instance ```alltypesA``` is injected. The value of the field, i.e. ```id-A``` is important when specifying the events, and
+In the above example, instance ```alltypesA``` is injected. Note that in general the instance name can be anything and is not bound to this structure ```alltypes```. 
+The value of the field, i.e. ```id-A``` is important when specifying the events, and
 has to be part of the string field ```id``` specified for each event, otherwise the event will be ignored. Consider the following as a working example:
 
 ```xml
@@ -155,6 +182,8 @@ has to be part of the string field ```id``` specified for each event, otherwise 
     </event>
 </events>
 ```
+
+Here, 5 events are defined that will inject the same FMU instance with ```id-A```. 
 
 In case one would like to inject multiple instances, the co-simulation json file needs to be adjusted as below:
 
@@ -244,6 +273,8 @@ $ mvn test -Dtest=injectCorrectnessTest#test -DfailIfNoTests=false
 ```
 
 The `-DfailIfNoTests`is set to `false`, to avoid an error due to no tests in the faultinject folder.
+
+Note that, a cleanup function has been added that removes events that will not be executed after a time-point has passed.
 
 ### To be added
 * Tests need to be added for xml files with multiple variables of the same type in one event (one-shot, or duration)
