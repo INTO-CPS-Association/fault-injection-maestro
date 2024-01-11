@@ -1,54 +1,23 @@
 package org.intocps.maestro.faultinject;
 
 import com.spencerwi.either.Either;
-
+import net.objecthunter.exp4j.Expression;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.intocps.fmi.*;
 import org.intocps.maestro.interpreter.InterpreterException;
 import org.intocps.maestro.interpreter.api.IValueLifecycleHandler;
-import org.intocps.maestro.interpreter.values.ArrayValue;
-import org.intocps.maestro.interpreter.values.BooleanValue;
-import org.intocps.maestro.interpreter.values.ExternalModuleValue;
-import org.intocps.maestro.interpreter.values.FunctionValue;
-import org.intocps.maestro.interpreter.values.IntegerValue;
-import org.intocps.maestro.interpreter.values.NumericValue;
-import org.intocps.maestro.interpreter.values.RealValue;
-import org.intocps.maestro.interpreter.values.StringValue;
-import org.intocps.maestro.interpreter.values.UnsignedIntegerValue;
-import org.intocps.maestro.interpreter.values.UpdatableValue;
-import org.intocps.maestro.interpreter.values.Value;
+import org.intocps.maestro.interpreter.values.*;
 import org.intocps.maestro.interpreter.values.fmi.FmuComponentStateValue;
 import org.intocps.maestro.interpreter.values.fmi.FmuComponentValue;
 import org.intocps.maestro.interpreter.values.fmi.FmuValue;
-import org.intocps.fmi.Fmi2Status;
-import org.intocps.fmi.Fmi2StatusKind;
-import org.intocps.fmi.FmiInvalidNativeStateException;
-import org.intocps.fmi.FmuInvocationException;
-import org.intocps.fmi.FmuResult;
-import org.intocps.fmi.IFmiComponent;
-import org.intocps.fmi.IFmiComponentState;
-import org.intocps.fmi.InvalidParameterException;
-import org.apache.commons.compress.archivers.EntryStreamOffsets;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.System.Logger.Level;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import javax.xml.crypto.Data;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,16 +27,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 
 @IValueLifecycleHandler.ValueLifecycle(name = "FaultInject")
