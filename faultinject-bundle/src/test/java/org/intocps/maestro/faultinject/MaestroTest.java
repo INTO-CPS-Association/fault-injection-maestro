@@ -3,12 +3,7 @@ package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.intocps.maestro.typechecker.TypeChecker;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +15,7 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-public class maestroTest {
+public class MaestroTest {
     @Test
     //test for maestro compatibility
     //@Ignore("Not needed now")
@@ -52,8 +47,8 @@ public class maestroTest {
     @Test
     //@Ignore("Not needed now")
     public void testWithConfig() throws Exception {
-        String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize.json").getPath();
-        String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
+        String initializePath = MaestroTest.class.getClassLoader().getResource("maestro_test/initialize.json").getPath();
+        String simulateJson = MaestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
         String dumpPath = "target/maestro_test/dump";
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
@@ -103,8 +98,9 @@ public class maestroTest {
 
     @Test
     public void testWithConfigMultipleFI() throws Exception {
-        String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize-2.json").getPath();
-        String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
+        System.setProperty("CSV_DATA_WRITER_PRECISION","1");
+        String initializePath = MaestroTest.class.getClassLoader().getResource("maestro_test/initialize-2.json").getPath();
+        String simulateJson = MaestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
         String dumpPath = "target/maestro_test/dump-2";
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();

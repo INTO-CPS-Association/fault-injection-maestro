@@ -165,13 +165,12 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
             public static long getUint(Value value) {
 
                 value = value.deref();
-        
-                if (value instanceof UnsignedIntegerValue) {
-                    return ((UnsignedIntegerValue) value).getValue();
+
+                if(value.isNumeric())
+                {
+                    return ((NumericValue)value).longValue();
                 }
-                if (value instanceof IntegerValue) {
-                    return ((IntegerValue) value).getValue();
-                }
+
                 throw new InterpreterException("Value is not unsigned integer");
             }
 
@@ -627,8 +626,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     long elementsToUse = getUint(fcargs.get(1));
 
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
-                    double[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), RealValue.class).stream().mapToDouble(RealValue::getValue).toArray();
-                    
+                    double[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), NumericValue.class).stream().limit(elementsToUse)
+                            .mapToDouble(NumericValue::realValue).toArray();
                     //logger.debug(String.format("The values to set %s for time %f", Arrays.toString(values), currentStep+stepSize));
 
                     //logger.debug(String.format("scalarValueIndices %s", Arrays.toString(scalarValueIndices)));
@@ -850,7 +849,10 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                     long elementsToUse = getUint(fcargs.get(1));
 
                     long[] scalarValueIndices = getArrayValue(fcargs.get(0), Optional.of(elementsToUse), NumericValue.class).stream().mapToLong(NumericValue::longValue).toArray();
-                    int[] values = getArrayValue(fcargs.get(2), Optional.of(elementsToUse), IntegerValue.class).stream().mapToInt(IntegerValue::getValue).toArray();
+
+                    int[] values =
+                            getArrayValue(fcargs.get(2), Optional.of(elementsToUse), NumericValue.class).stream().mapToInt(NumericValue::intValue).toArray();
+
                     
                     if(simulationDurationEvents.length != 0){
                         //Get data from the next event if any data
@@ -907,8 +909,8 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         if (res.status == Fmi2Status.OK) {
                             UpdatableValue ref = (UpdatableValue) fcargs.get(2);
         
-                            List<IntegerValue> values =
-                                    Arrays.stream(ArrayUtils.toObject(res.result)).map(i -> new IntegerValue(i)).collect(Collectors.toList());
+                           List<IntegerValue> values = Arrays.stream(ArrayUtils.toObject(res.result)).limit(elementsToUse).map(IntegerValue::new)
+                                    .collect(Collectors.toList());
 
                             currentOutput.integerValues.clear();
                             int[] vals = ArrayUtils.toPrimitive(values.stream().map(x->x.getValue()).collect(Collectors.toList()).toArray(Integer[]::new));

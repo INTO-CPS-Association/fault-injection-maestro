@@ -8,17 +8,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.fasterxml.jackson.databind.DatabindContext;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.slf4j.Logger;
@@ -27,18 +23,17 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.NodeList;
 
 
-public class eventsTest {
-    static final Logger logger = LoggerFactory.getLogger(eventsTest.class);
+public class EventsTest {
+    static final Logger logger = LoggerFactory.getLogger(EventsTest.class);
     @Test
     //@Ignore("Not needed now")
     public void testReadXml() throws Exception {
 
-        String xmlPath = eventsTest.class.getClassLoader().getResource("Catalog.xml").getPath();
+        String xmlPath = EventsTest.class.getClassLoader().getResource("Catalog.xml").getPath();
 
         Event[] simuEvents = {};
         Event[] simuEventswithDuration = {};
@@ -60,7 +55,7 @@ public class eventsTest {
     //@Ignore("Not needed now")
     public void testfunceval() throws Exception {
 
-        String xmlPath = eventsTest.class.getClassLoader().getResource("funceval_when.xml").getPath();
+        String xmlPath = EventsTest.class.getClassLoader().getResource("funceval_when.xml").getPath();
 
         Event[] simuEvents = {};
         Event[] simuEventswithDuration = {};
@@ -124,7 +119,7 @@ public class eventsTest {
     @Test
     public void testCleanArray() throws Exception{
 
-        String xmlPath = eventsTest.class.getClassLoader().getResource("test_clean/testClean.xml").getPath();
+        String xmlPath = EventsTest.class.getClassLoader().getResource("test_clean/testClean.xml").getPath();
 
         Event[] simuEventswithDuration = {};
 
@@ -162,8 +157,8 @@ public class eventsTest {
 
     @Test
     public void testCleanArrayIntegration() throws Exception{
-        String initializePath = eventsTest.class.getClassLoader().getResource("test_clean/initialize.json").getPath();
-        String simulateJson = eventsTest.class.getClassLoader().getResource("test_clean/simulate.json").getPath();
+        String initializePath = EventsTest.class.getClassLoader().getResource("test_clean/initialize.json").getPath();
+        String simulateJson = EventsTest.class.getClassLoader().getResource("test_clean/simulate.json").getPath();
         String dumpPath = "target/test_clean/dump";
         final File faultInjectSpec = Paths.get("target", "test-classes/test_clean", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();

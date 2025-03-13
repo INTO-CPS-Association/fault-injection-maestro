@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-public class rbmqMonitorTest {
+public class RbmqMonitorTest {
     @Test
     @Ignore("This test cannot be run on its own, but needs the scripts that publish to the rabbitmq server. Look into rbmq_example")
     public void testWithConfig() throws Exception {
