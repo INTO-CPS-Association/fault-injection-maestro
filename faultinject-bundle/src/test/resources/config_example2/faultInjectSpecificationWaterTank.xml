@@ -1,0 +1,10 @@
+<events>
+    <event id="wt" when="(t&gt;=0.2) &amp; (t&lt;0.5)">
+        <variable valRef="17" type="real" newVal="999999.99" />
+    </event>
+
+    <event id="wt" when="(t&gt;=0.5) &amp; (t&lt;2)">
+        <variable valRef="16" type="real" newVal="0.0" />
+    </event>
+
+</events>

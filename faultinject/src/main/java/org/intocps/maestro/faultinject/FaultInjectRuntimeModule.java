@@ -206,7 +206,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                 //System.out.println(e);
                 Set<String> whenVars = e.getVariableNames();
                 Set<String> whenOtherVars = o.getVariableNames();
-                logger.debug(String.format("EVAL at time %f",simtime));
+                logger.debug(String.format("EVAL When at time %f",simtime));
 
                 //if variable in expression set its value
                 if (whenVars.contains("t"))//simulation time
@@ -348,7 +348,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 for (Map.Entry<Long,Double> entry : currentInput.doubleValues.entrySet())
                                 {
                                     String var = "var_"+entry.getKey();
-                                    logger.debug(var);
+                                    logger.debug("\tin  "+var);
                                     if (vars.contains(var))
                                     {
                                         e.setVariable(var, entry.getValue());
@@ -359,7 +359,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 for (Map.Entry<Long,Double> entry : currentOutput.doubleValues.entrySet())
                                 {
                                     String var = "var_"+entry.getKey();
-                                    logger.debug(var);
+                                    logger.debug("\tout "+var);
                                     if (vars.contains(var))
                                     {
                                         e.setVariable(var, entry.getValue());
@@ -650,7 +650,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                         values = ArrayUtils.toPrimitive(injected);
                     }
                     
-                    logger.debug(String.format("The INPUT values %s", Arrays.toString(values)));
+                    logger.debug(String.format("The setReal INPUT values %s", Arrays.toString(values)));
 
                     //clear previous double outputs
                     currentInput.doubleValues.clear();
@@ -722,13 +722,13 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 //convert Double[] to List<RealValue>
                                 values = Arrays.asList(injected).stream().map(x-> new RealValue(x)).collect(Collectors.toList());
 
-                                logger.debug(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                logger.debug(String.format("The getReal OUTPUT values %s", Arrays.toString(values.toArray())));
                                 
                             }
 
                             ref.setValue(new ArrayValue<>(values));
                         }
-        
+
                         
                         return new IntegerValue(res.status.value);
         
@@ -1027,7 +1027,7 @@ public class FaultInjectRuntimeModule implements IValueLifecycleHandler {
                                 //convert Double[] to List<RealValue>
                                 values = Arrays.asList(injected).stream().map(x-> new StringValue(x)).collect(Collectors.toList());
 
-                                logger.debug(String.format("The OUTPUT values %s", Arrays.toString(values.toArray())));
+                                logger.debug(String.format("The getString OUTPUT values %s", Arrays.toString(values.toArray())));
                                 
                             }
 

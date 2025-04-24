@@ -8,9 +8,11 @@ import org.junit.Test;
 
 import java.io.File;
 import org.junit.Before;
+
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -51,17 +53,28 @@ public class SimpleTest {
     @Test
     //@Ignore("Not needed now")
     public void testWithConfig() throws Exception {
-        String initializePath = SimpleTest.class.getClassLoader().getResource("config_example/initialize.json").getPath();
-        String simulateJson = SimpleTest.class.getClassLoader().getResource("config_example/simulate.json").getPath();
-        String dumpPath = "target/simpletest/testtwithconfig/dump";
-        final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
-        faultInjectSpec.getParentFile().mkdirs();
-        try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
-        }
-        org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath()});
+        Path resourcesFolder = Path.of("src", "test", "resources");
+        Path output = Paths.get("target",this.getClass().getSimpleName(),"testWithConfig2");
+        output.toFile().mkdirs();
 
-//        org.intocps.maestro.Main.argumentHandler(new String[]{"-i","-sg1",initializePath, simulateJson,"-d",dumpPath,faultInjectSpec.getPath()} );
+        Path initialize = output.resolve("initialize.json");
+        Files.copy(resourcesFolder.resolve("config_example2").resolve("initialize.json"), initialize, StandardCopyOption.REPLACE_EXISTING);
+        Path simulate = output.resolve("simulate.json");
+        Files.copy(resourcesFolder.resolve("config_example2").resolve("simulate.json"), simulate, StandardCopyOption.REPLACE_EXISTING);
+        Path events = output.resolve("faultInjectSpecificationWaterTank.xml");
+        Files.copy(resourcesFolder.resolve("config_example2").resolve("faultInjectSpecificationWaterTank.xml"), events, StandardCopyOption.REPLACE_EXISTING);
+        Path faultInjectSpec = output.resolve("FaultInject.mabl");
+        Files.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), faultInjectSpec, StandardCopyOption.REPLACE_EXISTING);
+
+
+        String initializeJson = IOUtils.toString(resourcesFolder.resolve("config_example2").resolve("initialize.json").toUri(), StandardCharsets.UTF_8);
+        initializeJson =initializeJson.replace("faultInjectSpecificationWaterTank.xml", events.toAbsolutePath().toString());
+       IOUtils.write(initializeJson,new FileOutputStream(initialize.toFile()),StandardCharsets.UTF_8);
+
+
+        org.intocps.maestro.Main.argumentHandler("import","sg1", initialize.toString(), simulate.toString(),"-output",output.toString(), faultInjectSpec.toString(),"--interpret");
+
+
     }
 }
 
