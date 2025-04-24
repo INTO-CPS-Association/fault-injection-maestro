@@ -5,7 +5,7 @@ name: Build
 
 on: [workflow_dispatch, push, pull_request]
 env:
-  JAVA_VERSION: 11.0.3
+  JAVA_VERSION: 21
   SERVER_ID: snapshots
 
 
@@ -26,8 +26,10 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Maven Build
         run: mvn -B package --file pom.xml -DskipTests
-      - name: ls output
+
+      - name: Prepare build bundle
         run: |
+          zip 
           ls faultinject-bundle
           ls faultinject-bundle/target
       - name: Maven Test
@@ -38,28 +40,28 @@ jobs:
         run: |
           ls
         
-      - name: Upload Artifact 1
+      - name: Upload Artifact faultinject-bundle
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: faultinject-bundle-1.0.0-SNAPSHOT.jar
-          path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT.jar
+          name: faultinject-bundle.jar
+          path: faultinject-bundle/target/faultinject-bundle-*.jar
 
-      - name: Upload Artifact 2
+      - name: Upload Artifact faultinject-bundle with dependencies
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
-          path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+          name: faultinject-bundle-jar-with-dependencies.jar
+          path: faultinject-bundle/target/faultinject-bundle-*-jar-with-dependencies.jar
 
-      - name: Upload Artifact 3
+      - name: Upload Artifact fault inject
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: faultinject-1.0.0-SNAPSHOT.jar
-          path: faultinject/target/faultinject-1.0.0-SNAPSHOT.jar
+          name: faultinject.jar
+          path: faultinject/target/faultinject-*.jar
 
-      - name: Upload Artifact 4
+      - name: Upload Artifact spec
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
