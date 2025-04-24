@@ -1,8 +1,7 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+
 import org.intocps.maestro.typechecker.TypeChecker;
 import org.junit.Test;
 
@@ -14,16 +13,10 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
-import org.apache.logging.log4j.core.config.Configurator;
+
 
 public class SimpleTest {
     @Test
-    @Before
-    public void setup(){
-        Configurator.setLevel(LogManager.getLogger(FaultInjectRuntimeModule.class).getName(), Level.DEBUG);
-        Configurator.setLevel(LogManager.getLogger(Event.class).getName(), Level.DEBUG);
-
-    }
     //@Ignore("Not needed now")
     public void test() throws Exception {
         String dumpPath = "target/simpletest/test/dump";
