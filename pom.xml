@@ -155,7 +155,13 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.12.1</version>
+                    <version>3.14.0</version>
+                    <configuration>
+                        <source>21</source>
+                        <target>21</target>
+                        <release>21</release>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
