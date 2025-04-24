@@ -5,7 +5,7 @@ name: Build
 
 on: [workflow_dispatch, push, pull_request]
 env:
-  JAVA_VERSION: 21
+
   SERVER_ID: snapshots
 
 
@@ -20,26 +20,20 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Java
-        uses: actions/setup-java@v1
+
+      - name: Use Java version 21 adopt
+        uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: '21.0.5'
+          distribution: 'adopt'
+          cache: 'maven'
+
       - name: Maven Build
         run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Prepare build bundle
-        run: |
-          zip 
-          ls faultinject-bundle
-          ls faultinject-bundle/target
       - name: Maven Test
         run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
-  
-      - name: check folder structure.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          ls
-        
+
       - name: Upload Artifact faultinject-bundle
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
