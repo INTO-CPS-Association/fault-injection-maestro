@@ -34,6 +34,10 @@ jobs:
       - name: Maven Test
         run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
 
+      - name: show
+        if: always()
+        run: find /Users/runner/work/fault-injection-maestro/fault-injection-maestro/faultinject-bundle/target/test_clean/dump/
+
       - name: Upload Artifact faultinject-bundle
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
