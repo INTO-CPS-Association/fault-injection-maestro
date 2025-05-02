@@ -324,7 +324,7 @@ public class Event {
 
     //Print all events
     public static void printEvents(Event[] events){
-        logger.warn(String.format("events %d", events.length));
+        logger.debug(String.format("events %d", events.length));
         String printText;
         for(Event e: events){
             printText = "Event with id: " + e.id + ", at time: " + e.timePoint
@@ -333,7 +333,7 @@ public class Event {
                                 + "; with bools: " + Arrays.toString(e.boolValues) + " with vrefs: " + Arrays.toString(e.boolValuesRefs)
                                 + "; with strings: " + Arrays.toString(e.stringValues) + " with vrefs: " + Arrays.toString(e.stringValuesRefs)
                                 + "; when " + e.when + "; other when conditions: " + e.otherWhenConditions;
-            logger.warn(printText);
+            logger.trace(printText);
         }
     }
 
@@ -345,7 +345,7 @@ public class Event {
                             + "; with bools: " + Arrays.toString(events[eventIndex].boolValues) + " with vrefs: " + Arrays.toString(events[eventIndex].boolValuesRefs)
                             + "; with strings: " + Arrays.toString(events[eventIndex].stringValues) + " with vrefs: " + Arrays.toString(events[eventIndex].stringValuesRefs)
                             + "; when " + events[eventIndex].when + "; other when conditions: " + events[eventIndex].otherWhenConditions;
-        logger.info(printText);
+        logger.debug(printText);
     }
 
 }

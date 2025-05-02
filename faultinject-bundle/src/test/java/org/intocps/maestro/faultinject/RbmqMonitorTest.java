@@ -19,7 +19,7 @@ public class RbmqMonitorTest {
         final File faultInjectSpec = Paths.get("target", "rbmqmonitortest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","-output",dumpPath, "-i","Sg1",initializePath, simulateJson,faultInjectSpec.getPath()} );
     }

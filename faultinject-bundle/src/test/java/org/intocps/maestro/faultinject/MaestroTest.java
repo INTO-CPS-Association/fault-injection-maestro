@@ -24,7 +24,7 @@ public class MaestroTest {
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         final File spec = Paths.get("target", "watertanksimpletest", "watertank_simple_test.mabl").toFile();
@@ -53,7 +53,7 @@ public class MaestroTest {
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
@@ -105,7 +105,7 @@ public class MaestroTest {
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});

@@ -163,7 +163,7 @@ public class EventsTest {
         final File faultInjectSpec = Paths.get("target", "test-classes/test_clean", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
@@ -175,7 +175,7 @@ public class EventsTest {
         DocumentBuilder builder = factory.newDocumentBuilder();
 
         //Build Document
-        Document document = builder.parse(new File("events_xml_log.xml"));
+        Document document = builder.parse(new File(dumpPath,"events_xml_log.xml"));
 
         //Normalize the XML Structure; It's just too important !!
         document.getDocumentElement().normalize();

@@ -17,7 +17,7 @@ public class WaterTankSimpleTest {
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         final File spec = Paths.get("target", "watertanksimpletest", "watertank_simple_test.mabl").toFile();

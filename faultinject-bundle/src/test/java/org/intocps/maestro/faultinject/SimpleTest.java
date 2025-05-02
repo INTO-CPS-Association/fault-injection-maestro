@@ -23,7 +23,7 @@ public class SimpleTest {
         final File faultInjectSpec = Paths.get("target", "simpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         final File spec = Paths.get("target", "simpletest", "SmallFaultInjectTest.mabl").toFile();
@@ -57,7 +57,7 @@ public class SimpleTest {
         Path events = output.resolve("faultInjectSpecificationWaterTank.xml");
         Files.copy(resourcesFolder.resolve("config_example2").resolve("faultInjectSpecificationWaterTank.xml"), events, StandardCopyOption.REPLACE_EXISTING);
         Path faultInjectSpec = output.resolve("FaultInject.mabl");
-        Files.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), faultInjectSpec, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), faultInjectSpec, StandardCopyOption.REPLACE_EXISTING);
 
 
         String initializeJson = IOUtils.toString(resourcesFolder.resolve("config_example2").resolve("initialize.json").toUri(), StandardCharsets.UTF_8);
