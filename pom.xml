@@ -29,17 +29,17 @@
     </properties>
 
     <repositories>
-        <repository>
-            <name>Maven Central Snapshots</name>
-            <id>ossrh_old</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+<!--        <repository>-->
+<!--            <name>Maven Central Snapshots</name>-->
+<!--            <id>ossrh_old</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </repository>-->
 
-        <repository>
-            <name>Maven Central Snapshots new</name>
-            <id>ossrh1</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+<!--        <repository>-->
+<!--            <name>Maven Central Snapshots new</name>-->
+<!--            <id>ossrh1</id>-->
+<!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--        </repository>-->
 
     </repositories>
 
@@ -451,7 +451,9 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>ossrh</publishingServerId>
-                            <autoPublish>true</autoPublish>
+                            <centralBaseUrl>https://central.sonatype.com</centralBaseUrl>
+                            <centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</centralSnapshotsUrl>
+                            <autoPublish>false</autoPublish>
                             <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
