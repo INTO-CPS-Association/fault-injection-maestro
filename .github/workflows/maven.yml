@@ -68,6 +68,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Use Java version 21 adopt
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21.0.5'
+          distribution: 'adopt'
+          cache: 'maven'
+
       - name: Maven Package feature SNAPSHOT
         if: github.event_name == 'push' && (github.ref != 'refs/heads/development' && github.ref != 'refs/heads/master' )
         run: mvn -Psonatype -B package -Dsha1=-`git rev-parse --abbrev-ref HEAD | sed "s|/|-|g;s|#||g;s|<||g;s|>||g;s|:||g;s|\"||g;s|/||g;s|\|||g;s|?||g;s|*||g;s|;||g"`   -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
