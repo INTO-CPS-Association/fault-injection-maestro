@@ -256,7 +256,7 @@ java -cp ./maestro-2.2.0-jar-with-dependencies.jar:./faultinject-1.0.0-SNAPSHOT-
 where the ```simulation-config.json``` and ```config.json``` are configuration files for the co-simulation.
 
 ##  Development Notes 
-You need Java 11 and maven 3.6 to build the project.
+You need Java 21 and maven 3.6 to build the project.
 The project can be built from CLI using the maven commands.
 ```bash
 mvn clean
