@@ -28,27 +28,11 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
 
-#      - name: Maven Build
-#        run: mvn -Psonatype -B package --file pom.xml -DskipTests
-#
-#      - name: Maven Test
-#        run: mvn -Psonatype test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
-      - name: Maven Package feature SNAPSHOT
-        if: github.event_name == 'push' && (github.ref != 'refs/heads/development' && github.ref != 'refs/heads/master' )
-        run: mvn -Psonatype -B package -Dsha1=-`git rev-parse --abbrev-ref HEAD | sed "s|/|-|g;s|#||g;s|<||g;s|>||g;s|:||g;s|\"||g;s|/||g;s|\|||g;s|?||g;s|*||g;s|;||g"`   -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+      - name: Maven Build
+        run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Maven Package SNAPSHOT
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/development' )
-        run: mvn -Psonatype -B deploy -Dsha1= -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-
+      - name: Maven Test
+        run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
 
       - name: Upload Artifact faultinject-bundle
         if: matrix.os == 'ubuntu-latest'
@@ -77,3 +61,25 @@ jobs:
         with:
           name: FaultInject.mabl
           path: faultinject/src/main/resources/org/intocps/maestro/faultinject/FaultInject.mabl
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Maven Package feature SNAPSHOT
+        if: github.event_name == 'push' && (github.ref != 'refs/heads/development' && github.ref != 'refs/heads/master' )
+        run: mvn -Psonatype -B package -Dsha1=-`git rev-parse --abbrev-ref HEAD | sed "s|/|-|g;s|#||g;s|<||g;s|>||g;s|:||g;s|\"||g;s|/||g;s|\|||g;s|?||g;s|*||g;s|;||g"`   -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+
+      - name: Maven Package SNAPSHOT
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/development' )
+        run: mvn -Psonatype -B deploy -Dsha1= -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
