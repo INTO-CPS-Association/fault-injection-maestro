@@ -6,7 +6,7 @@ name: Build
 on: [workflow_dispatch, push, pull_request]
 env:
 
-  SERVER_ID: snapshots
+  SERVER_ID: ossrh
 
 
 
