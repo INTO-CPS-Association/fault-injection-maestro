@@ -23,8 +23,8 @@
         <log4j2.version>2.24.3</log4j2.version>
         <maestro.version>4.0.0</maestro.version>
 
-        <revision>1.0.1</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <revision>2.0.0</revision>
+        <changelist></changelist>
         <sha1></sha1>
     </properties>
 
