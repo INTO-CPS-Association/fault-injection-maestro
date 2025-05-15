@@ -1,11 +1,11 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Maestro2
+name: Build
 
 on: [workflow_dispatch, push, pull_request]
 env:
-  JAVA_VERSION: 11.0.3
+
   SERVER_ID: snapshots
 
 
@@ -17,51 +17,76 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-13]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Java
-        uses: actions/setup-java@v1
+
+      - name: Use Java version 21 adopt
+        uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: '21.0.5'
+          distribution: 'adopt'
+          cache: 'maven'
+
       - name: Maven Build
         run: mvn -B package --file pom.xml -DskipTests
-      - name: ls output
-        run: |
-          ls faultinject-bundle
-          ls faultinject-bundle/target
+
       - name: Maven Test
         run: mvn test #-Dmaven.test.failure.ignore=true -> doesnt work on windows
-  
-      - name: check folder structure.
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          ls
-        
-      - name: Upload Artifact 1
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
-        with:
-          name: faultinject-bundle-1.0.0-SNAPSHOT.jar
-          path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT.jar
 
-      - name: Upload Artifact 2
+      - name: Upload Artifact faultinject-bundle
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
-          path: faultinject-bundle/target/faultinject-bundle-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+          name: faultinject-bundle.jar
+          path: faultinject-bundle/target/faultinject-bundle-*.jar
 
-      - name: Upload Artifact 3
+      - name: Upload Artifact faultinject-bundle with dependencies
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: faultinject-1.0.0-SNAPSHOT.jar
-          path: faultinject/target/faultinject-1.0.0-SNAPSHOT.jar
+          name: faultinject-bundle-jar-with-dependencies.jar
+          path: faultinject-bundle/target/faultinject-bundle-*-jar-with-dependencies.jar
 
-      - name: Upload Artifact 4
+      - name: Upload Artifact fault inject
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
+        with:
+          name: faultinject.jar
+          path: faultinject/target/faultinject-*.jar
+
+      - name: Upload Artifact spec
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
         with:
           name: FaultInject.mabl
           path: faultinject/src/main/resources/org/intocps/maestro/faultinject/FaultInject.mabl
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Java version 21 adopt
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21.0.5'
+          distribution: 'adopt'
+          cache: 'maven'
+
+      - name: Maven Package feature SNAPSHOT
+        if: github.event_name == 'push' && (github.ref != 'refs/heads/development' && github.ref != 'refs/heads/master' )
+        run: mvn -Psonatype -B package -Dsha1=-`git rev-parse --abbrev-ref HEAD | sed "s|/|-|g;s|#||g;s|<||g;s|>||g;s|:||g;s|\"||g;s|/||g;s|\|||g;s|?||g;s|*||g;s|;||g"`   -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+
+      - name: Maven Package SNAPSHOT
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/development' )
+        run: mvn -Psonatype -B deploy -Dsha1= -fae -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}

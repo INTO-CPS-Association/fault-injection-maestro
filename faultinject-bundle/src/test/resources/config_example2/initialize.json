@@ -1,0 +1,20 @@
+{
+  "fmus": {
+    "{crtl}": "src/test/resources/watertankcontroller-c.fmu",
+    "{wt}": "src/test/resources/singlewatertank-20sim.fmu"
+  },
+  "connections": {
+    "{crtl}.crtlInstance.valve": ["{wt}.wtInstance.valvecontrol"],
+    "{wt}.wtInstance.level": ["{crtl}.crtlInstance.level"]
+  },
+  "parameters": {
+    "{crtl}.crtlInstance.maxlevel": 2,
+    "{crtl}.crtlInstance.minlevel": 1
+  },
+  "algorithm":{"type":"fixed-step","size":0.1},
+
+  "faultInjectConfigurationPath": "faultInjectSpecificationWaterTank.xml",
+  "faultInjectInstances": {
+    "wtInstance": "wt"
+  }
+}

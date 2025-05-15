@@ -1,11 +1,8 @@
 package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.LogManager;
-import org.apache.logging.log4j.Level;
+
 import org.intocps.maestro.typechecker.TypeChecker;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,13 +10,12 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-import org.apache.logging.log4j.core.config.Configurator;
 import static org.junit.Assert.assertEquals;
 
 import java.io.*;  
 
 
-public class injectCorrectnessTest {
+public class InjectCorrectnessTest {
     @Test
     //@Ignore("Not needed now")
     //tests with the alltypes.fmu, with inputs and outputs of each type.
@@ -28,7 +24,7 @@ public class injectCorrectnessTest {
         final File faultInjectSpec = Paths.get("target", "funcevaltestcorrect", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         final File spec = Paths.get("target", "funcevaltestcorrect", "funceval_output_correctness_test.mabl").toFile();

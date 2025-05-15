@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class Datapoint {
 
-    Map <Long, Integer> integerValues = new HashMap<Long, Integer>();
-    Map <Long, Double> doubleValues = new HashMap<Long, Double>();
-    Map <Long, Boolean> booleanValues = new HashMap<Long, Boolean>();
-    Map <Long, String> stringValues = new HashMap<Long, String>();
-    
+    public Map<Long, Integer> integerValues = new HashMap<Long, Integer>();
+    public Map<Long, Double> doubleValues = new HashMap<Long, Double>();
+    public Map<Long, Boolean> booleanValues = new HashMap<Long, Boolean>();
+    public Map<Long, String> stringValues = new HashMap<Long, String>();
+
 }

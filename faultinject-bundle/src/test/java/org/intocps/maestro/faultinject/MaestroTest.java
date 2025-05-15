@@ -3,12 +3,7 @@ package org.intocps.maestro.faultinject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.intocps.maestro.typechecker.TypeChecker;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -20,16 +15,16 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-public class maestroTest {
+public class MaestroTest {
     @Test
     //test for maestro compatibility
     //@Ignore("Not needed now")
     public void basicCompatibilityTest() throws Exception {
-        String dumpPath = "target/maestro_test/basic/dump";
+        String dumpPath = Paths.get("target",this.getClass().getSimpleName(),"basicCompatibilityTest").toString();
         final File faultInjectSpec = Paths.get("target", "watertanksimpletest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 
         final File spec = Paths.get("target", "watertanksimpletest", "watertank_simple_test.mabl").toFile();
@@ -52,13 +47,13 @@ public class maestroTest {
     @Test
     //@Ignore("Not needed now")
     public void testWithConfig() throws Exception {
-        String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize.json").getPath();
-        String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
-        String dumpPath = "target/maestro_test/dump";
+        String initializePath = MaestroTest.class.getClassLoader().getResource("maestro_test/initialize.json").getPath();
+        String simulateJson = MaestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
+        String dumpPath = Paths.get("target",this.getClass().getSimpleName(),"testWithConfig").toString();
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});
@@ -103,13 +98,14 @@ public class maestroTest {
 
     @Test
     public void testWithConfigMultipleFI() throws Exception {
-        String initializePath = maestroTest.class.getClassLoader().getResource("maestro_test/initialize-2.json").getPath();
-        String simulateJson = maestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
-        String dumpPath = "target/maestro_test/dump-2";
+        System.setProperty("CSV_DATA_WRITER_PRECISION","1");
+        String initializePath = MaestroTest.class.getClassLoader().getResource("maestro_test/initialize-2.json").getPath();
+        String simulateJson = MaestroTest.class.getClassLoader().getResource("maestro_test/simulate.json").getPath();
+        String dumpPath = Paths.get("target",this.getClass().getSimpleName(),"testWithConfigMultipleFI").toString();
         final File faultInjectSpec = Paths.get("target", "test-classes/maestro_test", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
 //        org.intocps.maestro.Main.argumentHandler(new String[]{"import sg1 --interpret", "--verbose",initializePath, simulateJson,"-output="+dumpPath,faultInjectSpec.getPath()} );
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","sg1",initializePath, simulateJson,"-output",dumpPath,faultInjectSpec.getPath(),"--interpret"});

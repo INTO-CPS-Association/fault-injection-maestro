@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
-public class rbmqMonitorTest {
+public class RbmqMonitorTest {
     @Test
     @Ignore("This test cannot be run on its own, but needs the scripts that publish to the rabbitmq server. Look into rbmq_example")
     public void testWithConfig() throws Exception {
@@ -19,7 +19,7 @@ public class rbmqMonitorTest {
         final File faultInjectSpec = Paths.get("target", "rbmqmonitortest", "FaultInject.mabl").toFile();
         faultInjectSpec.getParentFile().mkdirs();
         try (final FileWriter writer = new FileWriter(faultInjectSpec)) {
-            IOUtils.copy(FaultInjectRuntimeModule.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
+            IOUtils.copy(FaultInjectLivecycleHandler.class.getResourceAsStream("FaultInject.mabl"), writer, StandardCharsets.UTF_8);
         }
         org.intocps.maestro.Main.argumentHandler(new String[]{"import","-output",dumpPath, "-i","Sg1",initializePath, simulateJson,faultInjectSpec.getPath()} );
     }

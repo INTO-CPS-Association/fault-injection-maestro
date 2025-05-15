@@ -19,7 +19,8 @@
   "parameters": {
   },
   "logVariables": {
-    "{alltypes}.alltypesA":["doubleOutput", "boolOutput", "integerOutput", "stringOutput"]
+    "{alltypes}.alltypesA":["doubleOutput", "boolOutput"],
+    "{alltypesB}.alltypesB":[ "integerOutput", "stringOutput"]
   },
   "algorithm":{"type":"fixed-step","size":0.1},
 
